@@ -2,7 +2,7 @@ package net.vinh.hatred.api.math;
 
 import net.minecraft.util.math.Vec3d;
 
-public class CombatMath {
+public final class CombatMath {
     public static float linearFalloff(double distance, double maxDistance) {
         return (float) HatredMath.clamp(
                 1.0 - (distance / maxDistance),
@@ -19,16 +19,14 @@ public class CombatMath {
         return dot > threshold;
     }
 
-    public static float distributeDamage(float totalDamage, int targetCount) {
+    public static float distributeDamageEvenly(float totalDamage, int targetCount) {
         if (targetCount <= 0) return 0;
         return totalDamage / targetCount;
     }
 
-    public static float distributedWithScaling(float baseDamage, int targetCount) {
+    public static float distributedWithScaling(float baseDamage, int targetCount, float scalingMultiplier) {
         if (targetCount <= 0) return 0;
 
-        // example scaling curve
-        float multiplier = 1.0f / (float)Math.sqrt(targetCount);
-        return baseDamage * multiplier;
+        return baseDamage * scalingMultiplier;
     }
 }

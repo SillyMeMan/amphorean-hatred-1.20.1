@@ -11,6 +11,8 @@ import java.util.List;
 public interface IConfigurableDamageSource {
     DamageSource createSource(PlayerEntity player);
 
+    boolean trueDamage();
+
     boolean bypassArmor();
     boolean bypassResistance();
     boolean bypassInvulnerability();

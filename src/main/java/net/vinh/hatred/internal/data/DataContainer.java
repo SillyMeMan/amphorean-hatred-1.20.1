@@ -1,5 +1,6 @@
 package net.vinh.hatred.internal.data;
 
+import net.minecraft.nbt.NbtCompound;
 import net.vinh.hatred.api.data.DataAttachmentType;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -7,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @ApiStatus.Internal
@@ -45,10 +45,12 @@ public final class DataContainer {
 
     public void remove(DataAttachmentType<?> type) {
         values.remove(type);
+        markDirty(type);
     }
 
     public void setRaw(DataAttachmentType<?> type, Object value) {
         values.put(type, value);
+        markDirty(type);
     }
 
     public Map<DataAttachmentType<?>, Object> entries() {
@@ -65,6 +67,46 @@ public final class DataContainer {
         if (type.syncable()) {
             dirty.add(type);
         }
+    }
+
+    public void writePersistent(NbtCompound nbt) {
+        NbtCompound root = new NbtCompound();
+
+        for (var entry : values.entrySet()) {
+            DataAttachmentType<?> type = entry.getKey();
+
+            if (!type.persistent()) continue;
+
+            NbtCompound sub = new NbtCompound();
+            writePersistentAttachment(type, entry.getValue(), sub);
+
+            root.put(type.id().toString(), sub);
+        }
+
+        nbt.put("hatred:data", root);
+    }
+
+    public void readPersistent(NbtCompound nbt) {
+        if (!nbt.contains("hatred:data")) return;
+
+        NbtCompound root = nbt.getCompound("hatred:data");
+
+        for (DataAttachmentType<?> type : DataRegistryInternal.values()) {
+            if (!type.persistent()) continue;
+
+            String key = type.id().toString();
+
+            if (root.contains(key)) {
+                NbtCompound sub = root.getCompound(key);
+                Object value = type.serializer().readNbt(sub);
+                values.put(type, value);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> void writePersistentAttachment(DataAttachmentType<T> type, Object value, NbtCompound tag) {
+        type.serializer().writeNbt(tag, (T) value);
     }
 
     public Map<DataAttachmentType<?>, Object> getAllSyncable() {

@@ -6,11 +6,17 @@
     "EntityMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
+    "MinecraftServerMixin",
     "PlayerEntityMixin",
-    "ServerWorldMixin"
+    "PlayerInventoryMixin",
+    "ServerWorldMixin",
+    "WorldMixin"
   ],
   "client": [
-    "GameRendererMixin"
+    "client.ClientPlayerEntityMixin",
+    "client.GameRendererMixin",
+    "client.LivingEntityRendererMixin",
+    "client.MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

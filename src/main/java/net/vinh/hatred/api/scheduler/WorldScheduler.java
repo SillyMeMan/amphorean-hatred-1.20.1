@@ -8,7 +8,6 @@ public final class WorldScheduler {
 
     private final Set<EntityScheduler> entitySchedulers = new HashSet<>();
 
-
     private final PriorityQueue<ScheduledTask> queue =
             new PriorityQueue<>(Comparator.comparingLong(t -> t.executeAt));
 

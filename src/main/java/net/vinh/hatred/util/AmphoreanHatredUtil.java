@@ -7,6 +7,7 @@ import net.vinh.hatred.api.event.ServerAbilityEvents;
 import net.vinh.hatred.exception.InvalidAbilityNumberException;
 
 public class AmphoreanHatredUtil {
+    @Deprecated
     public static void useAbility(ServerPlayerEntity player, int abilityNumber) {
         if(!ServerAbilityEvents.USE_ABILITY.invoker().useAbility(player, abilityNumber)) {
             return;

@@ -2,15 +2,15 @@ package net.vinh.hatred.api.ability;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import org.jetbrains.annotations.ApiStatus;
 
+@Deprecated
 public interface IAbility {
     void alt_ability_1(ServerPlayerEntity player);
     void alt_ability_2(ServerPlayerEntity player);
     void alt_ability_3(ServerPlayerEntity player);
     void alt_ability_4(ServerPlayerEntity player);
 
-    @ApiStatus.Experimental
+    @Deprecated
     class AbilityCooldownManager {
         public static void putOnCooldown(ItemStack stack, int abilityNumber, int durationInTicks) {
             stack.getOrCreateNbt().putInt("AbilityCooldown_" + abilityNumber, durationInTicks);

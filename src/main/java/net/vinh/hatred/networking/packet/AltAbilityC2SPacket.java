@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 import net.vinh.hatred.util.AmphoreanHatredUtil;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("all")
+@Deprecated
 public record AltAbilityC2SPacket(int alt_ability_number) implements Packet<ServerPlayPacketListener> {
     public static final Identifier ID = new Identifier("hatred", "alt_ability");
 

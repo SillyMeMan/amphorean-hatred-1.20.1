@@ -3,9 +3,10 @@ package net.vinh.hatred.api.scheduler;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.vinh.hatred.api.data.Data;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import static net.vinh.hatred.attachment.HatredDataAttachmentTypes.*;
+import static net.vinh.hatred.internal.HatredAttachments.*;
 
 public final class EntityScheduler {
 
@@ -13,7 +14,6 @@ public final class EntityScheduler {
             new PriorityQueue<>(Comparator.comparingLong(t -> t.executeAt));
 
     public void tick(long tick) {
-
         while (!queue.isEmpty() && queue.peek().executeAt <= tick) {
             ScheduledTask task = queue.poll();
 
@@ -32,8 +32,9 @@ public final class EntityScheduler {
         return queue.isEmpty();
     }
 
-    public static void schedule(Entity entity, long delay, Runnable action) {
-        if (!(entity.getWorld() instanceof ServerWorld world)) return;
+    @Nullable
+    public static ScheduledTask schedule(Entity entity, long delay, Runnable action) {
+        if (!(entity.getWorld() instanceof ServerWorld world)) return null;
 
         EntityScheduler scheduler =
                 Data.API.get(entity, ENTITY_SCHEDULER);
@@ -45,11 +46,12 @@ public final class EntityScheduler {
             worldScheduler.registerEntityScheduler(scheduler);
         }
 
-        scheduler.schedule(delay, action, worldScheduler.getInternalTick());
+        return scheduler.schedule(delay, action, worldScheduler.getInternalTick());
     }
 
-    public static void scheduleRepeating(Entity entity, long interval, Runnable action) {
-        if (!(entity.getWorld() instanceof ServerWorld world)) return;
+    @Nullable
+    public static ScheduledTask scheduleRepeating(Entity entity, long interval, Runnable action) {
+        if (!(entity.getWorld() instanceof ServerWorld world)) return null;
 
         EntityScheduler scheduler =
                 Data.API.get(entity, ENTITY_SCHEDULER);
@@ -61,9 +63,8 @@ public final class EntityScheduler {
             worldScheduler.registerEntityScheduler(scheduler);
         }
 
-        scheduler.scheduleRepeating(interval, action, worldScheduler.getInternalTick());
+        return scheduler.scheduleRepeating(interval, action, worldScheduler.getInternalTick());
     }
-
 
     public ScheduledTask schedule(long delay, Runnable action, long worldTick) {
         ScheduledTask task = new ScheduledTask(worldTick + delay, action);

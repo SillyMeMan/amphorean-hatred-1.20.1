@@ -14,7 +14,7 @@ public final class RandomMath {
     }
 
     public static boolean chance(Random random, double probability) {
-        return random.nextDouble() < probability;
+        return random.nextDouble() <= probability;
     }
 }
 

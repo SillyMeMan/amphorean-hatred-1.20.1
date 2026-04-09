@@ -1,0 +1,16 @@
+classTweaker     v1         named
+
+inject-interface net/minecraft/entity/LivingEntity net/vinh/hatred/internal/entity/LivingEntityInjectionAccess
+inject-interface net/minecraft/entity/Entity net/vinh/hatred/internal/entity/EntityInjectionAccess
+inject-interface net/minecraft/world/World net/vinh/hatred/internal/world/WorldInjectionAccess
+
+accessible       method     net/minecraft/entity/Entity                    readCustomDataFromNbt   (Lnet/minecraft/nbt/NbtCompound;)V
+accessible       method     net/minecraft/entity/Entity                    writeCustomDataToNbt    (Lnet/minecraft/nbt/NbtCompound;)V
+accessible       method     net/minecraft/entity/LivingEntity              playHurtSound           (Lnet/minecraft/entity/damage/DamageSource;)V
+accessible       method     net/minecraft/registry/Registries              createIntrusive         (Lnet/minecraft/registry/RegistryKey;Ljava/lang/String;Lnet/minecraft/registry/Registries$Initializer;)Lnet/minecraft/registry/DefaultedRegistry;
+accessible       method     net/minecraft/client/render/GameRenderer       getFov                  (Lnet/minecraft/client/render/Camera;FZ)D
+accessible       field      net/minecraft/registry/Registries              DEFAULT_ENTRIES         Ljava/util/Map;
+accessible       field      net/minecraft/registry/Registries              ROOT                    Lnet/minecraft/registry/MutableRegistry;
+accessible       class      net/minecraft/registry/Registries$Initializer
+accessible       class      net/minecraft/client/render/RenderPhase$ShaderProgram
+accessible       field      net/minecraft/client/gl/PostEffectProcessor    passes                  Ljava/util/List;

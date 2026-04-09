@@ -1,7 +1,6 @@
 package net.vinh.hatred.api.math;
 
 public final class TickMath {
-
     private TickMath() {}
 
     public static int seconds(int seconds) {

@@ -31,5 +31,5 @@
 		"java": ">=17",
 		"fabric-api": "*"
 	},
-	"access_widener": "hatred.accesswidener"
+	"access_widener": "hatred.classtweaker"
 }
