@@ -20,7 +20,13 @@ public class ContextAwareDamageSource extends DamageSource {
 
     @Override
     public Text getDeathMessage(LivingEntity killed) {
-        if(context.deathMessage() != null) return context.deathMessage();
+        if(context.deathMessage() != null) {
+            if(context.addKilledDisplayNameToMsg()) {
+                return Text.literal(killed.getDisplayName().getString() + " " + context.deathMessage().getString());
+            } else {
+                return context.deathMessage();
+            }
+        }
 
         return super.getDeathMessage(killed);
     }

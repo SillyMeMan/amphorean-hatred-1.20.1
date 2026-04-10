@@ -8,16 +8,16 @@ import net.vinh.hatred.api.damage.ContextAwareDamageSource;
 import net.vinh.hatred.api.damage.DamageContext;
 
 public interface EntityInjectionAccess {
-    default boolean damage(DamageContext ctx) {
+    default boolean damage(float damage, DamageContext ctx) {
         Entity target = (Entity) this;
 
         RegistryEntry<DamageType> finalType = ctx.type() != null ? ctx.type() : target.getDamageSources().generic().getTypeRegistryEntry();
 
-        if(ctx.trueDamage() && target instanceof LivingEntity living) return applyTrueDamage(living, ctx);
+        if(ctx.trueDamage() && target instanceof LivingEntity living) return applyTrueDamage(living, damage, ctx);
 
         ContextAwareDamageSource source = new ContextAwareDamageSource(finalType, ctx);
 
-        boolean damageApplied = target.damage(source, ctx.rawDamage());
+        boolean damageApplied = target.damage(source, damage);
 
         if(damageApplied) {
             if(ctx.hitEffects() != null && target instanceof LivingEntity living) ctx.hitEffects().forEach(statusEffectInstance -> living.addStatusEffect(statusEffectInstance, ctx.attacker()));
@@ -31,14 +31,14 @@ public interface EntityInjectionAccess {
         return damageApplied;
     }
 
-    private boolean applyTrueDamage(LivingEntity target, DamageContext ctx) {
+    private boolean applyTrueDamage(LivingEntity target, float damage, DamageContext ctx) {
         float health = target.getHealth();
-        float newHealth = Math.max(0.0F, health - ctx.rawDamage());
+        float newHealth = ctx.nonFatal() ? Math.max(1f, health - damage) : Math.max(0f, health - damage);
         RegistryEntry<DamageType> finalType = ctx.type() != null ? ctx.type() : target.getDamageSources().generic().getTypeRegistryEntry();
 
         target.getDamageTracker().onDamage(
                 new ContextAwareDamageSource(finalType, ctx),
-                ctx.rawDamage()
+                damage
         );
 
         target.setHealth(newHealth);

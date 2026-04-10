@@ -4,7 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.vinh.hatred.api.builders.DamageContextBuilder;
-import net.vinh.hatred.api.damage.DamageContext;
 import net.vinh.hatred.api.item.IConfigurableDamageSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,7 +21,19 @@ public abstract class PlayerEntityMixin {
             DamageContextBuilder contextBuilder = new DamageContextBuilder()
                     .type(custom.getTypeRegistryEntry())
                     .attacker(custom.getAttacker())
-                    .rawDamage(amount);
+                    .directSource(custom.getSource());
+
+            if(iChangeableDamageSource.deathMessage() != null) {
+                contextBuilder.deathMessage(iChangeableDamageSource.deathMessage());
+            }
+
+            if(iChangeableDamageSource.nonFatal()) {
+                contextBuilder.nonFatal();
+            }
+
+            if(iChangeableDamageSource.trueDamage()) {
+                contextBuilder.trueDamage();
+            }
 
             if(iChangeableDamageSource.bypassArmor()) {
                 contextBuilder.bypassesArmor();
@@ -30,6 +41,10 @@ public abstract class PlayerEntityMixin {
 
             if(iChangeableDamageSource.bypassResistance()) {
                 contextBuilder.bypassesResistance();
+            }
+
+            if(iChangeableDamageSource.bypassEnchantments()) {
+                contextBuilder.bypassesEnchantments();
             }
 
             if(iChangeableDamageSource.bypassInvulnerability()) {
@@ -40,6 +55,10 @@ public abstract class PlayerEntityMixin {
                 contextBuilder.bypassesTotems();
             }
 
+            if(iChangeableDamageSource.addKilledDisplayNameToMsg()) {
+                contextBuilder.addKilledDisplayNameToMsg();
+            }
+
             if(iChangeableDamageSource.hitEffects() != null) {
                 contextBuilder.hitEffects(iChangeableDamageSource.hitEffects());
             }
@@ -48,7 +67,7 @@ public abstract class PlayerEntityMixin {
                 contextBuilder.knockback(iChangeableDamageSource.knockback());
             }
 
-            return instance.damage(contextBuilder.build());
+            return instance.damage(amount, contextBuilder.build());
         }
 
         return instance.damage(source, amount);
