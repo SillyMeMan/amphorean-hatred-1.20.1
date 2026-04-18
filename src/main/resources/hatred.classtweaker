@@ -4,6 +4,7 @@ inject-interface net/minecraft/entity/LivingEntity net/vinh/hatred/internal/enti
 inject-interface net/minecraft/entity/Entity net/vinh/hatred/internal/entity/EntityInjectionAccess
 inject-interface net/minecraft/world/World net/vinh/hatred/internal/world/WorldInjectionAccess
 
+
 accessible       method     net/minecraft/entity/Entity                    readCustomDataFromNbt   (Lnet/minecraft/nbt/NbtCompound;)V
 accessible       method     net/minecraft/entity/Entity                    writeCustomDataToNbt    (Lnet/minecraft/nbt/NbtCompound;)V
 accessible       method     net/minecraft/entity/LivingEntity              playHurtSound           (Lnet/minecraft/entity/damage/DamageSource;)V

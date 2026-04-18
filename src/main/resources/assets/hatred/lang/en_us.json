@@ -1,0 +1,25 @@
+{
+  "death.attack.fire": "%1$s got absolutely fried",
+  "death.attack.ice": "%1$s got icy cold",
+  "death.attack.imaginary": "%1$s died in their mind",
+  "death.attack.wind": "%1$s fell to powerful gusts of wind",
+  "death.attack.physical": "%1$s suffered blunt force trauma",
+  "death.attack.quantum": "%1$s got quantized",
+  "death.attack.lightning": "%1$s got absolutely electrocuted",
+
+  "death.attack.fire.player": "%1$s got absolutely fried",
+  "death.attack.ice.player": "%1$s got icy cold",
+  "death.attack.imaginary.player": "%1$s died in their mind",
+  "death.attack.wind.player": "%1$s fell to powerful gusts of wind",
+  "death.attack.physical.player": "%1$s suffered blunt force trauma",
+  "death.attack.quantum.player": "%1$s got quantized",
+  "death.attack.lightning.player": "%1$s got absolutely electrocuted",
+
+  "death.attack.fire.item": "%1$s got absolutely fried",
+  "death.attack.ice.item": "%1$s got icy cold",
+  "death.attack.imaginary.item": "%1$s died in their mind",
+  "death.attack.wind.item": "%1$s fell to powerful gusts of wind",
+  "death.attack.physical.item": "%1$s suffered blunt force trauma",
+  "death.attack.quantum.item": "%1$s got quantized",
+  "death.attack.lightning.item": "%1$s got absolutely electrocuted"
+}

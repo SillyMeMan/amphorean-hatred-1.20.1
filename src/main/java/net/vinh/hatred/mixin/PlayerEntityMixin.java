@@ -67,7 +67,7 @@ public abstract class PlayerEntityMixin {
                 contextBuilder.knockback(iChangeableDamageSource.knockback());
             }
 
-            return instance.damage(amount, contextBuilder.build());
+            return instance.damage(amount, totalDamage -> totalDamage, contextBuilder.build());
         }
 
         return instance.damage(source, amount);

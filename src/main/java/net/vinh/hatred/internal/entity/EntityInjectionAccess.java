@@ -6,18 +6,20 @@ import net.minecraft.entity.damage.DamageType;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.vinh.hatred.api.damage.ContextAwareDamageSource;
 import net.vinh.hatred.api.damage.DamageContext;
+import net.vinh.hatred.api.damage.DamageDistributor;
+import net.vinh.hatred.api.damage.DamageDistributors;
 
 public interface EntityInjectionAccess {
-    default boolean damage(float damage, DamageContext ctx) {
+    default boolean damage(float totalDamage, DamageDistributor distributor, DamageContext ctx) {
         Entity target = (Entity) this;
 
         RegistryEntry<DamageType> finalType = ctx.type() != null ? ctx.type() : target.getDamageSources().generic().getTypeRegistryEntry();
 
-        if(ctx.trueDamage() && target instanceof LivingEntity living) return applyTrueDamage(living, damage, ctx);
+        if(ctx.trueDamage() && target instanceof LivingEntity living) return applyTrueDamage(living, distributor.distribute(totalDamage), ctx);
 
         ContextAwareDamageSource source = new ContextAwareDamageSource(finalType, ctx);
 
-        boolean damageApplied = target.damage(source, damage);
+        boolean damageApplied = target.damage(source, distributor.distribute(totalDamage));
 
         if(damageApplied) {
             if(ctx.hitEffects() != null && target instanceof LivingEntity living) ctx.hitEffects().forEach(statusEffectInstance -> living.addStatusEffect(statusEffectInstance, ctx.attacker()));
@@ -29,6 +31,10 @@ public interface EntityInjectionAccess {
         }
 
         return damageApplied;
+    }
+
+    default boolean damage(float damage, DamageContext ctx) {
+        return damage(damage, DamageDistributors.FULL_DAMAGE, ctx);
     }
 
     private boolean applyTrueDamage(LivingEntity target, float damage, DamageContext ctx) {

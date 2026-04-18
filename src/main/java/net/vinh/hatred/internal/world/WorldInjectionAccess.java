@@ -6,6 +6,7 @@ import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import net.vinh.hatred.api.geometry.Hitbox;
@@ -32,9 +33,19 @@ public interface WorldInjectionAccess {
     default List<Entity> getOtherEntities(Entity except, Hitbox hitbox, Predicate<? super Entity> predicate) {
         World world = (World) this;
 
+        Vec3d r = hitbox.right.multiply(hitbox.halfExtents.x);
+        Vec3d u = hitbox.up.multiply(hitbox.halfExtents.y);
+        Vec3d f = hitbox.forward.multiply(hitbox.halfExtents.z);
+
+        double x = Math.abs(r.x) + Math.abs(u.x) + Math.abs(f.x);
+        double y = Math.abs(r.y) + Math.abs(u.y) + Math.abs(f.y);
+        double z = Math.abs(r.z) + Math.abs(u.z) + Math.abs(f.z);
+
+        Vec3d extents = new Vec3d(x, y, z);
+
         Box aabb = new Box(
-                hitbox.center.subtract(hitbox.halfExtents),
-                hitbox.center.add(hitbox.halfExtents)
+                hitbox.center.subtract(extents),
+                hitbox.center.add(extents)
         );
 
         List<Entity> candidates = world.getOtherEntities(except, aabb, predicate);

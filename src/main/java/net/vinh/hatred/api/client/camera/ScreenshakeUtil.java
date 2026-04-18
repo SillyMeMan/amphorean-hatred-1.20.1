@@ -10,7 +10,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ScreenshakeUtil {
+public final class ScreenshakeUtil {
+    private ScreenshakeUtil() {
+        throw new AssertionError("Not supposed to be instantized!");
+    }
+
     public static void shake(ServerPlayerEntity player, float radius, float intensity, int duration) {
         shake(List.of(player), null, radius, intensity, duration);
     }

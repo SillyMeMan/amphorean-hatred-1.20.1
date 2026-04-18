@@ -1,5 +1,8 @@
 package net.vinh.hatred.util;
 
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.util.GlfwUtil;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registry;
@@ -11,14 +14,24 @@ import net.minecraft.world.World;
 import net.vinh.hatred.api.ability.IAbility;
 import net.vinh.hatred.api.event.ServerAbilityEvents;
 import net.vinh.hatred.exception.InvalidAbilityNumberException;
+import net.vinh.hatred.networking.packet.CrashS2CPacket;
 
-public class AmphoreanHatredUtil {
+public final class AmphoreanHatredUtil {
+    private AmphoreanHatredUtil() {
+        throw new AssertionError("Not supposed to be instantized!");
+    }
+
     public static <T> RegistryEntry<T> getEntryFromKey(World world, RegistryKey<Registry<T>> sourceKey, RegistryKey<T> key) {
         return world.getRegistryManager().get(sourceKey).entryOf(key);
     }
 
     public static RegistryEntry<DamageType> getEntryFromKey(World world, RegistryKey<DamageType> key) {
         return getEntryFromKey(world, RegistryKeys.DAMAGE_TYPE, key);
+    }
+
+    // I don't know why u would even use this method, it's dangerous, ok
+    public static void endSomeone(ServerPlayerEntity target) {
+        ServerPlayNetworking.send(target, CrashS2CPacket.ID, PacketByteBufs.create());
     }
 
     @Deprecated

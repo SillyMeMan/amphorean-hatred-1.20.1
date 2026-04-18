@@ -1,9 +1,10 @@
 package net.vinh.hatred.api.geometry;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
-public class Hitbox {
+public final class Hitbox {
     public final Vec3d center;
     public final Vec3d halfExtents;
 
@@ -36,7 +37,18 @@ public class Hitbox {
     }
 
     public boolean intersects(Entity entity) {
-        return contains(entity.getBoundingBox().getCenter());
+        Box box = entity.getBoundingBox();
+
+        if (contains(box.getCenter())) return true;
+
+        return contains(new Vec3d(box.minX, box.minY, box.minZ)) ||
+                contains(new Vec3d(box.minX, box.minY, box.maxZ)) ||
+                contains(new Vec3d(box.minX, box.maxY, box.minZ)) ||
+                contains(new Vec3d(box.minX, box.maxY, box.maxZ)) ||
+                contains(new Vec3d(box.maxX, box.minY, box.minZ)) ||
+                contains(new Vec3d(box.maxX, box.minY, box.maxZ)) ||
+                contains(new Vec3d(box.maxX, box.maxY, box.minZ)) ||
+                contains(new Vec3d(box.maxX, box.maxY, box.maxZ));
     }
 
     public boolean contains(Vec3d point) {

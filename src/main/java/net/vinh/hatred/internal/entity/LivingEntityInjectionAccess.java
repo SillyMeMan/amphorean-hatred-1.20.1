@@ -1,10 +1,13 @@
 package net.vinh.hatred.internal.entity;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.vinh.hatred.api.ability.Ability;
 import net.vinh.hatred.api.ability.AbilityResult;
 import net.vinh.hatred.api.ability.Cooldowns;
+import net.vinh.hatred.api.damage.DamageContext;
+import net.vinh.hatred.api.damage.DamageDistributors;
 import net.vinh.hatred.api.data.Data;
 import net.vinh.hatred.api.event.ServerAbilityEvents;
 import net.vinh.hatred.api.registry.HatredRegistries;
@@ -15,6 +18,14 @@ import net.vinh.hatred.internal.ability.AbstractAbility;
 import java.util.Map;
 
 public interface LivingEntityInjectionAccess {
+    default boolean damage(double percentage, DamageContext ctx) {
+        LivingEntity target = (LivingEntity) this;
+
+        if(percentage < 0 || percentage > 1) throw new IllegalArgumentException("Percentage must be smaller or equal to 1 and non-negative");
+
+        return target.damage((float) (target.getMaxHealth() * percentage), DamageDistributors.FULL_DAMAGE, ctx);
+    }
+
     default void resetAllCooldowns() {
         LivingEntity entity = (LivingEntity) this;
         Cooldowns.resetAllCooldown(entity);
