@@ -34,18 +34,17 @@ public record SyncAttachmentS2CPacket(int entityId, int dirtySize, Identifier id
         int entityId = buf.readVarInt();
         int count = buf.readVarInt();
 
+        Identifier id = buf.readIdentifier();
+        NbtCompound tag = buf.readNbt();
+
         client.execute(() -> {
-            Entity entity =
-                    client.world.getEntityById(entityId);
+            Entity entity = client.world.getEntityById(entityId);
 
             if (!(entity instanceof DataHolderInternal holder)) return;
 
             DataContainer container = holder.hatred$getContainer();
 
             for (int i = 0; i < count; i++) {
-                Identifier id = buf.readIdentifier();
-                NbtCompound tag = buf.readNbt();
-
                 DataAttachmentType<?> type = DataRegistryInternal.get(id);
 
                 if (type == null) continue;

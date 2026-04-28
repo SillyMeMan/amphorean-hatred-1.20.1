@@ -46,7 +46,7 @@ public interface LivingEntityInjectionAccess {
         Cooldowns.setCooldown(entity, HatredRegistries.ABILITY.getId(ability), cooldown);
     }
 
-    default void cancelAbility(Ability ability) {
+    default void cancelAbility(Ability ability, boolean triggerOnCancelled) {
         LivingEntity entity = (LivingEntity) this;
 
         Map<Identifier, AbstractAbility.PreCastInstance> map =
@@ -55,13 +55,14 @@ public interface LivingEntityInjectionAccess {
         for (AbstractAbility.PreCastInstance instance : map.values()) {
             if(instance.abilityId == HatredRegistries.ABILITY.getId(ability)) {
                 instance.cancelled = true;
+                if(triggerOnCancelled) ability.onCancelled(entity);
             }
         }
 
         map.clear();
     }
 
-    default void cancelAll() {
+    default void cancelAll(boolean triggerOnCancelled) {
         LivingEntity entity = (LivingEntity) this;
 
         Map<Identifier, AbstractAbility.PreCastInstance> map =
@@ -69,6 +70,9 @@ public interface LivingEntityInjectionAccess {
 
         for(AbstractAbility.PreCastInstance instance : map.values()) {
             instance.cancelled = true;
+            if(triggerOnCancelled) {
+                HatredRegistries.ABILITY.get(instance.abilityId).onCancelled(entity);
+            }
         }
     }
 

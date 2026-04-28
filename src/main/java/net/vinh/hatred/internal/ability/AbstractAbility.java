@@ -25,6 +25,10 @@ public abstract class AbstractAbility {
         return null;
     }
 
+    public void onCancelled(LivingEntity user) {
+
+    }
+
     public abstract int preCastTime();
 
     public abstract int cooldown();

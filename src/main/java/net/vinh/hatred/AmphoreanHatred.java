@@ -17,6 +17,10 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.WinNativeModuleUtil;
+import net.minecraft.util.crash.CrashException;
+import net.minecraft.util.crash.CrashReport;
+import net.minecraft.util.crash.CrashReportSection;
 import net.vinh.hatred.api.brigadier.arguments.AbilityArgumentType;
 import net.vinh.hatred.api.client.screen.HudTextManager;
 import net.vinh.hatred.api.command.AbilityCommand;
@@ -27,15 +31,18 @@ import net.vinh.hatred.api.data.DataAttachmentType;
 import net.vinh.hatred.client.camera.ScreenshakeController;
 import net.vinh.hatred.impl.HatredExamples;
 import net.vinh.hatred.impl.TestItem;
+import net.vinh.hatred.internal.AutoRegistry;
 import net.vinh.hatred.internal.HatredAttachments;
 import net.vinh.hatred.internal.data.DataContainer;
 import net.vinh.hatred.internal.data.DataHolderInternal;
 import net.vinh.hatred.internal.data.accessor.EntityMixinAccessor;
+import net.vinh.hatred.internal.util.ServerCrashHandler;
 import net.vinh.hatred.networking.packet.AltAbilityC2SPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static net.vinh.hatred.internal.HatredAttachments.ENTITY_SCHEDULER;
+import static net.vinh.hatred.internal.HatredAttachments.PRECASTS;
 
 public class AmphoreanHatred implements ModInitializer {
 	public static final String MOD_ID = "hatred";
@@ -44,7 +51,8 @@ public class AmphoreanHatred implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		HatredRegistries.initRegistries();
-		HatredExamples.initExamples();
+
+		AutoRegistry.autoBootstrap();
 
 		AbilityArgumentType.init();
 
@@ -53,6 +61,14 @@ public class AmphoreanHatred implements ModInitializer {
 		ServerTickEvents.END_WORLD_TICK.register(world -> {
 			WorldScheduler scheduler = Data.API.get(world, HatredAttachments.WORLD_SCHEDULER);
 			scheduler.tick();
+		});
+		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			if(ServerCrashHandler.shouldCrash) {
+				CrashReport crashReport = new CrashReport(ServerCrashHandler.reason, new Throwable(ServerCrashHandler.reason));
+				CrashReportSection crashReportSection = crashReport.addElement("Crash details");
+				WinNativeModuleUtil.addDetailTo(crashReportSection);
+				throw new CrashException(crashReport);
+			}
 		});
 		ServerTickEvents.END_SERVER_TICK.register(server -> ScreenshakeController.tick());
 		ServerTickEvents.END_SERVER_TICK.register(HudTextManager::tick);
@@ -111,6 +127,7 @@ public class AmphoreanHatred implements ModInitializer {
 		});
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> Data.API.get(entity, ENTITY_SCHEDULER).clear());
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> entity.cancelAll(false));
 
 		if(FabricLoader.getInstance().isDevelopmentEnvironment()) {
 			Registry.register(Registries.ITEM, new Identifier(MOD_ID, "test"), new TestItem(new FabricItemSettings()));

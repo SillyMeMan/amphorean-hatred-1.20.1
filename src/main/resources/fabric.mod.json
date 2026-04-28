@@ -20,6 +20,9 @@
 		],
 		"client": [
 			"net.vinh.hatred.client.AmphoreanHatredClient"
+		],
+		"hatred:registry": [
+			"net.vinh.hatred.impl.HatredExamples"
 		]
 	},
 	"mixins": [

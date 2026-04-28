@@ -8,7 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import net.vinh.hatred.util.AmphoreanHatredUtil;
+import net.vinh.hatred.util.Utils;
 import org.jetbrains.annotations.NotNull;
 
 @Deprecated
@@ -27,6 +27,6 @@ public record AltAbilityC2SPacket(int alt_ability_number) implements Packet<Serv
 
     public static void handle(MinecraftServer server, @NotNull ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
         int abilityNumber = buf.readInt();
-        AmphoreanHatredUtil.useAbility(player, abilityNumber);
+        Utils.Deprecated.useAbility(player, abilityNumber);
     }
 }
