@@ -1,13 +1,11 @@
 package net.vinh.hatred.api.damage.element;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
-import net.vinh.hatred.util.Utils;
 
 import java.util.List;
 
@@ -26,13 +24,9 @@ public class ElementalTypes {
     public static final RegistryKey<DamageType> WIND = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, id("wind"));
     public static final RegistryKey<DamageType> ICE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, id("ice"));
 
-    public static List<RegistryKey<DamageType>> TYPES = List.of(PHYSICAL, FIRE, QUANTUM, IMAGINARY, LIGHTNING, WIND, ICE);
+    public static final ImmutableList<RegistryKey<DamageType>> TYPES = ImmutableList.of(PHYSICAL, FIRE, QUANTUM, IMAGINARY, LIGHTNING, WIND, ICE);
 
-    public static RegistryKey<DamageType> getRandomType() {
+    public static RegistryKey<DamageType> getRandomKey() {
         return Util.getRandom(TYPES, Random.createLocal());
-    }
-
-    public static RegistryEntry<DamageType> getRandomTypeAndConvert(World world) {
-        return Utils.Conversion.getEntryFromKey(world, getRandomType());
     }
 }

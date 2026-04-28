@@ -15,7 +15,7 @@ public final class DamageDistributors {
         return totalDamage -> {
             Random random = Random.createLocal();
 
-            if(random.nextDouble() > 1 - chance) {
+            if(random.nextDouble() < chance) {
                 return totalDamage * bonusMultiplier;
             }
 
