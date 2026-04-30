@@ -8,6 +8,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
+import net.vinh.hatred.api.builders.DamageContextBuilder;
 import net.vinh.hatred.util.Utils;
 
 public class TestItem extends Item {
@@ -18,7 +19,11 @@ public class TestItem extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         if(!world.isClient()) {
-            Utils.ForbiddenZone.endServer(((ServerWorld) world).getServer(), true, "Server went kaboom");
+            DamageContextBuilder builder = new DamageContextBuilder();
+
+            builder.type(world.getDamageSources().lightningBolt().getTypeRegistryEntry());
+
+            user.damage(100f, builder.build());
         }
 
         return TypedActionResult.success(user.getMainHandStack(), true);

@@ -34,5 +34,18 @@
 		"java": ">=17",
 		"fabric-api": "*"
 	},
-	"access_widener": "hatred.classtweaker"
+	"access_widener": "hatred.classtweaker",
+	"custom": {
+		"loom:injected_interfaces": {
+			"net/minecraft/entity/LivingEntity": [
+				"net/vinh/hatred/internal/entity/LivingEntityInjectionAccess"
+			],
+			"net/minecraft/entity/Entity": [
+				"net/vinh/hatred/internal/entity/EntityInjectionAccess"
+			],
+			"net/minecraft/world/World": [
+				"net/vinh/hatred/internal/world/WorldInjectionAccess"
+			]
+		}
+	}
 }
