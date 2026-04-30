@@ -181,7 +181,7 @@ public final class Sphere {
 					if (mode == FilterMode.IGNORE) passes = !passes;
 
 					if (passes) {
-						result.add(pos);
+						result.add(pos.toImmutable());
 					}
 				}
 			}
