@@ -29,7 +29,6 @@ import net.vinh.hatred.api.registry.HatredRegistries;
 import net.vinh.hatred.api.scheduler.WorldScheduler;
 import net.vinh.hatred.api.data.DataAttachmentType;
 import net.vinh.hatred.client.camera.ScreenshakeController;
-import net.vinh.hatred.impl.HatredExamples;
 import net.vinh.hatred.impl.TestItem;
 import net.vinh.hatred.internal.AutoRegistry;
 import net.vinh.hatred.internal.HatredAttachments;
@@ -42,7 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static net.vinh.hatred.internal.HatredAttachments.ENTITY_SCHEDULER;
-import static net.vinh.hatred.internal.HatredAttachments.PRECASTS;
 
 public class AmphoreanHatred implements ModInitializer {
 	public static final String MOD_ID = "hatred";
