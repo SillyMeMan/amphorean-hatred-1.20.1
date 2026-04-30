@@ -3,6 +3,10 @@ package net.vinh.hatred.api.math;
 public final class TickMath {
     private TickMath() {}
 
+    public static int milliseconds(int milliseconds) {
+        return milliseconds * 20 / 1000;
+    }
+
     public static int seconds(int seconds) {
         return seconds * 20;
     }
