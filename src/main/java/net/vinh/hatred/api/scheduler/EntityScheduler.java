@@ -46,7 +46,7 @@ public final class EntityScheduler {
             worldScheduler.registerEntityScheduler(scheduler);
         }
 
-        return scheduler.schedule(delay, action, worldScheduler.getInternalTick());
+        return scheduler.scheduleInternal(delay, action, worldScheduler.getInternalTick());
     }
 
     @Nullable
@@ -63,16 +63,16 @@ public final class EntityScheduler {
             worldScheduler.registerEntityScheduler(scheduler);
         }
 
-        return scheduler.scheduleRepeating(interval, action, worldScheduler.getInternalTick());
+        return scheduler.scheduleRepeatingInternal(interval, action, worldScheduler.getInternalTick());
     }
 
-    public ScheduledTask schedule(long delay, Runnable action, long worldTick) {
+    public ScheduledTask scheduleInternal(long delay, Runnable action, long worldTick) {
         ScheduledTask task = new ScheduledTask(worldTick + delay, action);
         queue.add(task);
         return task;
     }
 
-    public ScheduledTask scheduleRepeating(long interval, Runnable action, long worldTick) {
+    public ScheduledTask scheduleRepeatingInternal(long interval, Runnable action, long worldTick) {
         ScheduledTask task = new ScheduledTask(worldTick + interval, action);
         task.repeating = true;
         task.interval = interval;

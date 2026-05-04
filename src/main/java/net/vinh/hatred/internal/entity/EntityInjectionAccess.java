@@ -8,8 +8,20 @@ import net.vinh.hatred.api.damage.ContextAwareDamageSource;
 import net.vinh.hatred.api.damage.DamageContext;
 import net.vinh.hatred.api.damage.DamageDistributor;
 import net.vinh.hatred.api.damage.DamageDistributors;
+import net.vinh.hatred.api.scheduler.EntityScheduler;
+import net.vinh.hatred.api.scheduler.ScheduledTask;
 
 public interface EntityInjectionAccess {
+    default ScheduledTask schedule(long delay, Runnable action) {
+        Entity self = (Entity) this;
+        return EntityScheduler.schedule(self, delay, action);
+    }
+
+    default ScheduledTask scheduleRepeating(long interval, Runnable action) {
+        Entity self = (Entity) this;
+        return EntityScheduler.scheduleRepeating(self, interval, action);
+    }
+
     default boolean damage(float totalDamage, DamageDistributor distributor, DamageContext ctx) {
         Entity target = (Entity) this;
 

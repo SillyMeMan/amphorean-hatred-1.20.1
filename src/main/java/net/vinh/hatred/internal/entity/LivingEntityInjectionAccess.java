@@ -106,7 +106,7 @@ public interface LivingEntityInjectionAccess {
 
         Data.API.set(entity, HatredInternalAttachments.PRECASTS, map);
 
-        EntityScheduler.schedule(entity, ability.preCastTime(), () -> {
+        entity.schedule(ability.preCastTime(), () -> {
             if (!instance.cancelled || ServerAbilityEvents.PRE_CAST.invoker().preCast(entity, ability) != AbilityResult.CANCELLED) {
                 ability.cast(entity);
                 ref.finalResult = AbilityResult.SUCCESS;
