@@ -2,47 +2,45 @@ package net.vinh.hatred.api.ability;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
-import net.vinh.hatred.AmphoreanHatred;
 import net.vinh.hatred.api.data.Data;
 import net.vinh.hatred.api.registry.HatredRegistries;
-import net.vinh.hatred.internal.HatredAttachments;
+import net.vinh.hatred.internal.HatredInternalAttachments;
 import net.vinh.hatred.internal.ability.AbstractAbility;
 
-import java.util.List;
 import java.util.Map;
 
 public final class Cooldowns {
     public static void resetCooldown(LivingEntity entity, Identifier ability) {
         Map<Identifier, CooldownEntry> map =
-                Data.API.get(entity, HatredAttachments.ABILITY_COOLDOWNS);
+                Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
         Map<Identifier, AbstractAbility.PreCastInstance> shit =
-                Data.API.get(entity, HatredAttachments.PRECASTS);
+                Data.API.get(entity, HatredInternalAttachments.PRECASTS);
 
         map.remove(ability);
         shit.remove(ability);
 
-        Data.API.set(entity, HatredAttachments.ABILITY_COOLDOWNS, map);
-        Data.API.set(entity, HatredAttachments.PRECASTS, shit);
+        Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
+        Data.API.set(entity, HatredInternalAttachments.PRECASTS, shit);
     }
 
     public static void resetAllCooldown(LivingEntity entity) {
         Map<Identifier, CooldownEntry> map =
-                Data.API.get(entity, HatredAttachments.ABILITY_COOLDOWNS);
+                Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
         Map<Identifier, AbstractAbility.PreCastInstance> shit =
-                Data.API.get(entity, HatredAttachments.PRECASTS);
+                Data.API.get(entity, HatredInternalAttachments.PRECASTS);
 
         map.clear();
         shit.clear();
 
-        Data.API.set(entity, HatredAttachments.ABILITY_COOLDOWNS, map);
-        Data.API.set(entity, HatredAttachments.PRECASTS, shit);
+        Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
+        Data.API.set(entity, HatredInternalAttachments.PRECASTS, shit);
     }
 
     public static boolean isReady(LivingEntity entity, Identifier ability) {
         Map<Identifier, CooldownEntry> map =
-                Data.API.get(entity, HatredAttachments.ABILITY_COOLDOWNS);
+                Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
         Map<Identifier, AbstractAbility.PreCastInstance> shit =
-                Data.API.get(entity, HatredAttachments.PRECASTS);
+                Data.API.get(entity, HatredInternalAttachments.PRECASTS);
 
         CooldownEntry entry = map.get(ability);
 
@@ -74,7 +72,7 @@ public final class Cooldowns {
         for(Identifier id : HatredRegistries.ABILITY.getIds()) {
             if(HatredRegistries.ABILITY.get(id).cooldownGroup() == cooldownGroup) {
                 Map<Identifier, CooldownEntry> map =
-                        Data.API.get(entity, HatredAttachments.ABILITY_COOLDOWNS);
+                        Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
 
                 CooldownEntry entry = map.get(id);
 
@@ -86,7 +84,7 @@ public final class Cooldowns {
                     );
                     map.put(id, entry);
 
-                    Data.API.set(entity, HatredAttachments.ABILITY_COOLDOWNS, map);
+                    Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
                     return;
                 }
 
@@ -106,7 +104,7 @@ public final class Cooldowns {
                     map.replace(id, entry);
                 }
 
-                Data.API.set(entity, HatredAttachments.ABILITY_COOLDOWNS, map);
+                Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
             }
         }
     }
@@ -117,7 +115,7 @@ public final class Cooldowns {
         for(Identifier id : HatredRegistries.ABILITY.getIds()) {
             if(HatredRegistries.ABILITY.get(id).cooldownGroup() == cooldownGroup) {
                 Map<Identifier, CooldownEntry> map =
-                        Data.API.get(entity, HatredAttachments.ABILITY_COOLDOWNS);
+                        Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
 
                 CooldownEntry entry = map.get(id);
 
@@ -137,7 +135,7 @@ public final class Cooldowns {
                     entry.readyTick = entity.getServer().getTicks() + cooldown;
                 }
 
-                Data.API.set(entity, HatredAttachments.ABILITY_COOLDOWNS, map);
+                Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
             }
         }
     }

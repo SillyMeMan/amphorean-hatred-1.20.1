@@ -5,7 +5,8 @@
 	"name": "Amphorean Hatred",
 	"description": "A library built from the hatred of Scepter δ-me13",
 	"authors": [
-		"Cyrene"
+		"Cyrene",
+		"Zandar One Kuwabara"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
@@ -39,6 +40,9 @@
 		"loom:injected_interfaces": {
 			"net/minecraft/entity/LivingEntity": [
 				"net/vinh/hatred/internal/entity/LivingEntityInjectionAccess"
+			],
+			"net/minecraft/entity/player/PlayerEntity": [
+				"net/vinh/hatred/internal/entity/PlayerEntityInjectionAccess"
 			],
 			"net/minecraft/entity/Entity": [
 				"net/vinh/hatred/internal/entity/EntityInjectionAccess"

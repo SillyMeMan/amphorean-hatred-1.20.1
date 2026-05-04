@@ -1,6 +1,5 @@
 package net.vinh.hatred.internal.entity;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.vinh.hatred.api.ability.Ability;
@@ -12,7 +11,7 @@ import net.vinh.hatred.api.data.Data;
 import net.vinh.hatred.api.event.ServerAbilityEvents;
 import net.vinh.hatred.api.registry.HatredRegistries;
 import net.vinh.hatred.api.scheduler.EntityScheduler;
-import net.vinh.hatred.internal.HatredAttachments;
+import net.vinh.hatred.internal.HatredInternalAttachments;
 import net.vinh.hatred.internal.ability.AbstractAbility;
 
 import java.util.Map;
@@ -50,7 +49,7 @@ public interface LivingEntityInjectionAccess {
         LivingEntity entity = (LivingEntity) this;
 
         Map<Identifier, AbstractAbility.PreCastInstance> map =
-                Data.API.get(entity, HatredAttachments.PRECASTS);
+                Data.API.get(entity, HatredInternalAttachments.PRECASTS);
 
         for (AbstractAbility.PreCastInstance instance : map.values()) {
             if(instance.abilityId == HatredRegistries.ABILITY.getId(ability)) {
@@ -66,7 +65,7 @@ public interface LivingEntityInjectionAccess {
         LivingEntity entity = (LivingEntity) this;
 
         Map<Identifier, AbstractAbility.PreCastInstance> map =
-                Data.API.get(entity, HatredAttachments.PRECASTS);
+                Data.API.get(entity, HatredInternalAttachments.PRECASTS);
 
         for(AbstractAbility.PreCastInstance instance : map.values()) {
             instance.cancelled = true;
@@ -86,7 +85,7 @@ public interface LivingEntityInjectionAccess {
         Identifier id = HatredRegistries.ABILITY.getId(ability);
 
         Map<Identifier, AbstractAbility.PreCastInstance> map =
-                Data.API.get(entity, HatredAttachments.PRECASTS);
+                Data.API.get(entity, HatredInternalAttachments.PRECASTS);
 
         if (!Cooldowns.isReady(entity, id) || ServerAbilityEvents.PRE_CAST.invoker().preCast(entity, ability) == AbilityResult.FAIL) {
             ref.finalResult = AbilityResult.FAIL;
@@ -105,7 +104,7 @@ public interface LivingEntityInjectionAccess {
 
         map.put(id, instance);
 
-        Data.API.set(entity, HatredAttachments.PRECASTS, map);
+        Data.API.set(entity, HatredInternalAttachments.PRECASTS, map);
 
         EntityScheduler.schedule(entity, ability.preCastTime(), () -> {
             if (!instance.cancelled || ServerAbilityEvents.PRE_CAST.invoker().preCast(entity, ability) != AbilityResult.CANCELLED) {
@@ -114,21 +113,21 @@ public interface LivingEntityInjectionAccess {
                 Cooldowns.setCooldown(entity, id, ability.cooldown());
 
                 Map<Identifier, AbstractAbility.PreCastInstance> precasts =
-                        Data.API.get(entity, HatredAttachments.PRECASTS);
+                        Data.API.get(entity, HatredInternalAttachments.PRECASTS);
 
                 precasts.remove(id);
 
-                Data.API.set(entity, HatredAttachments.PRECASTS, precasts);
+                Data.API.set(entity, HatredInternalAttachments.PRECASTS, precasts);
             } else {
                 ref.finalResult = AbilityResult.CANCELLED;
                 Cooldowns.setCooldown(entity, id, ability.interruptCooldown());
 
                 Map<Identifier, AbstractAbility.PreCastInstance> precasts =
-                        Data.API.get(entity, HatredAttachments.PRECASTS);
+                        Data.API.get(entity, HatredInternalAttachments.PRECASTS);
 
                 precasts.remove(id);
 
-                Data.API.set(entity, HatredAttachments.PRECASTS, precasts);
+                Data.API.set(entity, HatredInternalAttachments.PRECASTS, precasts);
             }
         });
 

@@ -6,7 +6,7 @@ import net.vinh.hatred.api.data.Data;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import static net.vinh.hatred.internal.HatredAttachments.*;
+import static net.vinh.hatred.internal.HatredInternalAttachments.*;
 
 public final class EntityScheduler {
 

@@ -31,7 +31,7 @@ import net.vinh.hatred.api.data.DataAttachmentType;
 import net.vinh.hatred.client.camera.ScreenshakeController;
 import net.vinh.hatred.impl.TestItem;
 import net.vinh.hatred.internal.AutoRegistry;
-import net.vinh.hatred.internal.HatredAttachments;
+import net.vinh.hatred.internal.HatredInternalAttachments;
 import net.vinh.hatred.internal.data.DataContainer;
 import net.vinh.hatred.internal.data.DataHolderInternal;
 import net.vinh.hatred.internal.data.accessor.EntityMixinAccessor;
@@ -40,7 +40,7 @@ import net.vinh.hatred.networking.packet.AltAbilityC2SPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static net.vinh.hatred.internal.HatredAttachments.ENTITY_SCHEDULER;
+import static net.vinh.hatred.internal.HatredInternalAttachments.ENTITY_SCHEDULER;
 
 public class AmphoreanHatred implements ModInitializer {
 	public static final String MOD_ID = "hatred";
@@ -57,7 +57,7 @@ public class AmphoreanHatred implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register(AbilityCommand::register);
 
 		ServerTickEvents.END_WORLD_TICK.register(world -> {
-			WorldScheduler scheduler = Data.API.get(world, HatredAttachments.WORLD_SCHEDULER);
+			WorldScheduler scheduler = Data.API.get(world, HatredInternalAttachments.WORLD_SCHEDULER);
 			scheduler.tick();
 		});
 		ServerTickEvents.END_SERVER_TICK.register(server -> {

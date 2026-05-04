@@ -1,11 +1,9 @@
 package net.vinh.hatred.internal;
 
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.Identifier;
 import net.vinh.hatred.AmphoreanHatred;
 import net.vinh.hatred.api.ability.CooldownEntry;
-import net.vinh.hatred.api.collision.Barrier;
 import net.vinh.hatred.api.data.DataAttachmentType;
 import net.vinh.hatred.api.data.DataRegistry;
 import net.vinh.hatred.api.data.DataSerializers;
@@ -13,18 +11,12 @@ import net.vinh.hatred.api.scheduler.EntityScheduler;
 import net.vinh.hatred.api.scheduler.WorldScheduler;
 import net.vinh.hatred.internal.ability.AbstractAbility;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static net.vinh.hatred.AmphoreanHatred.id;
 
-public class HatredAttachments {
-    public static final DataAttachmentType<Boolean> MOVEMENT_FROZEN = DataRegistry.registerBoolean(AmphoreanHatred.id("movement_frozen"), () -> false, false, true);
-    public static final DataAttachmentType<Boolean> INVENTORY_FROZEN = DataRegistry.registerBoolean(AmphoreanHatred.id("inventory_frozen"), () -> false, false, true);
-    public static final DataAttachmentType<Boolean> ROTATION_LOCKED = DataRegistry.registerBoolean(AmphoreanHatred.id("rotation_locked"), () -> false, false, true);
-
+public class HatredInternalAttachments {
     public static final DataAttachmentType<WorldScheduler> WORLD_SCHEDULER = DataRegistry.register(new Identifier(AmphoreanHatred.MOD_ID, "world_scheduler"), WorldScheduler.class, WorldScheduler::new, null, false, false);
     public static final DataAttachmentType<EntityScheduler> ENTITY_SCHEDULER = DataRegistry.register(new Identifier(AmphoreanHatred.MOD_ID, "entity_scheduler"), EntityScheduler.class, EntityScheduler::new, null, false, false);
 

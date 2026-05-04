@@ -5,12 +5,13 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.vinh.hatred.api.builders.DamageContextBuilder;
 import net.vinh.hatred.api.item.IConfigurableDamageSource;
+import net.vinh.hatred.internal.entity.PlayerEntityInjectionAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(PlayerEntity.class)
-public abstract class PlayerEntityMixin {
+public abstract class PlayerEntityMixin implements PlayerEntityInjectionAccess {
     @Redirect(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"))
     private boolean hatred$attack(Entity instance, DamageSource source, float amount) {
         PlayerEntity player = (PlayerEntity)(Object)this;

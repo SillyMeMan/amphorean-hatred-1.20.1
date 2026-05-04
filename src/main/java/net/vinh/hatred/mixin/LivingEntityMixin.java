@@ -7,9 +7,10 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
+import net.vinh.hatred.api.ability.state.CombatStates;
 import net.vinh.hatred.api.damage.ContextAwareDamageSource;
 import net.vinh.hatred.api.data.Data;
-import net.vinh.hatred.internal.HatredAttachments;
+import net.vinh.hatred.internal.HatredInternalAttachments;
 import net.vinh.hatred.internal.entity.LivingEntityInjectionAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -71,7 +72,7 @@ public abstract class LivingEntityMixin implements LivingEntityInjectionAccess {
     private void hatred$freezeMovement(Vec3d movementInput, CallbackInfo ci) {
         LivingEntity self = (LivingEntity)(Object) this;
 
-        if(Data.API.get(self, HatredAttachments.MOVEMENT_FROZEN)) {
+        if(Data.API.get(self, CombatStates.MOVEMENT_FROZEN)) {
             self.setVelocity(Vec3d.ZERO);
             self.velocityModified = true;
             ci.cancel();

@@ -14,12 +14,13 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
+import net.vinh.hatred.api.ability.state.CombatStates;
 import net.vinh.hatred.api.collision.Barrier;
 import net.vinh.hatred.api.collision.BarrierManager;
 import net.vinh.hatred.api.damage.ContextAwareDamageSource;
 import net.vinh.hatred.api.data.Data;
 import net.vinh.hatred.api.data.DataAttachmentType;
-import net.vinh.hatred.internal.HatredAttachments;
+import net.vinh.hatred.internal.HatredInternalAttachments;
 import net.vinh.hatred.internal.data.DataRegistryInternal;
 import net.vinh.hatred.internal.data.DataContainer;
 import net.vinh.hatred.internal.data.DataHolderInternal;
@@ -176,7 +177,7 @@ public abstract class EntityMixin implements DataHolderInternal, EntityMixinAcce
     private void hatred$freezeMovement(double x, double y, double z, CallbackInfo ci) {
         Entity self = (Entity)(Object)this;
 
-        if (self instanceof LivingEntity living && Data.API.get(living, HatredAttachments.MOVEMENT_FROZEN)) {
+        if (self instanceof LivingEntity living && Data.API.get(living, CombatStates.MOVEMENT_FROZEN)) {
             ci.cancel();
         }
     }
@@ -185,7 +186,7 @@ public abstract class EntityMixin implements DataHolderInternal, EntityMixinAcce
     private void hatred$freezeYaw(float yaw, CallbackInfo ci) {
         Entity self = (Entity)(Object)this;
 
-        if (self instanceof LivingEntity living && Data.API.get(living, HatredAttachments.ROTATION_LOCKED)) {
+        if (self instanceof LivingEntity living && Data.API.get(living, CombatStates.ROTATION_LOCKED)) {
             ci.cancel();
         }
     }
@@ -194,7 +195,7 @@ public abstract class EntityMixin implements DataHolderInternal, EntityMixinAcce
     private void hatred$freezePitch(float pitch, CallbackInfo ci) {
         Entity self = (Entity)(Object)this;
 
-        if (self instanceof LivingEntity living && Data.API.get(living, HatredAttachments.ROTATION_LOCKED)) {
+        if (self instanceof LivingEntity living && Data.API.get(living, CombatStates.ROTATION_LOCKED)) {
             ci.cancel();
         }
     }
@@ -203,7 +204,7 @@ public abstract class EntityMixin implements DataHolderInternal, EntityMixinAcce
     private void hatred$freezeHeadYaw(float yaw, CallbackInfo ci) {
         Entity self = (Entity)(Object)this;
 
-        if (self instanceof LivingEntity living && Data.API.get(living, HatredAttachments.ROTATION_LOCKED)) {
+        if (self instanceof LivingEntity living && Data.API.get(living, CombatStates.ROTATION_LOCKED)) {
             ci.cancel();
         }
     }

@@ -3,8 +3,9 @@ package net.vinh.hatred.mixin.client;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
+import net.vinh.hatred.api.ability.state.CombatStates;
 import net.vinh.hatred.api.data.Data;
-import net.vinh.hatred.internal.HatredAttachments;
+import net.vinh.hatred.internal.HatredInternalAttachments;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,7 +18,7 @@ public class ClientPlayerEntityMixin {
     private void hatred$freezeDrop(boolean entireStack, CallbackInfoReturnable<Boolean> cir) {
         PlayerEntity player = (PlayerEntity)(Object)this;
 
-        if (Data.API.get(player, HatredAttachments.INVENTORY_FROZEN)) {
+        if (Data.API.get(player, CombatStates.INVENTORY_FROZEN)) {
             cir.setReturnValue(false);
         }
     }
@@ -26,7 +27,7 @@ public class ClientPlayerEntityMixin {
     private void hatred$freezeDrop(Hand hand, CallbackInfo ci) {
         PlayerEntity player = (PlayerEntity)(Object)this;
 
-        if (Data.API.get(player, HatredAttachments.INVENTORY_FROZEN)) {
+        if (Data.API.get(player, CombatStates.INVENTORY_FROZEN)) {
             ci.cancel();
         }
     }
