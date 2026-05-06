@@ -1,4 +1,4 @@
-package net.vinh.hatred.api.scheduler;
+package net.vinh.hatred.internal.scheduler;
 
 public final class ScheduledTask {
     long executeAt;

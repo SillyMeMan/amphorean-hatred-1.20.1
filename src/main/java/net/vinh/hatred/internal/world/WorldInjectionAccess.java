@@ -13,11 +13,24 @@ import net.vinh.hatred.api.geometry.Hitbox;
 import net.vinh.hatred.api.math.RayMarchAction;
 import net.vinh.hatred.api.math.RaycastAction;
 import net.vinh.hatred.api.math.RaycastMath;
+import net.vinh.hatred.internal.scheduler.EntityScheduler;
+import net.vinh.hatred.internal.scheduler.ScheduledTask;
+import net.vinh.hatred.internal.scheduler.Schedulers;
 
 import java.util.List;
 import java.util.function.Predicate;
 
 public interface WorldInjectionAccess {
+    default ScheduledTask schedule(long delay, Runnable action) {
+        Entity self = (Entity) this;
+        return Schedulers.world((ServerWorld) self.getWorld()).schedule(delay, action);
+    }
+
+    default ScheduledTask scheduleRepeating(long interval, Runnable action) {
+        Entity self = (Entity) this;
+        return Schedulers.world((ServerWorld) self.getWorld()).scheduleRepeating(interval, action);
+    }
+
     default HitResult rayMarchFromEyes(RayMarchAction action, LivingEntity entity, int maxRange, RaycastContext.ShapeType shapeType, RaycastContext.FluidHandling fluidHandling) {
         ServerWorld world = (ServerWorld) this;
 

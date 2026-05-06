@@ -178,6 +178,8 @@ public abstract class EntityMixin implements DataHolderInternal, EntityMixinAcce
         Entity self = (Entity)(Object)this;
 
         if (self instanceof LivingEntity living && Data.API.get(living, CombatStates.MOVEMENT_FROZEN)) {
+            self.setVelocity(Vec3d.ZERO);
+            self.velocityModified = true;
             ci.cancel();
         }
     }

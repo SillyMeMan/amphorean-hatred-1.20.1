@@ -26,7 +26,7 @@ import net.vinh.hatred.api.client.screen.HudTextManager;
 import net.vinh.hatred.api.command.AbilityCommand;
 import net.vinh.hatred.api.data.Data;
 import net.vinh.hatred.api.registry.HatredRegistries;
-import net.vinh.hatred.api.scheduler.WorldScheduler;
+import net.vinh.hatred.internal.scheduler.WorldScheduler;
 import net.vinh.hatred.api.data.DataAttachmentType;
 import net.vinh.hatred.client.camera.ScreenshakeController;
 import net.vinh.hatred.impl.TestItem;

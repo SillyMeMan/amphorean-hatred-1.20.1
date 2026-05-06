@@ -7,8 +7,8 @@ import net.vinh.hatred.api.ability.CooldownEntry;
 import net.vinh.hatred.api.data.DataAttachmentType;
 import net.vinh.hatred.api.data.DataRegistry;
 import net.vinh.hatred.api.data.DataSerializers;
-import net.vinh.hatred.api.scheduler.EntityScheduler;
-import net.vinh.hatred.api.scheduler.WorldScheduler;
+import net.vinh.hatred.internal.scheduler.EntityScheduler;
+import net.vinh.hatred.internal.scheduler.WorldScheduler;
 import net.vinh.hatred.internal.ability.AbstractAbility;
 
 import java.util.HashMap;
@@ -17,8 +17,11 @@ import java.util.Map;
 import static net.vinh.hatred.AmphoreanHatred.id;
 
 public class HatredInternalAttachments {
-    public static final DataAttachmentType<WorldScheduler> WORLD_SCHEDULER = DataRegistry.register(new Identifier(AmphoreanHatred.MOD_ID, "world_scheduler"), WorldScheduler.class, WorldScheduler::new, null, false, false);
-    public static final DataAttachmentType<EntityScheduler> ENTITY_SCHEDULER = DataRegistry.register(new Identifier(AmphoreanHatred.MOD_ID, "entity_scheduler"), EntityScheduler.class, EntityScheduler::new, null, false, false);
+    public static final DataAttachmentType<WorldScheduler> WORLD_SCHEDULER = DataRegistry.register(AmphoreanHatred.id("world_scheduler"), WorldScheduler.class, WorldScheduler::new, null, false, false);
+    public static final DataAttachmentType<EntityScheduler> ENTITY_SCHEDULER = DataRegistry.register(AmphoreanHatred.id("entity_scheduler"), EntityScheduler.class, EntityScheduler::new, null, false, false);
+
+    public static final DataAttachmentType<Boolean> IS_USING_ABILITY = DataRegistry.registerBoolean(AmphoreanHatred.id("is_using_ability"), () -> false, false, true);
+    public static final DataAttachmentType<Boolean> NO_STUN = DataRegistry.registerBoolean(AmphoreanHatred.id("no_stun"), () -> false, false, true);
 
     public static final DataAttachmentType<Map<Identifier, CooldownEntry>> ABILITY_COOLDOWNS =
             DataRegistry.register(

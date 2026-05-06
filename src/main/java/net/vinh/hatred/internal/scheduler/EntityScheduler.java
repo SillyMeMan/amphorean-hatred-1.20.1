@@ -1,4 +1,4 @@
-package net.vinh.hatred.api.scheduler;
+package net.vinh.hatred.internal.scheduler;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;

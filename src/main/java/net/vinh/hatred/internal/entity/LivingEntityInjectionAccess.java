@@ -10,7 +10,6 @@ import net.vinh.hatred.api.damage.DamageDistributors;
 import net.vinh.hatred.api.data.Data;
 import net.vinh.hatred.api.event.ServerAbilityEvents;
 import net.vinh.hatred.api.registry.HatredRegistries;
-import net.vinh.hatred.api.scheduler.EntityScheduler;
 import net.vinh.hatred.internal.HatredInternalAttachments;
 import net.vinh.hatred.internal.ability.AbstractAbility;
 
@@ -55,6 +54,8 @@ public interface LivingEntityInjectionAccess {
             if(instance.abilityId == HatredRegistries.ABILITY.getId(ability)) {
                 instance.cancelled = true;
                 if(triggerOnCancelled) ability.onCancelled(entity);
+
+                Data.API.set(entity, HatredInternalAttachments.IS_USING_ABILITY, false);
             }
         }
 
@@ -73,6 +74,8 @@ public interface LivingEntityInjectionAccess {
                 HatredRegistries.ABILITY.get(instance.abilityId).onCancelled(entity);
             }
         }
+
+        Data.API.set(entity, HatredInternalAttachments.IS_USING_ABILITY, false);
     }
 
     default AbilityResult attemptAbility(Ability ability) {
@@ -93,6 +96,7 @@ public interface LivingEntityInjectionAccess {
         }
 
         ability.preCast(entity);
+        Data.API.set(entity, HatredInternalAttachments.IS_USING_ABILITY, true);
 
         assert entity.getServer() != null;
         long now = entity.getServer().getTicks();
@@ -129,6 +133,8 @@ public interface LivingEntityInjectionAccess {
 
                 Data.API.set(entity, HatredInternalAttachments.PRECASTS, precasts);
             }
+
+            Data.API.set(entity, HatredInternalAttachments.IS_USING_ABILITY, false);
         });
 
         return ref.finalResult;

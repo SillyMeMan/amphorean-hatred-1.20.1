@@ -50,6 +50,10 @@ public final class Cooldowns {
             return false;
         }
 
+        if(Data.API.get(entity, HatredInternalAttachments.IS_USING_ABILITY) && !Data.API.get(entity, HatredInternalAttachments.NO_STUN)) {
+            return false;
+        }
+
         if (entry == null) {
             return true;
         }

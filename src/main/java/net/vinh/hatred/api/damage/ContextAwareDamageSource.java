@@ -4,6 +4,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.Text;
 
 public class ContextAwareDamageSource extends DamageSource {
@@ -29,5 +31,12 @@ public class ContextAwareDamageSource extends DamageSource {
         }
 
         return super.getDeathMessage(killed);
+    }
+
+    @Override
+    public boolean isIn(TagKey<DamageType> tag) {
+        if(tag == DamageTypeTags.BYPASSES_INVULNERABILITY && context.bypassesInvulnerability()) return true;
+
+        return super.isIn(tag);
     }
 }

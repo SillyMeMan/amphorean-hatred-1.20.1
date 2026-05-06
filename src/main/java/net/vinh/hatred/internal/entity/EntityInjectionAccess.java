@@ -4,12 +4,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.math.Vec3d;
+import net.vinh.hatred.AmphoreanHatred;
 import net.vinh.hatred.api.damage.ContextAwareDamageSource;
 import net.vinh.hatred.api.damage.DamageContext;
 import net.vinh.hatred.api.damage.DamageDistributor;
 import net.vinh.hatred.api.damage.DamageDistributors;
-import net.vinh.hatred.api.scheduler.EntityScheduler;
-import net.vinh.hatred.api.scheduler.ScheduledTask;
+import net.vinh.hatred.internal.scheduler.EntityScheduler;
+import net.vinh.hatred.internal.scheduler.ScheduledTask;
 
 public interface EntityInjectionAccess {
     default ScheduledTask schedule(long delay, Runnable action) {
@@ -38,8 +41,11 @@ public interface EntityInjectionAccess {
 
             if(ctx.knockback() != null) {
                 target.setVelocity(ctx.knockback());
-                target.velocityModified = true;
+            } else {
+                target.setVelocity(Vec3d.ZERO);
             }
+
+            target.velocityModified = true;
         }
 
         return damageApplied;
@@ -62,6 +68,8 @@ public interface EntityInjectionAccess {
         target.setHealth(newHealth);
 
         target.playHurtSound(new ContextAwareDamageSource(finalType, ctx));
+
+        AmphoreanHatred.LOGGER.info("True damage debug print");
 
         target.timeUntilRegen = 20;
         target.hurtTime = 10;
