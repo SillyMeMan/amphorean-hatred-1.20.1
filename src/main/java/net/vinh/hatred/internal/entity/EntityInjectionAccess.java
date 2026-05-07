@@ -3,10 +3,11 @@ package net.vinh.hatred.internal.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.util.math.Vec3d;
-import net.vinh.hatred.AmphoreanHatred;
 import net.vinh.hatred.api.damage.ContextAwareDamageSource;
 import net.vinh.hatred.api.damage.DamageContext;
 import net.vinh.hatred.api.damage.DamageDistributor;
@@ -30,9 +31,9 @@ public interface EntityInjectionAccess {
 
         RegistryEntry<DamageType> finalType = ctx.type() != null ? ctx.type() : target.getDamageSources().generic().getTypeRegistryEntry();
 
-        if(ctx.trueDamage() && target instanceof LivingEntity living) return applyTrueDamage(living, distributor.distribute(totalDamage), ctx);
-
         ContextAwareDamageSource source = new ContextAwareDamageSource(finalType, ctx);
+
+        if(ctx.trueDamage() && target instanceof LivingEntity living) return applyTrueDamage(living, distributor.distribute(totalDamage), ctx, source);
 
         boolean damageApplied = target.damage(source, distributor.distribute(totalDamage));
 
@@ -55,30 +56,38 @@ public interface EntityInjectionAccess {
         return damage(damage, DamageDistributors.FULL_DAMAGE, ctx);
     }
 
-    private boolean applyTrueDamage(LivingEntity target, float damage, DamageContext ctx) {
-        float health = target.getHealth();
-        float newHealth = ctx.nonFatal() ? Math.max(1f, health - damage) : Math.max(0f, health - damage);
-        RegistryEntry<DamageType> finalType = ctx.type() != null ? ctx.type() : target.getDamageSources().generic().getTypeRegistryEntry();
+    private boolean applyTrueDamage(LivingEntity target, float damage, DamageContext ctx, ContextAwareDamageSource source) {
+        if (target.isInvulnerableTo(source) || (target instanceof PlayerEntity player && player.getAbilities().invulnerable && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY))) {
+            return false;
+        } else if (target.getWorld().isClient) {
+            return false;
+        } else if (target.isDead()) {
+            return false;
+        } else if (source.isIn(DamageTypeTags.IS_FIRE) && target.hasStatusEffect(StatusEffects.FIRE_RESISTANCE)) {
+            return false;
+        } else {
+            float health = target.getHealth();
+            float newHealth = ctx.nonFatal() ? Math.max(1f, health - damage) : Math.max(0f, health - damage);
+            RegistryEntry<DamageType> finalType = ctx.type() != null ? ctx.type() : target.getDamageSources().generic().getTypeRegistryEntry();
 
-        target.getDamageTracker().onDamage(
-                new ContextAwareDamageSource(finalType, ctx),
-                damage
-        );
+            target.getDamageTracker().onDamage(
+                    new ContextAwareDamageSource(finalType, ctx),
+                    damage
+            );
 
-        target.setHealth(newHealth);
+            target.setHealth(newHealth);
 
-        target.playHurtSound(new ContextAwareDamageSource(finalType, ctx));
+            target.playHurtSound(new ContextAwareDamageSource(finalType, ctx));
 
-        AmphoreanHatred.LOGGER.info("True damage debug print");
+            target.timeUntilRegen = 20;
+            target.hurtTime = 10;
+            target.maxHurtTime = 10;
 
-        target.timeUntilRegen = 20;
-        target.hurtTime = 10;
-        target.maxHurtTime = 10;
+            if (newHealth <= 0) {
+                target.onDeath(new ContextAwareDamageSource(finalType, ctx));
+            }
 
-        if (newHealth <= 0) {
-            target.onDeath(new ContextAwareDamageSource(finalType, ctx));
+            return true;
         }
-
-        return true;
     }
 }

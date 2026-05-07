@@ -10,4 +10,4 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public record DamageContext(RegistryEntry<DamageType> type, @Nullable Text deathMessage, @Nullable Entity attacker, @Nullable Entity directSource, boolean bypassesArmor, boolean bypassesResistance, boolean bypassesEnchantments, boolean bypassesInvulnerability, boolean bypassesTotems, boolean nonFatal, boolean trueDamage, boolean addKilledDisplayNameToMsg, @Nullable List<StatusEffectInstance> hitEffects, @Nullable Vec3d knockback) {}
+public record DamageContext(RegistryEntry<DamageType> type, @Nullable Text deathMessage, @Nullable Entity attacker, @Nullable Entity directSource, boolean bypassesArmor, boolean bypassesResistance, boolean bypassesEnchantments, boolean bypassesInvulnerability, boolean bypassesTotems, boolean alwaysDamageEnderDragons, boolean nonFatal, boolean trueDamage, boolean addKilledDisplayNameToMsg, @Nullable List<StatusEffectInstance> hitEffects, @Nullable Vec3d knockback) {}

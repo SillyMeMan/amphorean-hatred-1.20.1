@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.vinh.hatred.api.builders.DamageContextBuilder;
 import net.vinh.hatred.api.item.IConfigurableDamageSource;
 import net.vinh.hatred.internal.entity.PlayerEntityInjectionAccess;
+import net.vinh.hatred.util.Utils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -19,7 +20,7 @@ public abstract class PlayerEntityMixin implements PlayerEntityInjectionAccess {
         if (player.getMainHandStack().getItem() instanceof IConfigurableDamageSource iChangeableDamageSource) {
             DamageSource custom = iChangeableDamageSource.createSource(player);
 
-            DamageContextBuilder contextBuilder = new DamageContextBuilder()
+            DamageContextBuilder contextBuilder = Utils.Builders.contextBuilder()
                     .type(custom.getTypeRegistryEntry())
                     .attacker(custom.getAttacker())
                     .directSource(custom.getSource());
@@ -54,6 +55,10 @@ public abstract class PlayerEntityMixin implements PlayerEntityInjectionAccess {
 
             if(iChangeableDamageSource.bypassTotems()) {
                 contextBuilder.bypassesTotems();
+            }
+
+            if(iChangeableDamageSource.alwaysDamageEnderDragons()) {
+                contextBuilder.alwaysDamageEnderDragons();
             }
 
             if(iChangeableDamageSource.addKilledDisplayNameToMsg()) {
