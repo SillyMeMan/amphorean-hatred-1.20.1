@@ -1,10 +1,12 @@
 package net.vinh.hatred.internal.entity;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.vinh.hatred.api.ability.Ability;
 import net.vinh.hatred.api.ability.AbilityResult;
 import net.vinh.hatred.api.ability.Cooldowns;
+import net.vinh.hatred.api.ability.state.CombatStates;
 import net.vinh.hatred.api.damage.DamageContext;
 import net.vinh.hatred.api.damage.DamageDistributors;
 import net.vinh.hatred.api.data.Data;
@@ -138,5 +140,48 @@ public interface LivingEntityInjectionAccess {
         });
 
         return ref.finalResult;
+    }
+
+    default void movementFreeze() {
+        PlayerEntity self = (PlayerEntity) this;
+
+        Data.API.set(self, CombatStates.MOVEMENT_FROZEN, true);
+    }
+
+    default void movementUnfreeze() {
+        PlayerEntity self = (PlayerEntity) this;
+
+        Data.API.set(self, CombatStates.MOVEMENT_FROZEN, false);
+    }
+
+    default void lockRotation() {
+        LivingEntity self = (LivingEntity) this;
+
+        Data.API.set(self, CombatStates.ROTATION_LOCKED, true);
+    }
+
+    default void unlockRotation() {
+        LivingEntity self = (LivingEntity) this;
+
+        Data.API.set(self, CombatStates.ROTATION_LOCKED, false);
+    }
+
+    default void completeFreeze() {
+        LivingEntity self = (LivingEntity) this;
+
+        self.movementFreeze();
+        self.lockRotation();
+
+        if(self instanceof PlayerEntity player) player.inventoryFreeze();
+
+    }
+
+    default void completeUnfreeze() {
+        LivingEntity self = (LivingEntity) this;
+
+        self.movementUnfreeze();
+        self.unlockRotation();
+
+        if(self instanceof PlayerEntity player) player.inventoryUnfreeze();
     }
 }
