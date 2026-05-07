@@ -37,6 +37,7 @@ public class ContextAwareDamageSource extends DamageSource {
     public boolean isIn(TagKey<DamageType> tag) {
         if(tag == DamageTypeTags.BYPASSES_INVULNERABILITY && context.bypassesInvulnerability()) return true;
         if(tag == DamageTypeTags.ALWAYS_HURTS_ENDER_DRAGONS && context.alwaysDamageEnderDragons()) return true;
+        if(tag == DamageTypeTags.BYPASSES_COOLDOWN && context.bypassesCooldown()) return true;
 
         return super.isIn(tag);
     }

@@ -23,6 +23,7 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
     private boolean bypassesEnchantments = false;
     private boolean bypassesInvulnerability = false;
     private boolean bypassesTotems = false;
+    private boolean bypassesCooldown = false;
     private boolean alwaysDamageEnderDragons = false;
     private boolean nonFatal = false;
     private boolean trueDamage = false;
@@ -76,6 +77,11 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
         return this;
     }
 
+    public DamageContextBuilder bypassesCooldown() {
+        this.bypassesCooldown = true;
+        return this;
+    }
+
     public DamageContextBuilder alwaysDamageEnderDragons() {
         this.alwaysDamageEnderDragons = true;
         return this;
@@ -108,6 +114,6 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
 
     @Override
     public DamageContext build() {
-        return new DamageContext(type, deathMessage, attacker, directSource, bypassesArmor, bypassesResistance, bypassesEnchantments, bypassesInvulnerability, bypassesTotems, alwaysDamageEnderDragons, nonFatal, trueDamage, addKilledDisplayNameToMsg, hitEffects, knockback);
+        return new DamageContext(type, deathMessage, attacker, directSource, bypassesArmor, bypassesResistance, bypassesEnchantments, bypassesInvulnerability, bypassesTotems, bypassesCooldown, alwaysDamageEnderDragons, nonFatal, trueDamage, addKilledDisplayNameToMsg, hitEffects, knockback);
     }
 }
