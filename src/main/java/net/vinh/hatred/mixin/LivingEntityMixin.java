@@ -68,6 +68,15 @@ public abstract class LivingEntityMixin implements LivingEntityInjectionAccess {
         cir.setReturnValue(true);
     }
 
+    @Inject(method = "isUsingItem", at = @At("HEAD"), cancellable = true)
+    private void hatred$freezeItemUse(CallbackInfoReturnable<Boolean> cir) {
+        LivingEntity self = (LivingEntity) (Object) this;
+
+        if (Data.API.get(self, CombatStates.MOVEMENT_FROZEN)) {
+            cir.setReturnValue(false);
+        }
+    }
+
     @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
     private void hatred$freezeMovement(Vec3d movementInput, CallbackInfo ci) {
         LivingEntity self = (LivingEntity)(Object) this;
@@ -78,5 +87,10 @@ public abstract class LivingEntityMixin implements LivingEntityInjectionAccess {
             self.velocityModified = true;
             ci.cancel();
         }
+    }
+
+    @Inject(method = "tickMovement", at = @At("HEAD"), cancellable = true)
+    private void hatred$freezeTick(CallbackInfo ci) {
+
     }
 }

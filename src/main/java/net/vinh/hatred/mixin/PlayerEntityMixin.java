@@ -3,16 +3,29 @@ package net.vinh.hatred.mixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.vinh.hatred.api.ability.state.CombatStates;
 import net.vinh.hatred.api.builders.DamageContextBuilder;
+import net.vinh.hatred.api.data.Data;
 import net.vinh.hatred.api.item.IConfigurableDamageSource;
 import net.vinh.hatred.internal.entity.PlayerEntityInjectionAccess;
 import net.vinh.hatred.util.Utils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin implements PlayerEntityInjectionAccess {
+    @Inject(method = "attack", at = @At("HEAD"), cancellable = true)
+    private void hatred$freezeAttack(Entity target, CallbackInfo ci) {
+        PlayerEntity player = (PlayerEntity) (Object) this;
+
+        if (Data.API.get(player, CombatStates.MOVEMENT_FROZEN)) {
+            ci.cancel();
+        }
+    }
+
     @Redirect(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"))
     private boolean hatred$attack(Entity instance, DamageSource source, float amount) {
         PlayerEntity player = (PlayerEntity)(Object)this;

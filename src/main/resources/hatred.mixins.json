@@ -9,6 +9,7 @@
     "MinecraftServerMixin",
     "PlayerEntityMixin",
     "PlayerInventoryMixin",
+    "ServerPlayerEntityMixin",
     "ServerWorldMixin",
     "WorldMixin"
   ],
