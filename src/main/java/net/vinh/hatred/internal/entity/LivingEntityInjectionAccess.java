@@ -143,13 +143,13 @@ public interface LivingEntityInjectionAccess {
     }
 
     default void movementFreeze() {
-        PlayerEntity self = (PlayerEntity) this;
+        LivingEntity self = (LivingEntity) this;
 
         Data.API.set(self, CombatStates.MOVEMENT_FROZEN, true);
     }
 
     default void movementUnfreeze() {
-        PlayerEntity self = (PlayerEntity) this;
+        LivingEntity self = (LivingEntity) this;
 
         Data.API.set(self, CombatStates.MOVEMENT_FROZEN, false);
     }
