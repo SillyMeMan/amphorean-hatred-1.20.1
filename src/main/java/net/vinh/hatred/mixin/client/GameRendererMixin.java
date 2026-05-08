@@ -32,9 +32,9 @@ public abstract class GameRendererMixin {
         double pitchNoise = SHAKE_NOISE.sample(time, 100, 0);
         double rollNoise  = SHAKE_NOISE.sample(time, 200, 0);
 
-        float yawShake   = (float) yawNoise   * strength * 2.0f;
-        float pitchShake = (float) pitchNoise * strength * 1.5f;
-        float rollShake  = (float) rollNoise  * strength * 0.7f;
+        float yawShake   = (float) yawNoise   * strength * 20f;
+        float pitchShake = (float) pitchNoise * strength * 15f;
+        float rollShake  = (float) rollNoise  * strength * 7f;
 
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(yawShake));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(pitchShake));
