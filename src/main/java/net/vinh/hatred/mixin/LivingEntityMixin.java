@@ -74,6 +74,7 @@ public abstract class LivingEntityMixin implements LivingEntityInjectionAccess {
 
         if(Data.API.get(self, CombatStates.MOVEMENT_FROZEN)) {
             self.setVelocity(Vec3d.ZERO);
+            self.velocityDirty = true;
             self.velocityModified = true;
             ci.cancel();
         }
