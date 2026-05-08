@@ -22,13 +22,13 @@ import java.util.function.Predicate;
 
 public interface WorldInjectionAccess {
     default ScheduledTask schedule(long delay, Runnable action) {
-        Entity self = (Entity) this;
-        return Schedulers.world((ServerWorld) self.getWorld()).schedule(delay, action);
+        ServerWorld self = (ServerWorld) this;
+        return Schedulers.world(self).schedule(delay, action);
     }
 
     default ScheduledTask scheduleRepeating(long interval, Runnable action) {
-        Entity self = (Entity) this;
-        return Schedulers.world((ServerWorld) self.getWorld()).scheduleRepeating(interval, action);
+        ServerWorld self = (ServerWorld) this;
+        return Schedulers.world(self).scheduleRepeating(interval, action);
     }
 
     default HitResult rayMarchFromEyes(RayMarchAction action, LivingEntity entity, int maxRange, RaycastContext.ShapeType shapeType, RaycastContext.FluidHandling fluidHandling) {
