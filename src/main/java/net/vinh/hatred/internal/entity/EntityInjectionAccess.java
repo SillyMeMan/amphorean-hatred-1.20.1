@@ -12,8 +12,10 @@ import net.vinh.hatred.api.damage.ContextAwareDamageSource;
 import net.vinh.hatred.api.damage.DamageContext;
 import net.vinh.hatred.api.damage.DamageDistributor;
 import net.vinh.hatred.api.damage.DamageDistributors;
+import net.vinh.hatred.internal.data.accessor.EntityMixinAccessor;
 import net.vinh.hatred.internal.scheduler.EntityScheduler;
 import net.vinh.hatred.internal.scheduler.ScheduledTask;
+import net.vinh.hatred.mixin.accessor.LivingEntityAccessor;
 
 public interface EntityInjectionAccess {
     default ScheduledTask schedule(long delay, Runnable action) {
@@ -77,7 +79,7 @@ public interface EntityInjectionAccess {
 
             target.setHealth(newHealth);
 
-            target.playHurtSound(new ContextAwareDamageSource(finalType, ctx));
+            ((LivingEntityAccessor) target).hatred$invokePlayHurtSound(new ContextAwareDamageSource(finalType, ctx));
 
             target.timeUntilRegen = 20;
             target.hurtTime = 10;

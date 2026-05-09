@@ -13,6 +13,7 @@ import net.vinh.hatred.api.data.Data;
 import net.vinh.hatred.internal.HatredInternalAttachments;
 import net.vinh.hatred.internal.entity.LivingEntityInjectionAccess;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -21,6 +22,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin implements LivingEntityInjectionAccess {
+
+
     @Inject(method = "tryUseTotem", at = @At("HEAD"), cancellable = true)
     private void hatred$bypassesTotems(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
         if (source instanceof ContextAwareDamageSource ctx && ctx.context().bypassesTotems()) {

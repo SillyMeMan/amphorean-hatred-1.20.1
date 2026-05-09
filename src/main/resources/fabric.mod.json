@@ -35,7 +35,6 @@
 		"java": ">=17",
 		"fabric-api": "*"
 	},
-	"access_widener": "hatred.classtweaker",
 	"custom": {
 		"loom:injected_interfaces": {
 			"net/minecraft/entity/LivingEntity": [

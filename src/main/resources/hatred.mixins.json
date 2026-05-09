@@ -11,7 +11,8 @@
     "PlayerInventoryMixin",
     "ServerPlayerEntityMixin",
     "ServerWorldMixin",
-    "WorldMixin"
+    "WorldMixin",
+    "accessor.LivingEntityAccessor"
   ],
   "client": [
     "client.ClientPlayerEntityMixin",
