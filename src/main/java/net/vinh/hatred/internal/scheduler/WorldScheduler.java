@@ -1,5 +1,6 @@
 package net.vinh.hatred.internal.scheduler;
 
+import net.vinh.hatred.AmphoreanHatred;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
@@ -14,6 +15,8 @@ public final class WorldScheduler {
     private long internalTick = 0L;
 
     public void tick() {
+        AmphoreanHatred.LOGGER.info(String.valueOf(System.identityHashCode(this)));
+
         internalTick++;
 
         while (!queue.isEmpty() && queue.peek().executeAt <= internalTick) {
@@ -44,6 +47,8 @@ public final class WorldScheduler {
     }
 
     public ScheduledTask schedule(long delay, Runnable action) {
+        AmphoreanHatred.LOGGER.info(String.valueOf(System.identityHashCode(this)));
+
         ScheduledTask task = new ScheduledTask(internalTick + delay, action);
         queue.add(task);
         return task;
