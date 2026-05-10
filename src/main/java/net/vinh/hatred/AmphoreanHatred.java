@@ -49,27 +49,10 @@ public class AmphoreanHatred implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		HatredRegistries.initRegistries();
-
 		AutoRegistry.autoBootstrap();
-
 		AbilityArgumentType.init();
 
 		CommandRegistrationCallback.EVENT.register(AbilityCommand::register);
-
-		ServerTickEvents.END_WORLD_TICK.register(world -> {
-			WorldScheduler scheduler = Data.API.get(world, HatredInternalAttachments.WORLD_SCHEDULER);
-			scheduler.tick();
-		});
-		ServerTickEvents.END_SERVER_TICK.register(server -> {
-			if(ServerCrashHandler.shouldCrash) {
-				CrashReport crashReport = new CrashReport(ServerCrashHandler.reason, new Throwable(ServerCrashHandler.reason));
-				CrashReportSection crashReportSection = crashReport.addElement("Crash details");
-				WinNativeModuleUtil.addDetailTo(crashReportSection);
-				throw new CrashException(crashReport);
-			}
-		});
-		ServerTickEvents.END_SERVER_TICK.register(server -> ScreenshakeController.tick());
-		ServerTickEvents.END_SERVER_TICK.register(HudTextManager::tick);
 
 		ServerPlayNetworking.registerGlobalReceiver(AltAbilityC2SPacket.ID, AltAbilityC2SPacket::handle);
 

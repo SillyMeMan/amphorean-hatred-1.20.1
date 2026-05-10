@@ -19,19 +19,6 @@ import net.vinh.hatred.networking.packet.SyncHudS2CPacket;
 public class AmphoreanHatredClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        ClientTickEvents.END_CLIENT_TICK.register(client -> AnimationManager.tick());
-
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if(ClientCrashHandler.shouldCrash) {
-                CrashReport crashReport = new CrashReport(ClientCrashHandler.reason, new Throwable(ClientCrashHandler.reason));
-                CrashReportSection crashReportSection = crashReport.addElement("Crash details");
-                WinNativeModuleUtil.addDetailTo(crashReportSection);
-                throw new CrashException(crashReport);
-            }
-        });
-
-        HudRenderCallback.EVENT.register(new HudTextEntry.HudTextRenderer());
-
         ClientPlayNetworking.registerGlobalReceiver(ScreenshakeS2CPacket.ID, ScreenshakeS2CPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(SyncAttachmentS2CPacket.ID, SyncAttachmentS2CPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(SyncHudS2CPacket.ID, SyncHudS2CPacket::handle);

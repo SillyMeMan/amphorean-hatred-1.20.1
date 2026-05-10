@@ -17,6 +17,7 @@
   "client": [
     "client.ClientPlayerEntityMixin",
     "client.GameRendererMixin",
+    "client.InGameHudMixin",
     "client.LivingEntityRendererMixin",
     "client.MinecraftClientMixin"
   ],

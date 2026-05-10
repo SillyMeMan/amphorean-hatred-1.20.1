@@ -1,12 +1,20 @@
 package net.vinh.hatred.mixin;
 
 import net.minecraft.server.world.ServerWorld;
+import net.vinh.hatred.api.data.Data;
+import net.vinh.hatred.internal.HatredInternalAttachments;
 import net.vinh.hatred.internal.data.DataContainer;
 import net.vinh.hatred.internal.data.DataHolderInternal;
 import net.vinh.hatred.internal.data.HatredWorldState;
-import net.vinh.hatred.internal.world.WorldInjectionAccess;
+import net.vinh.hatred.internal.scheduler.Schedulers;
+import net.vinh.hatred.internal.scheduler.WorldScheduler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.function.BooleanSupplier;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin implements DataHolderInternal {
@@ -29,11 +37,12 @@ public abstract class ServerWorldMixin implements DataHolderInternal {
         return hatred$state.getContainer();
     }
 
-    @Unique
-    public void hatred$markDirty() {
-        if (hatred$state != null) {
-            hatred$state.markDirty();
-        }
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void hatred$tick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
+        ServerWorld world = (ServerWorld)(Object) this;
+
+        WorldScheduler scheduler = Data.API.get(world, HatredInternalAttachments.WORLD_SCHEDULER);
+        scheduler.tick();
     }
 }
 
