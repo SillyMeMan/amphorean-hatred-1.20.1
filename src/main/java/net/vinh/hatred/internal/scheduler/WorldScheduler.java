@@ -25,7 +25,12 @@ public final class WorldScheduler {
 
             if (task.cancelled) continue;
 
-            task.action.run();
+            try {
+                task.action.run();
+            } catch (Throwable t) {
+                AmphoreanHatred.LOGGER.error("A throwable was caught: {}", t.getMessage());
+                t.printStackTrace();
+            }
 
             if (task.repeating && !task.cancelled) {
                 task.executeAt = internalTick + task.interval;
@@ -47,7 +52,7 @@ public final class WorldScheduler {
     }
 
     public ScheduledTask schedule(long delay, Runnable action) {
-        AmphoreanHatred.LOGGER.info(String.valueOf(System.identityHashCode(this)));
+        AmphoreanHatred.LOGGER.info("Scheduling: {}", System.identityHashCode(this));
 
         ScheduledTask task = new ScheduledTask(internalTick + delay, action);
         queue.add(task);
