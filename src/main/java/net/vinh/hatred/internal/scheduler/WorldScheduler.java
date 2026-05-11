@@ -15,8 +15,6 @@ public final class WorldScheduler {
     private long internalTick = 0L;
 
     public void tick() {
-        AmphoreanHatred.LOGGER.info(String.valueOf(System.identityHashCode(this)));
-
         internalTick++;
 
         while (!queue.isEmpty() && queue.peek().executeAt <= internalTick) {
