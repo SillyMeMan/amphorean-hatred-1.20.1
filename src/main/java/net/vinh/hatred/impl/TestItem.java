@@ -18,6 +18,8 @@ public class TestItem extends Item {
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+        if(world.isClient()) return TypedActionResult.pass(user.getMainHandStack());
+
         ScreenshakeUtil.shake((ServerPlayerEntity) user, 100f, 10f, 60);
 
         return TypedActionResult.success(user.getMainHandStack(), true);
