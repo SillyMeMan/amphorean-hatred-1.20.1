@@ -125,7 +125,7 @@ public class AmphoreanHatred implements ModInitializer {
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> Data.API.get(entity, ENTITY_SCHEDULER).clear());
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> entity.cancelAll(false));
 
-		if(FabricLoader.getInstance().isDevelopmentEnvironment()) {
+		if(true) {
 			Registry.register(Registries.ITEM, new Identifier(MOD_ID, "test"), new TestItem(new FabricItemSettings()));
 		}
 	}

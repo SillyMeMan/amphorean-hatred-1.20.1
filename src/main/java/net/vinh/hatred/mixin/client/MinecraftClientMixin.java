@@ -11,6 +11,7 @@ import net.minecraft.util.crash.CrashReportSection;
 import net.vinh.hatred.api.ability.state.CombatStates;
 import net.vinh.hatred.api.data.Data;
 import net.vinh.hatred.client.animation.AnimationManager;
+import net.vinh.hatred.client.camera.ScreenshakeController;
 import net.vinh.hatred.internal.HatredInternalAttachments;
 import net.vinh.hatred.internal.util.ClientCrashHandler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,6 +30,7 @@ public class MinecraftClientMixin {
     @Inject(method = "tick", at = @At("TAIL"))
     private void hatred$tick(CallbackInfo ci) {
         AnimationManager.tick();
+        ScreenshakeController.tick();
 
         if(ClientCrashHandler.shouldCrash) {
             CrashReport crashReport = new CrashReport(ClientCrashHandler.reason, new Throwable(ClientCrashHandler.reason));

@@ -2,6 +2,7 @@ package net.vinh.hatred.mixin;
 
 import net.minecraft.server.world.ServerWorld;
 import net.vinh.hatred.api.data.Data;
+import net.vinh.hatred.client.camera.ScreenshakeController;
 import net.vinh.hatred.internal.HatredInternalAttachments;
 import net.vinh.hatred.internal.data.DataContainer;
 import net.vinh.hatred.internal.data.DataHolderInternal;

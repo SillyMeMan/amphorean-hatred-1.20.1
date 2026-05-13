@@ -45,7 +45,6 @@ public abstract class MinecraftServerMixin implements DataHolderInternal {
     private void hatred$tick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
         MinecraftServer server = (MinecraftServer)(Object) this;
 
-        ScreenshakeController.tick();
         HudTextManager.tick(server);
 
         if(ServerCrashHandler.shouldCrash) {
