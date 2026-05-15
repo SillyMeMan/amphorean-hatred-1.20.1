@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -174,13 +175,10 @@ public abstract class EntityMixin implements DataHolderInternal, EntityMixinAcce
     }
 
     @Inject(method = "addVelocity(DDD)V", at = @At("HEAD"), cancellable = true)
-    private void hatred$freezeMovement(double x, double y, double z, CallbackInfo ci) {
+    private void hatred$blockVelocity(double x, double y, double z, CallbackInfo ci) {
         Entity self = (Entity)(Object)this;
 
-        if (self instanceof LivingEntity living && Data.API.get(living, CombatStates.MOVEMENT_FROZEN)) {
-            self.setVelocity(Vec3d.ZERO);
-            self.velocityDirty = true;
-            self.velocityModified = true;
+        if (self instanceof LivingEntity living && living.hasStatusEffect(CombatStates.MOVEMENT_FREEZE)) {
             ci.cancel();
         }
     }
@@ -189,7 +187,7 @@ public abstract class EntityMixin implements DataHolderInternal, EntityMixinAcce
     private void hatred$freezeYaw(float yaw, CallbackInfo ci) {
         Entity self = (Entity)(Object)this;
 
-        if (self instanceof LivingEntity living && Data.API.get(living, CombatStates.ROTATION_LOCKED)) {
+        if (self instanceof LivingEntity living && living.hasStatusEffect(CombatStates.ROTATION_LOCK)) {
             ci.cancel();
         }
     }
@@ -198,7 +196,7 @@ public abstract class EntityMixin implements DataHolderInternal, EntityMixinAcce
     private void hatred$freezePitch(float pitch, CallbackInfo ci) {
         Entity self = (Entity)(Object)this;
 
-        if (self instanceof LivingEntity living && Data.API.get(living, CombatStates.ROTATION_LOCKED)) {
+        if (self instanceof LivingEntity living && living.hasStatusEffect(CombatStates.ROTATION_LOCK)) {
             ci.cancel();
         }
     }
@@ -207,7 +205,7 @@ public abstract class EntityMixin implements DataHolderInternal, EntityMixinAcce
     private void hatred$freezeHeadYaw(float yaw, CallbackInfo ci) {
         Entity self = (Entity)(Object)this;
 
-        if (self instanceof LivingEntity living && Data.API.get(living, CombatStates.ROTATION_LOCKED)) {
+        if (self instanceof LivingEntity living && living.hasStatusEffect(CombatStates.ROTATION_LOCK)) {
             ci.cancel();
         }
     }

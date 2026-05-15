@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MinecraftClientMixin {
     @WrapOperation(method = "handleInputEvents", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerInventory;selectedSlot:I"))
     private void hatred$freezeInventory(PlayerInventory instance, int value, Operation<Void> original) {
-        if(Data.API.get(instance.player, CombatStates.INVENTORY_FROZEN)) return;
+        if(instance.player.hasStatusEffect(CombatStates.INVENTORY_FREEZE)) return;
         original.call(instance, value);
     }
 

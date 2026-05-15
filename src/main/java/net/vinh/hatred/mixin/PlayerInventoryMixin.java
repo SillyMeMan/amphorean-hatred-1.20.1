@@ -17,7 +17,7 @@ public class PlayerInventoryMixin {
 
     @WrapMethod(method = "scrollInHotbar")
     private void hatred$freezeInventory(double scrollAmount, Operation<Void> original) {
-        if(Data.API.get(player, CombatStates.INVENTORY_FROZEN)) return;
+        if(player.hasStatusEffect(CombatStates.MOVEMENT_FREEZE)) return;
 
         original.call(scrollAmount);
     }

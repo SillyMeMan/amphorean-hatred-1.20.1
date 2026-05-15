@@ -73,24 +73,18 @@ public abstract class LivingEntityMixin implements LivingEntityInjectionAccess {
     private void hatred$freezeItemUse(CallbackInfoReturnable<Boolean> cir) {
         LivingEntity self = (LivingEntity) (Object) this;
 
-        if (Data.API.get(self, CombatStates.MOVEMENT_FROZEN)) {
+        if (self.hasStatusEffect(CombatStates.MOVEMENT_FREEZE)) {
             cir.setReturnValue(false);
         }
     }
 
     @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
-    private void hatred$serverFreeze(Vec3d movementInput, CallbackInfo ci) {
-        LivingEntity self = (LivingEntity)(Object)this;
+    private void hatred$frozen(Vec3d movementInput, CallbackInfo ci) {
+        LivingEntity self = (LivingEntity) (Object) this;
 
-        if (self.getWorld().isClient()) return;
-
-        if (Data.API.get(self, CombatStates.MOVEMENT_FROZEN)) {
-            self.setVelocity(0, 0, 0);
-
-            if (!self.isOnGround()) {
-                self.setVelocity(0, self.getVelocity().y, 0);
-            }
-
+        if(self.hasStatusEffect(CombatStates.MOVEMENT_FREEZE)) {
+            self.setVelocity(Vec3d.ZERO);
+            self.velocityModified = true;
             ci.cancel();
         }
     }

@@ -18,7 +18,7 @@ public class ClientPlayerEntityMixin {
     private void hatred$freezeDrop(boolean entireStack, CallbackInfoReturnable<Boolean> cir) {
         PlayerEntity player = (PlayerEntity)(Object)this;
 
-        if (Data.API.get(player, CombatStates.INVENTORY_FROZEN)) {
+        if (player.hasStatusEffect(CombatStates.INVENTORY_FREEZE)) {
             cir.setReturnValue(false);
         }
     }
@@ -27,7 +27,7 @@ public class ClientPlayerEntityMixin {
     private void hatred$freezeDrop(Hand hand, CallbackInfo ci) {
         PlayerEntity player = (PlayerEntity)(Object)this;
 
-        if (Data.API.get(player, CombatStates.INVENTORY_FROZEN)) {
+        if (player.hasStatusEffect(CombatStates.INVENTORY_FREEZE)) {
             ci.cancel();
         }
     }

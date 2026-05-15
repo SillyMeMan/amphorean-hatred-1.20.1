@@ -1,19 +1,21 @@
 package net.vinh.hatred.internal.entity;
 
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.vinh.hatred.api.ability.state.CombatStates;
-import net.vinh.hatred.api.data.Data;
 
 public interface PlayerEntityInjectionAccess {
     default void inventoryFreeze() {
         PlayerEntity self = (PlayerEntity) this;
 
-        Data.API.set(self, CombatStates.INVENTORY_FROZEN, true);
+        StatusEffectInstance instance = new StatusEffectInstance(CombatStates.INVENTORY_FREEZE, -1, 0, false, false);
+
+        self.addStatusEffect(instance);
     }
 
     default void inventoryUnfreeze() {
         PlayerEntity self = (PlayerEntity) this;
 
-        Data.API.set(self, CombatStates.INVENTORY_FROZEN, false);
+        self.removeStatusEffect(CombatStates.INVENTORY_FREEZE);
     }
 }

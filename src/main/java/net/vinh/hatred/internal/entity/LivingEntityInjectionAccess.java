@@ -3,6 +3,7 @@ package net.vinh.hatred.internal.entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.vinh.hatred.api.ability.Ability;
@@ -147,27 +148,29 @@ public interface LivingEntityInjectionAccess {
     default void movementFreeze() {
         LivingEntity self = (LivingEntity) this;
 
-        self.setNoGravity(true);
-        Data.API.set(self, CombatStates.MOVEMENT_FROZEN, true);
+        StatusEffectInstance instance = new StatusEffectInstance(CombatStates.MOVEMENT_FREEZE, -1, 0, false, false);
+
+        self.addStatusEffect(instance);
     }
 
     default void movementUnfreeze() {
         LivingEntity self = (LivingEntity) this;
 
-        self.setNoGravity(false);
-        Data.API.set(self, CombatStates.MOVEMENT_FROZEN, false);
+        self.removeStatusEffect(CombatStates.MOVEMENT_FREEZE);
     }
 
     default void lockRotation() {
         LivingEntity self = (LivingEntity) this;
 
-        Data.API.set(self, CombatStates.ROTATION_LOCKED, true);
+        StatusEffectInstance instance = new StatusEffectInstance(CombatStates.ROTATION_LOCK, -1, 0, false, false);
+
+        self.addStatusEffect(instance);
     }
 
     default void unlockRotation() {
         LivingEntity self = (LivingEntity) this;
 
-        Data.API.set(self, CombatStates.ROTATION_LOCKED, false);
+        self.removeStatusEffect(CombatStates.ROTATION_LOCK);
     }
 
     default void completeFreeze() {

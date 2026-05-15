@@ -15,7 +15,7 @@ public class ServerPlayerEntityMixin {
     private void hatred$freezeInteractItem(ItemStack stack, CallbackInfo ci) {
         ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
 
-        if (Data.API.get(player, CombatStates.MOVEMENT_FROZEN)) {
+        if (player.hasStatusEffect(CombatStates.MOVEMENT_FREEZE)) {
             ci.cancel();
         }
     }

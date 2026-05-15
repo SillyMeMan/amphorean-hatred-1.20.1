@@ -18,9 +18,7 @@
     "accessor.CameraAccessor",
     "client.CameraMixin",
     "client.ClientPlayerEntityMixin",
-    "client.GameRendererMixin",
     "client.InGameHudMixin",
-    "client.KeyboardInputMixin",
     "client.LivingEntityRendererMixin",
     "client.MinecraftClientMixin"
   ],

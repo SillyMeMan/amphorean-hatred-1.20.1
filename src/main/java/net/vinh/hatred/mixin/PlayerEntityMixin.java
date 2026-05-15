@@ -21,7 +21,7 @@ public abstract class PlayerEntityMixin implements PlayerEntityInjectionAccess {
     private void hatred$freezeAttack(Entity target, CallbackInfo ci) {
         PlayerEntity player = (PlayerEntity) (Object) this;
 
-        if (Data.API.get(player, CombatStates.MOVEMENT_FROZEN)) {
+        if (player.hasStatusEffect(CombatStates.MOVEMENT_FREEZE)) {
             ci.cancel();
         }
     }
