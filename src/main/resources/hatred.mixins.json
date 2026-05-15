@@ -21,7 +21,6 @@
     "client.GameRendererMixin",
     "client.InGameHudMixin",
     "client.KeyboardInputMixin",
-    "client.KeyboardMixin",
     "client.LivingEntityRendererMixin",
     "client.MinecraftClientMixin"
   ],
