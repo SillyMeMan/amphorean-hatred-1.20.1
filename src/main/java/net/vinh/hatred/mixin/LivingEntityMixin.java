@@ -22,8 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin implements LivingEntityInjectionAccess {
-
-
     @Inject(method = "tryUseTotem", at = @At("HEAD"), cancellable = true)
     private void hatred$bypassesTotems(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
         if (source instanceof ContextAwareDamageSource ctx && ctx.context().bypassesTotems()) {
@@ -81,19 +79,19 @@ public abstract class LivingEntityMixin implements LivingEntityInjectionAccess {
     }
 
     @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
-    private void hatred$freezeMovement(Vec3d movementInput, CallbackInfo ci) {
-        LivingEntity self = (LivingEntity)(Object) this;
+    private void hatred$serverFreeze(Vec3d movementInput, CallbackInfo ci) {
+        LivingEntity self = (LivingEntity)(Object)this;
 
-        if(Data.API.get(self, CombatStates.MOVEMENT_FROZEN)) {
-            self.setVelocity(Vec3d.ZERO);
-            self.velocityDirty = true;
-            self.velocityModified = true;
+        if (self.getWorld().isClient()) return;
+
+        if (Data.API.get(self, CombatStates.MOVEMENT_FROZEN)) {
+            self.setVelocity(0, 0, 0);
+
+            if (!self.isOnGround()) {
+                self.setVelocity(0, self.getVelocity().y, 0);
+            }
+
             ci.cancel();
         }
-    }
-
-    @Inject(method = "tickMovement", at = @At("HEAD"), cancellable = true)
-    private void hatred$freezeTick(CallbackInfo ci) {
-
     }
 }

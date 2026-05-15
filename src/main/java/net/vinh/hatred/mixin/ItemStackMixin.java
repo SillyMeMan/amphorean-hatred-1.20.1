@@ -6,7 +6,7 @@ import net.vinh.hatred.internal.data.DataHolderInternal;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(ItemStack.class)
-public class ItemStackMixin implements DataHolderInternal {
+public final class ItemStackMixin implements DataHolderInternal {
     private DataContainer hatred$data;
 
     @Override

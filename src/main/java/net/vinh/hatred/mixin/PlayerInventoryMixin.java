@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(PlayerInventory.class)
-public abstract class PlayerInventoryMixin {
+public class PlayerInventoryMixin {
     @Shadow @Final public PlayerEntity player;
 
     @WrapMethod(method = "scrollInHotbar")

@@ -185,22 +185,6 @@ public abstract class EntityMixin implements DataHolderInternal, EntityMixinAcce
         }
     }
 
-    @Inject(method = "tick", at = @At("HEAD"))
-    private void hatred$fullFreeze(CallbackInfo ci) {
-        Entity self = (Entity)(Object)this;
-
-        if (self instanceof LivingEntity living && Data.API.get(living, CombatStates.MOVEMENT_FROZEN)) {
-            self.setVelocity(Vec3d.ZERO);
-
-            self.prevX = self.getX();
-            self.prevY = self.getY();
-            self.prevZ = self.getZ();
-
-            self.velocityDirty = true;
-            self.velocityModified = true;
-        }
-    }
-
     @Inject(method = "setYaw", at = @At("HEAD"), cancellable = true)
     private void hatred$freezeYaw(float yaw, CallbackInfo ci) {
         Entity self = (Entity)(Object)this;

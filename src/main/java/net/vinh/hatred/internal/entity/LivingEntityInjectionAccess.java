@@ -1,6 +1,8 @@
 package net.vinh.hatred.internal.entity;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.vinh.hatred.api.ability.Ability;
@@ -145,12 +147,14 @@ public interface LivingEntityInjectionAccess {
     default void movementFreeze() {
         LivingEntity self = (LivingEntity) this;
 
+        self.setNoGravity(true);
         Data.API.set(self, CombatStates.MOVEMENT_FROZEN, true);
     }
 
     default void movementUnfreeze() {
         LivingEntity self = (LivingEntity) this;
 
+        self.setNoGravity(false);
         Data.API.set(self, CombatStates.MOVEMENT_FROZEN, false);
     }
 

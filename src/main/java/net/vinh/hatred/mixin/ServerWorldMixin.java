@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.function.BooleanSupplier;
 
 @Mixin(ServerWorld.class)
-public abstract class ServerWorldMixin implements DataHolderInternal {
+public class ServerWorldMixin implements DataHolderInternal {
     @Unique
     private HatredWorldState hatred$state;
 
