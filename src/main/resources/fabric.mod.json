@@ -24,7 +24,7 @@
 		],
 		"hatred:registry": [
 			"net.vinh.hatred.impl.HatredExamples",
-			"net.vinh.hatred.api.ability.state.CombatStates"
+			"net.vinh.hatred.internal.ability.state.CombatStates"
 		]
 	},
 	"mixins": [
