@@ -2,8 +2,7 @@ package net.vinh.hatred.mixin;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.vinh.hatred.api.ability.state.CombatStates;
-import net.vinh.hatred.api.data.Data;
+import net.vinh.hatred.internal.ability.state.CombatStates;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

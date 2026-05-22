@@ -1,15 +1,13 @@
 package net.vinh.hatred.internal.entity;
 
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.vinh.hatred.api.ability.Ability;
 import net.vinh.hatred.api.ability.AbilityResult;
 import net.vinh.hatred.api.ability.Cooldowns;
-import net.vinh.hatred.api.ability.state.CombatStates;
+import net.vinh.hatred.internal.ability.state.CombatStates;
 import net.vinh.hatred.api.damage.DamageContext;
 import net.vinh.hatred.api.damage.DamageDistributors;
 import net.vinh.hatred.api.data.Data;

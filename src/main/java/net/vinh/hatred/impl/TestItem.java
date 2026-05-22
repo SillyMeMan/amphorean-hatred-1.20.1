@@ -18,10 +18,6 @@ public class TestItem extends Item {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         if(world.isClient()) return TypedActionResult.pass(user.getMainHandStack());
 
-        user.movementFreeze();
-
-        world.schedule(100, user::movementUnfreeze);
-
-        return TypedActionResult.success(user.getMainHandStack(), true);
+        return TypedActionResult.success(user.getMainHandStack());
     }
 }

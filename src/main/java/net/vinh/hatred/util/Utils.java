@@ -11,8 +11,10 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.network.PacketByteBuf;
@@ -34,10 +36,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.WinNativeModuleUtil;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.FeatureConfig;
@@ -47,6 +45,11 @@ import net.vinh.hatred.api.ability.IAbility;
 import net.vinh.hatred.api.builders.DamageContextBuilder;
 import net.vinh.hatred.api.builders.HudTextBuilder;
 import net.vinh.hatred.api.event.ServerAbilityEvents;
+import net.vinh.hatred.api.misc.DualRandomizer;
+import net.vinh.hatred.api.misc.Randomizer;
+import net.vinh.hatred.api.randomizer.EntityRandomizer;
+import net.vinh.hatred.api.randomizer.RunnableRandomizer;
+import net.vinh.hatred.api.randomizer.StatusEffectInstanceRandomizer;
 import net.vinh.hatred.api.registry.HatredRegistries;
 import net.vinh.hatred.exception.InvalidAbilityNumberException;
 import net.vinh.hatred.internal.util.ServerCrashHandler;
@@ -68,6 +71,10 @@ public final class Utils {
 
         public static <T extends Ability> T ability(Identifier id, T ability) {
             return Registry.register(HatredRegistries.ABILITY, id, ability);
+        }
+
+        public static <T extends EntityAttribute> T attribute(Identifier id, T attribute) {
+            return Registry.register(Registries.ATTRIBUTE, id, attribute);
         }
 
         public static <T extends Item> T item(Identifier id, T item) {
@@ -127,6 +134,32 @@ public final class Utils {
 
         public static SoundEvent soundEvent(Identifier id) {
             return Registry.register(Registries.SOUND_EVENT, id, SoundEvent.of(id));
+        }
+    }
+
+    public static class Randomizers {
+        private Randomizers() {
+            throw new AssertionError("Not supposed to be instantized!");
+        }
+
+        public static EntityRandomizer entity(Entity... entities) {
+            return new EntityRandomizer(entities);
+        }
+
+        public static RunnableRandomizer runnable(Runnable... runnables) {
+            return new RunnableRandomizer(runnables);
+        }
+
+        public static StatusEffectInstanceRandomizer entity(StatusEffectInstance... instances) {
+            return new StatusEffectInstanceRandomizer(instances);
+        }
+
+        public static <T> Randomizer<T> unspecified(T[] objects) {
+            return new Randomizer<>(objects);
+        }
+
+        public static <T, U> DualRandomizer<T, U> unspecifiedDual(T[] first, U[] second) {
+            return new DualRandomizer<>(first, second);
         }
     }
 

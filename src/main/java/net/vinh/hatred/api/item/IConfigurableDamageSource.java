@@ -20,6 +20,7 @@ public interface IConfigurableDamageSource {
     boolean bypassEnchantments();
     boolean bypassInvulnerability();
     boolean bypassTotems();
+    boolean bypassCooldown();
     boolean alwaysDamageEnderDragons();
     @Nullable List<StatusEffectInstance> hitEffects();
     @Nullable Vec3d knockback();

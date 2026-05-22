@@ -3,9 +3,8 @@ package net.vinh.hatred.mixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
-import net.vinh.hatred.api.ability.state.CombatStates;
+import net.vinh.hatred.internal.ability.state.CombatStates;
 import net.vinh.hatred.api.builders.DamageContextBuilder;
-import net.vinh.hatred.api.data.Data;
 import net.vinh.hatred.api.item.IConfigurableDamageSource;
 import net.vinh.hatred.internal.entity.PlayerEntityInjectionAccess;
 import net.vinh.hatred.util.Utils;
@@ -68,6 +67,10 @@ public abstract class PlayerEntityMixin implements PlayerEntityInjectionAccess {
 
             if(iChangeableDamageSource.bypassTotems()) {
                 contextBuilder.bypassesTotems();
+            }
+
+            if(iChangeableDamageSource.bypassCooldown()) {
+                contextBuilder.bypassesCooldown();
             }
 
             if(iChangeableDamageSource.alwaysDamageEnderDragons()) {

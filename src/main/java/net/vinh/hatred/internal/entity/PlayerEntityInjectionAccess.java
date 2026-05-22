@@ -2,7 +2,7 @@ package net.vinh.hatred.internal.entity;
 
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.vinh.hatred.api.ability.state.CombatStates;
+import net.vinh.hatred.internal.ability.state.CombatStates;
 
 public interface PlayerEntityInjectionAccess {
     default void inventoryFreeze() {

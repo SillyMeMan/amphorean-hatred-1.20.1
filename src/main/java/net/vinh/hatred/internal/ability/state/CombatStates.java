@@ -1,4 +1,4 @@
-package net.vinh.hatred.api.ability.state;
+package net.vinh.hatred.internal.ability.state;
 
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
