@@ -1,7 +1,7 @@
 package net.vinh.hatred.api.math;
 
-public final class HatredMath {
-    private HatredMath() {}
+public final class GeneralMath {
+    private GeneralMath() {}
 
     public static double clamp(double value, double min, double max) {
         return Math.max(min, Math.min(max, value));

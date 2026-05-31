@@ -28,6 +28,7 @@ import net.vinh.hatred.api.client.screen.HudTextManager;
 import net.vinh.hatred.api.command.AbilityCommand;
 import net.vinh.hatred.api.data.Data;
 import net.vinh.hatred.api.registry.HatredRegistries;
+import net.vinh.hatred.internal.ability.state.CombatStates;
 import net.vinh.hatred.internal.scheduler.Schedulers;
 import net.vinh.hatred.internal.scheduler.WorldScheduler;
 import net.vinh.hatred.api.data.DataAttachmentType;
@@ -93,6 +94,10 @@ public class AmphoreanHatred implements ModInitializer {
 			for(Identifier abilityId : HatredRegistries.ABILITY.getIds()) {
 				player.setCooldown(HatredRegistries.ABILITY.get(abilityId), HatredRegistries.ABILITY.get(abilityId).cooldown());
 			}
+
+			player.removeStatusEffect(CombatStates.INVENTORY_FREEZE);
+			player.removeStatusEffect(CombatStates.ROTATION_LOCK);
+			player.removeStatusEffect(CombatStates.MOVEMENT_FREEZE);
 		});
 
 		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
@@ -125,7 +130,7 @@ public class AmphoreanHatred implements ModInitializer {
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> Data.API.get(entity, ENTITY_SCHEDULER).clear());
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> entity.cancelAll(false));
 
-		if(true) {
+		if(FabricLoader.getInstance().isDevelopmentEnvironment()) {
 			Registry.register(Registries.ITEM, new Identifier(MOD_ID, "test"), new TestItem(new FabricItemSettings()));
 		}
 	}

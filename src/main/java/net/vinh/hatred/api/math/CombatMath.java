@@ -4,7 +4,7 @@ import net.minecraft.util.math.Vec3d;
 
 public final class CombatMath {
     public static float linearFalloff(double distance, double maxDistance) {
-        return (float) HatredMath.clamp(
+        return (float) GeneralMath.clamp(
                 1.0 - (distance / maxDistance),
                 0.0,
                 1.0

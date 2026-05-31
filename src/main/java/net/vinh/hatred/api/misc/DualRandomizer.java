@@ -5,6 +5,7 @@ import net.vinh.hatred.AmphoreanHatred;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -44,6 +45,9 @@ public class DualRandomizer<T, U> {
         }
 
         for (int i = 0; i < amountOfEach; i++) {
+            Collections.shuffle(this.FIRST);
+            Collections.shuffle(this.SECOND);
+
             T first = this.FIRST.get(rnd.nextInt(this.FIRST.size()));
             U second = this.SECOND.get(rnd.nextInt(this.SECOND.size()));
             consumer.accept(first, second);

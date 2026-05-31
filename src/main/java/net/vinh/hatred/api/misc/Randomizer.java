@@ -4,6 +4,7 @@ import net.minecraft.util.math.random.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -28,6 +29,7 @@ public class Randomizer<T> {
         if (this.OBJECTS.isEmpty()) return this;
 
         for (int i = 0; i < amount; i++) {
+            Collections.shuffle(this.OBJECTS);
             T object = this.OBJECTS.get(rnd.nextInt(this.OBJECTS.size()));
             consumer.accept(object);
         }

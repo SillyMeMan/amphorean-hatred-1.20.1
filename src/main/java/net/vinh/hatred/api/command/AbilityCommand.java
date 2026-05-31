@@ -38,7 +38,7 @@ public class AbilityCommand {
             }
         }
 
-        context.getSource().sendFeedback(() -> Text.literal("The cooldown of " + AbilityArgumentType.getAbility(context, "ability").getName() + " has been reset for selected entities"), false);
+        context.getSource().sendFeedback(() -> Text.literal("The cooldown of " + Text.translatable(AbilityArgumentType.getAbility(context, "ability").getTranslationKey()) + " has been reset for selected entities"), false);
 
         return i;
     }
