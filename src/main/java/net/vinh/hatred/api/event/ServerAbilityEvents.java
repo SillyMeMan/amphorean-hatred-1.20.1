@@ -37,4 +37,6 @@ public final class ServerAbilityEvents {
     public interface PreCast {
         AbilityResult preCast(LivingEntity caster, Ability ability);
     }
+
+    private ServerAbilityEvents() {}
 }

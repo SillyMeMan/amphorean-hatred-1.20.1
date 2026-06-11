@@ -3,6 +3,7 @@
   "package": "net.vinh.hatred.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "EnderDragonFightMixin",
     "EntityMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
@@ -11,6 +12,7 @@
     "PlayerInventoryMixin",
     "ServerPlayerEntityMixin",
     "ServerWorldMixin",
+    "WitherSkullBlockMixin",
     "WorldMixin",
     "accessor.LivingEntityAccessor"
   ],

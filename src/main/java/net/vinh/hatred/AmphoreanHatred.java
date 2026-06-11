@@ -17,6 +17,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WinNativeModuleUtil;
@@ -27,6 +29,7 @@ import net.vinh.hatred.api.brigadier.arguments.AbilityArgumentType;
 import net.vinh.hatred.api.client.screen.HudTextManager;
 import net.vinh.hatred.api.command.AbilityCommand;
 import net.vinh.hatred.api.data.Data;
+import net.vinh.hatred.api.event.WorldBossEvents;
 import net.vinh.hatred.api.registry.HatredRegistries;
 import net.vinh.hatred.internal.ability.state.CombatStates;
 import net.vinh.hatred.internal.scheduler.Schedulers;
@@ -57,18 +60,6 @@ public class AmphoreanHatred implements ModInitializer {
 		AbilityArgumentType.init();
 
 		CommandRegistrationCallback.EVENT.register(AbilityCommand::register);
-
-		CommandRegistrationCallback.EVENT.register((commandDispatcher, commandRegistryAccess, registrationEnvironment) -> {
-			commandDispatcher.register(CommandManager.literal("debug")
-					.then(CommandManager.literal("getInternalTick")
-							.executes(commandContext -> {
-								WorldScheduler scheduler = Schedulers.world(commandContext.getSource().getWorld());
-
-								commandContext.getSource().sendFeedback(() -> Text.literal("internalTick = " + scheduler.getInternalTick()), false);
-
-								return 1;
-							})));
-		});
 
 		ServerPlayNetworking.registerGlobalReceiver(AltAbilityC2SPacket.ID, AltAbilityC2SPacket::handle);
 

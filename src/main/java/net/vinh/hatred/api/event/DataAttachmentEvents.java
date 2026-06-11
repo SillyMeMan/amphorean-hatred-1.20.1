@@ -15,4 +15,6 @@ public final class DataAttachmentEvents {
     public interface OnChanged {
         void onChanged(Object holder, DataAttachmentType<?> type);
     }
+
+    private DataAttachmentEvents() {}
 }
