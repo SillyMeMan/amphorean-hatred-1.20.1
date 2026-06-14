@@ -133,7 +133,7 @@ public final class Sphere {
 		return getEntities(entityClass, world, e -> true);
 	}
 
-	public boolean intersectsBlocks(World world) {
+	public boolean intersectsBlocks() {
 		for (BlockPos pos : BlockPos.iterate(MathHelper.floor(x - radius), MathHelper.floor(y - radius), MathHelper.floor(z - radius), MathHelper.floor(x + radius), MathHelper.floor(y + radius), MathHelper.floor(z + radius))) {
 			if (contains(Vec3d.ofCenter(pos))) return true;
 		}

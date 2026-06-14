@@ -7,13 +7,11 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.random.Random;
 
-import java.util.List;
-
 import static net.vinh.hatred.AmphoreanHatred.id;
 
 /**
  * This elemental type system is supposed to be used in tandem with the {@link net.vinh.hatred.api.damage.DamageContext DamageContext} system
- * using the {@link net.vinh.hatred.api.damage.DamageContext#deathMessage() deathMessage} setting. Default death messages are available for all the elemental types
+ * with the {@link net.vinh.hatred.api.damage.DamageContext#deathMessage() deathMessage} setting. Default death messages are available for all the elemental types
  */
 public class ElementalTypes {
     public static final RegistryKey<DamageType> PHYSICAL = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, id("physical"));
