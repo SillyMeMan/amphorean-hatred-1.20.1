@@ -37,11 +37,6 @@ public interface LivingEntityInjectionAccess {
         Cooldowns.resetCooldown(entity, HatredRegistries.ABILITY.getId(ability));
     }
 
-    default void setCharges(Ability ability, int charges) {
-        LivingEntity entity = (LivingEntity) this;
-        Cooldowns.setCharges(entity, HatredRegistries.ABILITY.getId(ability), charges);
-    }
-
     default void setCooldown(Ability ability, long cooldown) {
         LivingEntity entity = (LivingEntity) this;
         Cooldowns.setCooldown(entity, HatredRegistries.ABILITY.getId(ability), cooldown);

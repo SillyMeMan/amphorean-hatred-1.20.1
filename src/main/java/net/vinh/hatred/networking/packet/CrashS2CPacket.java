@@ -1,6 +1,5 @@
 package net.vinh.hatred.networking.packet;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -9,10 +8,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.WinNativeModuleUtil;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.CrashReportSection;
 import net.vinh.hatred.AmphoreanHatred;
 import net.vinh.hatred.internal.util.ClientCrashHandler;
 

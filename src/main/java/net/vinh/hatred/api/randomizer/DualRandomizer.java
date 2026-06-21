@@ -1,4 +1,4 @@
-package net.vinh.hatred.api.misc;
+package net.vinh.hatred.api.randomizer;
 
 import net.minecraft.util.math.random.Random;
 import net.vinh.hatred.AmphoreanHatred;

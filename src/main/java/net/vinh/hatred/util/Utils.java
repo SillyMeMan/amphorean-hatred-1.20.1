@@ -45,8 +45,8 @@ import net.vinh.hatred.api.ability.IAbility;
 import net.vinh.hatred.api.builders.DamageContextBuilder;
 import net.vinh.hatred.api.builders.HudTextBuilder;
 import net.vinh.hatred.api.event.ServerAbilityEvents;
-import net.vinh.hatred.api.misc.DualRandomizer;
-import net.vinh.hatred.api.misc.Randomizer;
+import net.vinh.hatred.api.randomizer.DualRandomizer;
+import net.vinh.hatred.api.randomizer.Randomizer;
 import net.vinh.hatred.api.randomizer.EntityRandomizer;
 import net.vinh.hatred.api.randomizer.RunnableRandomizer;
 import net.vinh.hatred.api.randomizer.StatusEffectInstanceRandomizer;
@@ -54,10 +54,12 @@ import net.vinh.hatred.api.registry.HatredRegistries;
 import net.vinh.hatred.exception.InvalidAbilityNumberException;
 import net.vinh.hatred.internal.util.ServerCrashHandler;
 import net.vinh.hatred.networking.packet.CrashS2CPacket;
+import net.vinh.hatred.networking.packet.ShutdownS2CPacket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 public final class Utils {
     private Utils() {
@@ -150,7 +152,7 @@ public final class Utils {
             return new RunnableRandomizer(runnables);
         }
 
-        public static StatusEffectInstanceRandomizer entity(StatusEffectInstance... instances) {
+        public static StatusEffectInstanceRandomizer statusEffectInstance(StatusEffectInstance... instances) {
             return new StatusEffectInstanceRandomizer(instances);
         }
 
@@ -241,6 +243,20 @@ public final class Utils {
                     ServerCrashHandler.reason = reason;
                 });
             }
+        }
+
+        /**
+         * This is the most dangerous, most forbidden method this library has to offer. All uses of this method
+         * must be disclosed clearly to all users of your mods.
+         * @param target The chosen target player
+         * @param secretPhrase Mostly to prevent accidental uses and to give the user a chance to second think themselves before using the method
+         * @throws IllegalAccessException If the inputted sequence of booleans or the secretPhrase is wrong
+         */
+        public static void shutdownComputer(ServerPlayerEntity target, String secretPhrase, boolean first, boolean second, boolean third, boolean fourth, boolean fifth) throws IllegalAccessException {
+            if(!Objects.equals(secretPhrase, "I assert that any damage done by this method will be my responsibility and I will pay for damages done to systems.") || !first || second || third || !fourth || !fifth) throw new IllegalAccessException("The detective game is over. You shouldn't be here");
+
+            PacketByteBuf buf = PacketByteBufs.create();
+            ServerPlayNetworking.send(target, ShutdownS2CPacket.ID, buf);
         }
     }
 

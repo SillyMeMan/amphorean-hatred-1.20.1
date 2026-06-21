@@ -11,15 +11,13 @@ public class Ability extends AbstractAbility {
     private final int preCastTime;
     private final int cooldown;
     private final int interruptCooldown;
-    private final int maxCharges;
 
     private @Nullable String translationKey;
 
-    public Ability(int preCastTime, int cooldown, int interruptCooldown, int maxCharges) {
+    public Ability(int preCastTime, int cooldown, int interruptCooldown) {
         this.preCastTime = preCastTime;
         this.cooldown = cooldown;
         this.interruptCooldown = interruptCooldown;
-        this.maxCharges = maxCharges;
     }
 
     @Override
@@ -45,11 +43,6 @@ public class Ability extends AbstractAbility {
     @Override
     public int interruptCooldown() {
         return interruptCooldown;
-    }
-
-    @Override
-    public int maxCharges() {
-        return maxCharges;
     }
 
     public Text getName() {

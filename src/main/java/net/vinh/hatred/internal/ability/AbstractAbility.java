@@ -17,7 +17,7 @@ public abstract class AbstractAbility {
     /**
      *    Can be used to specify a cooldown group.
      * <p>
-     *    Any ability in the same cooldown group goes on cooldown if
+     * Any ability in the same cooldown group goes on cooldown if
      * any one of the ability in the cooldown group gets put on cooldown
      * @return An identifier of the cooldown group (currently not implemented)
      */
@@ -34,8 +34,6 @@ public abstract class AbstractAbility {
     public abstract int cooldown();
 
     public abstract int interruptCooldown();
-
-    public abstract int maxCharges();
 
     public static class PreCastInstance {
         public final Identifier abilityId;

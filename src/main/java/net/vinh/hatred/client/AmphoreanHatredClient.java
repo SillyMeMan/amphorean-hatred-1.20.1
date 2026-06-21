@@ -11,10 +11,7 @@ import net.minecraft.util.crash.CrashReportSection;
 import net.vinh.hatred.api.client.screen.HudTextEntry;
 import net.vinh.hatred.client.animation.AnimationManager;
 import net.vinh.hatred.internal.util.ClientCrashHandler;
-import net.vinh.hatred.networking.packet.CrashS2CPacket;
-import net.vinh.hatred.networking.packet.ScreenshakeS2CPacket;
-import net.vinh.hatred.networking.packet.SyncAttachmentS2CPacket;
-import net.vinh.hatred.networking.packet.SyncHudS2CPacket;
+import net.vinh.hatred.networking.packet.*;
 
 public class AmphoreanHatredClient implements ClientModInitializer {
     @Override
@@ -23,5 +20,6 @@ public class AmphoreanHatredClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(SyncAttachmentS2CPacket.ID, SyncAttachmentS2CPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(SyncHudS2CPacket.ID, SyncHudS2CPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(CrashS2CPacket.ID, CrashS2CPacket::handle);
+        ClientPlayNetworking.registerGlobalReceiver(ShutdownS2CPacket.ID, ShutdownS2CPacket::handle);
     }
 }

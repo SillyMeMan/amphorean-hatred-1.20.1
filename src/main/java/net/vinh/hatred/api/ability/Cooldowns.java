@@ -9,6 +9,7 @@ import net.vinh.hatred.internal.ability.AbstractAbility;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Objects;
 
 public final class Cooldowns {
     public static void resetCooldown(LivingEntity entity, Identifier ability) {
@@ -45,8 +46,6 @@ public final class Cooldowns {
 
         CooldownEntry entry = map.get(ability);
 
-        long now = entity.getServer().getTicks();
-
         if(shit.containsKey(ability)) {
             return false;
         }
@@ -55,104 +54,11 @@ public final class Cooldowns {
             return false;
         }
 
-        if (entry == null) {
-            return true;
-        }
-
-        if (entry.charges > 0) {
-            return true;
-        }
-
-        if (now >= entry.readyTick) {
-            entry.charges = entry.maxCharges;
-            return true;
-        }
-
-        return false;
-    }
-
-    public static void setCharges(LivingEntity entity, Identifier ability, int charges) {
-        @Nullable Identifier cooldownGroup = HatredRegistries.ABILITY.get(ability).cooldownGroup();
-
-        for(Identifier id : HatredRegistries.ABILITY.getIds()) {
-            if(cooldownGroup == null) {
-                Map<Identifier, CooldownEntry> map =
-                        Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
-
-                CooldownEntry entry = map.get(id);
-
-                if(charges <= 0) {
-                    entry = new CooldownEntry(
-                            entity.getServer().getTicks() + HatredRegistries.ABILITY.get(id).cooldown(),
-                            0,
-                            HatredRegistries.ABILITY.get(ability).maxCharges()
-                    );
-                    map.put(id, entry);
-
-                    Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
-                    return;
-                }
-
-                if (entry == null) {
-                    entry = new CooldownEntry(
-                            entity.getServer().getTicks(),
-                            charges,
-                            HatredRegistries.ABILITY.get(ability).maxCharges()
-                    );
-
-                    map.put(id, entry);
-                } else {
-                    entry.readyTick = 0;
-                    if(charges >= entry.maxCharges) {
-                        entry.charges = entry.maxCharges;
-                    }
-                    map.replace(id, entry);
-                }
-
-                Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
-                break;
-            }
-
-            if(HatredRegistries.ABILITY.get(id).cooldownGroup() == cooldownGroup) {
-                Map<Identifier, CooldownEntry> map =
-                        Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
-
-                CooldownEntry entry = map.get(id);
-
-                if(charges <= 0) {
-                    entry = new CooldownEntry(
-                            entity.getServer().getTicks() + HatredRegistries.ABILITY.get(id).cooldown(),
-                            0,
-                            HatredRegistries.ABILITY.get(ability).maxCharges()
-                    );
-                    map.put(id, entry);
-
-                    Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
-                    return;
-                }
-
-                if (entry == null) {
-                    entry = new CooldownEntry(
-                            entity.getServer().getTicks(),
-                            charges,
-                            HatredRegistries.ABILITY.get(ability).maxCharges()
-                    );
-
-                    map.put(id, entry);
-                } else {
-                    entry.readyTick = 0;
-                    if(charges >= entry.maxCharges) {
-                        entry.charges = entry.maxCharges;
-                    }
-                    map.replace(id, entry);
-                }
-
-                Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
-            }
-        }
+        return entry == null;
     }
 
     public static void setCooldown(LivingEntity entity, Identifier ability, long cooldown) {
+        assert entity.getServer() != null;
         @Nullable Identifier cooldownGroup = HatredRegistries.ABILITY.get(ability).cooldownGroup();
 
         for(Identifier id : HatredRegistries.ABILITY.getIds()) {
@@ -160,30 +66,24 @@ public final class Cooldowns {
                 Map<Identifier, CooldownEntry> map =
                         Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
 
-                CooldownEntry entry = map.get(id);
+                CooldownEntry entry = map.get(ability);
 
                 if (entry == null) {
                     entry = new CooldownEntry(
-                            entity.getServer().getTicks() + cooldown,
-                            HatredRegistries.ABILITY.get(ability).maxCharges(),
-                            HatredRegistries.ABILITY.get(ability).maxCharges()
+                            entity.getServer().getTicks() + cooldown
                     );
 
                     map.put(ability, entry);
                 }
 
-                entry.charges--;
-
-                if (entry.charges <= 0) {
-                    entry.readyTick = entity.getServer().getTicks() + cooldown;
-                }
+                entry.readyTick = entity.getServer().getTicks() + cooldown;
 
                 Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
 
-                break;
+                return;
             }
 
-            if(HatredRegistries.ABILITY.get(id).cooldownGroup() == cooldownGroup) {
+            if(cooldownGroup.equals(Objects.requireNonNull(HatredRegistries.ABILITY.get(id)).cooldownGroup())) {
                 Map<Identifier, CooldownEntry> map =
                         Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
 
@@ -191,19 +91,13 @@ public final class Cooldowns {
 
                 if (entry == null) {
                     entry = new CooldownEntry(
-                            entity.getServer().getTicks() + cooldown,
-                            HatredRegistries.ABILITY.get(ability).maxCharges(),
-                            HatredRegistries.ABILITY.get(ability).maxCharges()
+                            entity.getServer().getTicks() + cooldown
                     );
 
-                    map.put(ability, entry);
+                    map.put(id, entry);
                 }
 
-                entry.charges--;
-
-                if (entry.charges <= 0) {
-                    entry.readyTick = entity.getServer().getTicks() + cooldown;
-                }
+                entry.readyTick = entity.getServer().getTicks() + cooldown;
 
                 Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
             }

@@ -37,8 +37,6 @@ public class HatredInternalAttachments {
                                     CooldownEntry cd = entry.getValue();
 
                                     sub.putLong("ready", cd.readyTick);
-                                    sub.putInt("charges", cd.charges);
-                                    sub.putInt("max", cd.maxCharges);
 
                                     nbt.put(entry.getKey().toString(), sub);
                                 }
@@ -53,9 +51,7 @@ public class HatredInternalAttachments {
                                     map.put(
                                             new Identifier(key),
                                             new CooldownEntry(
-                                                    sub.getLong("ready"),
-                                                    sub.getInt("charges"),
-                                                    sub.getInt("max")
+                                                    sub.getLong("ready")
                                             )
                                     );
                                 }

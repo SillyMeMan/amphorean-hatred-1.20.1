@@ -7,7 +7,7 @@ import net.vinh.hatred.api.ability.Ability;
 
 public class ExampleAbility extends Ability {
     public ExampleAbility() {
-        super(200, 200, 100, 1);
+        super(200, 200, 100);
     }
 
     @Override
