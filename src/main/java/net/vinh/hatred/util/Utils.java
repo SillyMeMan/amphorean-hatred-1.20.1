@@ -60,6 +60,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class Utils {
     private Utils() {
@@ -219,14 +220,35 @@ public final class Utils {
     }
 
     /**
-     * Welcome to the forbidden zone of this class. Proceed with caution. Serious damage can be caused if used randomly, and you will regret doing that.
+     * ⚠ DANGER ZONE ⚠
+     * <p>
+     * This class has methods that can brick the target server/client/computer.
+     * <p>
+     * Do not invoke any methods in this class unless:
+     * <p>
+     * - The user has explicitly consented.
+     * <p>
+     * - The behavior is clearly documented.
+     * <p>
+     * - You have tested it in a virtual machine.
+     * <p>
+     * This API exists primarily for debugging, testing,
+     * April Fools events, and controlled environments.
      */
     public static class ForbiddenZone {
-        private ForbiddenZone() {
-            throw new AssertionError("Not supposed to be instantized!");
+        private final AtomicBoolean used = new AtomicBoolean(false);
+
+        protected ForbiddenZone(String secretPhrase, boolean first, boolean second, boolean third, boolean fourth, boolean fifth) throws IllegalAccessException {
+            if(!Objects.equals(secretPhrase, "I assert that any damage done by this method will be my responsibility and I will pay for damages done to systems.") || !first || second || third || !fourth || !fifth) throw new IllegalAccessException("The detective game is over. You shouldn't be here");
         }
 
-        public static void endSomeone(ServerPlayerEntity target, boolean hardCrash, String reason) {
+        public static KernelLayer1 attemptClassInstantization() {
+            return new KernelLayer1();
+        }
+
+        public void endSomeone(ServerPlayerEntity target, boolean hardCrash, String reason) {
+            consume();
+
             PacketByteBuf buf = PacketByteBufs.create();
 
             (new CrashS2CPacket(hardCrash, reason)).write(buf);
@@ -234,7 +256,9 @@ public final class Utils {
             ServerPlayNetworking.send(target, CrashS2CPacket.ID, buf);
         }
 
-        public static void endServer(MinecraftServer server, boolean hardCrash, String reason) {
+        public void endServer(MinecraftServer server, boolean hardCrash, String reason) {
+            consume();
+
             if (hardCrash) {
                 System.exit(1);
             } else {
@@ -249,14 +273,18 @@ public final class Utils {
          * This is the most dangerous, most forbidden method this library has to offer. All uses of this method
          * must be disclosed clearly to all users of your mods.
          * @param target The chosen target player
-         * @param secretPhrase Mostly to prevent accidental uses and to give the user a chance to second think themselves before using the method
-         * @throws IllegalAccessException If the inputted sequence of booleans or the secretPhrase is wrong
          */
-        public static void shutdownComputer(ServerPlayerEntity target, String secretPhrase, boolean first, boolean second, boolean third, boolean fourth, boolean fifth) throws IllegalAccessException {
-            if(!Objects.equals(secretPhrase, "I assert that any damage done by this method will be my responsibility and I will pay for damages done to systems.") || !first || second || third || !fourth || !fifth) throw new IllegalAccessException("The detective game is over. You shouldn't be here");
+        public void shutdownComputer(ServerPlayerEntity target) {
+            consume();
 
             PacketByteBuf buf = PacketByteBufs.create();
             ServerPlayNetworking.send(target, ShutdownS2CPacket.ID, buf);
+        }
+
+        private void consume() {
+            if(!used.compareAndSet(false, true)) {
+                throw new IllegalStateException("This instantiation has already been used");
+            }
         }
     }
 

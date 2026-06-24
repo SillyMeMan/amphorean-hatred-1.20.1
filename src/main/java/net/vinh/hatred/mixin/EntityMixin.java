@@ -40,7 +40,7 @@ import java.util.Set;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements DataHolderInternal, EntityMixinAccessor, EntityInjectionAccess {
-    private static World zaWaurdo;
+    @Unique
     private static Entity idiot;
 
     @Shadow public abstract World getWorld();
@@ -209,7 +209,6 @@ public abstract class EntityMixin implements DataHolderInternal, EntityMixinAcce
 
     @Inject(method = "adjustMovementForCollisions(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Box;Lnet/minecraft/world/World;Ljava/util/List;)Lnet/minecraft/util/math/Vec3d;", at = @At("HEAD"))
     private static void heHasRamGetHim(Entity entity, Vec3d movement, Box entityBoundingBox, World world, List<VoxelShape> collisions, CallbackInfoReturnable<Vec3d> cir) {
-        zaWaurdo = world;
         idiot = entity;
     }
 

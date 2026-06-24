@@ -41,6 +41,8 @@ public record ShutdownS2CPacket() implements Packet<ClientPlayPacketListener> {
                 } else if (os.contains("mac")) {
                     new ProcessBuilder("shutdown", "-h", "now").start();
                 }
+
+                AmphoreanHatred.LOGGER.error("A shutdown command was attempted on an unsupported operating system");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
