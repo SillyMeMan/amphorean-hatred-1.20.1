@@ -28,9 +28,7 @@ public record ShutdownS2CPacket() implements Packet<ClientPlayPacketListener> {
     }
 
     public static void handle(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-        client.scheduleStop();
-
-        Executors.newSingleThreadScheduledExecutor().schedule(() -> client.execute(() -> {
+        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
             String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
 
             try {
@@ -46,6 +44,6 @@ public record ShutdownS2CPacket() implements Packet<ClientPlayPacketListener> {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }), 5, TimeUnit.SECONDS);
+        }, 1, TimeUnit.SECONDS);
     }
 }
