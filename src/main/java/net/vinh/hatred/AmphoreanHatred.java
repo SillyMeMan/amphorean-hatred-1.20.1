@@ -27,7 +27,6 @@ import net.vinh.hatred.internal.AutoRegistry;
 import net.vinh.hatred.internal.data.DataContainer;
 import net.vinh.hatred.internal.data.DataHolderInternal;
 import net.vinh.hatred.internal.data.accessor.EntityMixinAccessor;
-import net.vinh.hatred.networking.packet.AltAbilityC2SPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +43,6 @@ public class AmphoreanHatred implements ModInitializer {
 		AbilityArgumentType.init();
 
 		CommandRegistrationCallback.EVENT.register(AbilityCommand::register);
-
-		ServerPlayNetworking.registerGlobalReceiver(AltAbilityC2SPacket.ID, AltAbilityC2SPacket::handle);
 
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
 			if (world.isClient()) return;
@@ -66,10 +63,12 @@ public class AmphoreanHatred implements ModInitializer {
 				sync.hatred$syncFull(player);
 			}
 
+			// just to prevent anyone from cheating the system
 			for(Identifier abilityId : HatredRegistries.ABILITY.getIds()) {
 				player.setCooldown(HatredRegistries.ABILITY.get(abilityId), HatredRegistries.ABILITY.get(abilityId).cooldown());
 			}
 
+			// to prevent bugs
 			player.removeStatusEffect(CombatStates.INVENTORY_FREEZE);
 			player.removeStatusEffect(CombatStates.ROTATION_LOCK);
 			player.removeStatusEffect(CombatStates.MOVEMENT_FREEZE);

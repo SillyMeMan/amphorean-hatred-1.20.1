@@ -54,7 +54,11 @@ public final class Cooldowns {
             return false;
         }
 
-        return entry == null;
+        if(entry != null) {
+            return entry.readyTick <= entity.getServer().getTicks();
+        }
+
+        return true;
     }
 
     public static void setCooldown(LivingEntity entity, Identifier ability, long cooldown) {

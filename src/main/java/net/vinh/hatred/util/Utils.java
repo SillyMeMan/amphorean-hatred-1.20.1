@@ -41,17 +41,14 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.FeatureConfig;
 import net.vinh.hatred.AmphoreanHatred;
 import net.vinh.hatred.api.ability.Ability;
-import net.vinh.hatred.api.ability.IAbility;
 import net.vinh.hatred.api.builders.DamageContextBuilder;
 import net.vinh.hatred.api.builders.HudTextBuilder;
-import net.vinh.hatred.api.event.ServerAbilityEvents;
 import net.vinh.hatred.api.randomizer.DualRandomizer;
 import net.vinh.hatred.api.randomizer.Randomizer;
 import net.vinh.hatred.api.randomizer.EntityRandomizer;
 import net.vinh.hatred.api.randomizer.RunnableRandomizer;
 import net.vinh.hatred.api.randomizer.StatusEffectInstanceRandomizer;
 import net.vinh.hatred.api.registry.HatredRegistries;
-import net.vinh.hatred.exception.InvalidAbilityNumberException;
 import net.vinh.hatred.internal.util.ServerCrashHandler;
 import net.vinh.hatred.networking.packet.CrashS2CPacket;
 import net.vinh.hatred.networking.packet.ShutdownS2CPacket;
@@ -306,40 +303,6 @@ public final class Utils {
     public static class Deprecated {
         private Deprecated() {
             throw new AssertionError("Not supposed to be instantized!");
-        }
-
-        public static void useAbility(ServerPlayerEntity player, int abilityNumber) {
-            if(!ServerAbilityEvents.USE_ABILITY.invoker().useAbility(player, abilityNumber)) {
-                return;
-            }
-
-            Item item = player.getMainHandStack().getItem();
-
-            if(item instanceof IAbility abilityItem) {
-                switch (abilityNumber) {
-                    case 1 -> {
-                        if(!IAbility.AbilityCooldownManager.isOnCooldown(player.getMainHandStack(), 1)) {
-                            abilityItem.alt_ability_1(player);
-                        }
-                    }
-                    case 2 -> {
-                        if(!IAbility.AbilityCooldownManager.isOnCooldown(player.getMainHandStack(), 2)) {
-                            abilityItem.alt_ability_2(player);
-                        }
-                    }
-                    case 3 -> {
-                        if(!IAbility.AbilityCooldownManager.isOnCooldown(player.getMainHandStack(), 3)) {
-                            abilityItem.alt_ability_3(player);
-                        }
-                    }
-                    case 4 -> {
-                        if(!IAbility.AbilityCooldownManager.isOnCooldown(player.getMainHandStack(), 4)) {
-                            abilityItem.alt_ability_4(player);
-                        }
-                    }
-                    default -> throw new InvalidAbilityNumberException();
-                }
-            }
         }
     }
 }
