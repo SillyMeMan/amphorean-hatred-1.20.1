@@ -22,7 +22,7 @@
 		"client": [
 			"net.vinh.hatred.client.AmphoreanHatredClient"
 		],
-		"hatred:registry": [
+		"common_registry": [
 			"net.vinh.hatred.impl.HatredExamples",
 			"net.vinh.hatred.internal.ability.state.CombatStates"
 		]

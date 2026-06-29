@@ -9,6 +9,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -214,13 +215,13 @@ public abstract class EntityMixin implements DataHolderInternal, EntityMixinAcce
 
     @ModifyVariable(method = "adjustMovementForCollisions(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Box;Lnet/minecraft/world/World;Ljava/util/List;)Lnet/minecraft/util/math/Vec3d;", at = @At(value = "INVOKE_ASSIGN", target = "Lcom/google/common/collect/ImmutableList$Builder;addAll(Ljava/lang/Iterable;)Lcom/google/common/collect/ImmutableList$Builder;", ordinal = 1))
     private static ImmutableList.Builder<VoxelShape> hatred$collisions(ImmutableList.Builder<VoxelShape> original) {
-        List<Barrier> barriers = BarrierManager.getCurrentBarriers();
+        Map<RegistryKey<World>, Barrier> barriers = BarrierManager.getCurrentBarriers();
 
-        for(Barrier barrier : barriers) {
-            if(barrier.blocks(idiot)) {
+        barriers.forEach((worldRegistryKey, barrier) -> {
+            if(idiot.getWorld().getRegistryKey() == worldRegistryKey && barrier.blocks(idiot)) {
                 original.add(barrier.shape());
             }
-        }
+        });
 
         return original;
     }

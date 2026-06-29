@@ -9,7 +9,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
@@ -39,8 +38,12 @@ public class AmphoreanHatred implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		HatredRegistries.initRegistries();
-		AutoRegistry.autoBootstrap();
-		AbilityArgumentType.init();
+        try {
+            AutoRegistry.autoCommonBootstrap();
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        AbilityArgumentType.init();
 
 		CommandRegistrationCallback.EVENT.register(AbilityCommand::register);
 

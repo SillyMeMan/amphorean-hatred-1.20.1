@@ -1,10 +1,8 @@
 package net.vinh.hatred.impl;
 
-import net.vinh.hatred.api.registry.IAutoRegisterable;
+import net.vinh.hatred.api.registry.AutoRegisterable;
 
-public class HatredExamples implements IAutoRegisterable {
-    @Override
-    public void staticInit() {
+@AutoRegisterable
+public class HatredExamples {
 
-    }
 }

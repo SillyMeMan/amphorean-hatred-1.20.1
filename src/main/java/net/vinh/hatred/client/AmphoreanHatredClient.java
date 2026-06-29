@@ -10,12 +10,19 @@ import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.vinh.hatred.api.client.screen.HudTextEntry;
 import net.vinh.hatred.client.animation.AnimationManager;
+import net.vinh.hatred.internal.AutoRegistry;
 import net.vinh.hatred.internal.util.ClientCrashHandler;
 import net.vinh.hatred.networking.packet.*;
 
 public class AmphoreanHatredClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        try {
+            AutoRegistry.autoClientBootstrap();
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
         ClientPlayNetworking.registerGlobalReceiver(ScreenshakeS2CPacket.ID, ScreenshakeS2CPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(SyncAttachmentS2CPacket.ID, SyncAttachmentS2CPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(SyncHudS2CPacket.ID, SyncHudS2CPacket::handle);
