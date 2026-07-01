@@ -17,11 +17,7 @@ import net.vinh.hatred.networking.packet.*;
 public class AmphoreanHatredClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        try {
-            AutoRegistry.autoClientBootstrap();
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        AutoRegistry.autoClientBootstrap();
 
         ClientPlayNetworking.registerGlobalReceiver(ScreenshakeS2CPacket.ID, ScreenshakeS2CPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(SyncAttachmentS2CPacket.ID, SyncAttachmentS2CPacket::handle);

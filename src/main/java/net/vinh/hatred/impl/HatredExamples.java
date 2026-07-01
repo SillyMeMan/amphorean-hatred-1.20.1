@@ -1,8 +1,8 @@
 package net.vinh.hatred.impl;
 
-import net.vinh.hatred.api.registry.AutoRegisterable;
+import net.vinh.hatred.api.registry.AutoInitializer;
 
-@AutoRegisterable
+@AutoInitializer
 public class HatredExamples {
 
 }

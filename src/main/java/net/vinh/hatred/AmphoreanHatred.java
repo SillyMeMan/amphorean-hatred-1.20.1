@@ -38,11 +38,7 @@ public class AmphoreanHatred implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		HatredRegistries.initRegistries();
-        try {
-            AutoRegistry.autoCommonBootstrap();
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        AutoRegistry.autoCommonBootstrap();
         AbilityArgumentType.init();
 
 		CommandRegistrationCallback.EVENT.register(AbilityCommand::register);

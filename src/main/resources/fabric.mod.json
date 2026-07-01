@@ -22,9 +22,8 @@
 		"client": [
 			"net.vinh.hatred.client.AmphoreanHatredClient"
 		],
-		"common_registry": [
-			"net.vinh.hatred.impl.HatredExamples",
-			"net.vinh.hatred.internal.ability.state.CombatStates"
+		"server": [
+			"net.vinh.hatred.server.DedicatedServerModInit"
 		]
 	},
 	"mixins": [
@@ -49,6 +48,12 @@
 			],
 			"net/minecraft/world/World": [
 				"net/vinh/hatred/internal/world/WorldInjectionAccess"
+			]
+		},
+		"hatred:registry": {
+			"common": [
+				"net.vinh.hatred.impl.HatredExamples",
+				"net.vinh.hatred.internal.ability.state.CombatStates"
 			]
 		}
 	}
