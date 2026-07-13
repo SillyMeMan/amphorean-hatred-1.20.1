@@ -4,10 +4,6 @@ import net.minecraft.text.Text;
 import net.vinh.hatred.api.client.screen.HudTextEntry;
 import net.vinh.hatred.api.misc.AbstractBuilder;
 
-import java.awt.*;
-import java.util.List;
-import java.util.UUID;
-
 public class HudTextBuilder extends AbstractBuilder<HudTextEntry> {
     private Text text;
     private int priority;

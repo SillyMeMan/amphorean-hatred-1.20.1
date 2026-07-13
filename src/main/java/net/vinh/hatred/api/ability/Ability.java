@@ -3,6 +3,7 @@ package net.vinh.hatred.api.ability;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
+import net.vinh.hatred.api.misc.Args;
 import net.vinh.hatred.api.registry.HatredRegistries;
 import net.vinh.hatred.internal.ability.AbstractAbility;
 import org.jetbrains.annotations.Nullable;
@@ -21,12 +22,12 @@ public class Ability extends AbstractAbility {
     }
 
     @Override
-    public void preCast(LivingEntity caster) {
-        // what the hell
+    public Args preCast(LivingEntity caster) {
+        return Args.of();
     }
 
     @Override
-    public void cast(LivingEntity caster) {
+    public void cast(LivingEntity caster, Args arguments) {
         // what the fuck
     }
 

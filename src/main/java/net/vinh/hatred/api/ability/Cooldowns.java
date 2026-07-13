@@ -39,6 +39,8 @@ public final class Cooldowns {
     }
 
     public static boolean isReady(LivingEntity entity, Identifier ability) {
+        assert entity.getServer() != null;
+
         Map<Identifier, CooldownEntry> map =
                 Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
         Map<Identifier, AbstractAbility.PreCastInstance> shit =

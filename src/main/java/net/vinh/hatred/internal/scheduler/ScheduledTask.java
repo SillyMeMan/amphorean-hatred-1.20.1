@@ -6,7 +6,7 @@ public final class ScheduledTask {
     boolean repeating;
     boolean cancelled;
 
-    Runnable action;
+    final Runnable action;
 
     ScheduledTask(long executeAt, Runnable action) {
         this.executeAt = executeAt;

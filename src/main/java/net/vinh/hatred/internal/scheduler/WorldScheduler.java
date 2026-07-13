@@ -27,7 +27,7 @@ public final class WorldScheduler {
                 task.action.run();
             } catch (Throwable t) {
                 AmphoreanHatred.LOGGER.error("A throwable was caught: {}", t.getMessage());
-                t.printStackTrace();
+                throw new RuntimeException(t);
             }
 
             if (task.repeating && !task.cancelled) {

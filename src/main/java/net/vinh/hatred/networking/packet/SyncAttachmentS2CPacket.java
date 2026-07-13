@@ -38,6 +38,7 @@ public record SyncAttachmentS2CPacket(int entityId, int dirtySize, Identifier id
         NbtCompound tag = buf.readNbt();
 
         client.execute(() -> {
+            assert client.world != null;
             Entity entity = client.world.getEntityById(entityId);
 
             if (!(entity instanceof DataHolderInternal holder)) return;

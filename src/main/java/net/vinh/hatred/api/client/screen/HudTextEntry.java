@@ -1,9 +1,5 @@
 package net.vinh.hatred.api.client.screen;
 
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
 public class HudTextEntry {

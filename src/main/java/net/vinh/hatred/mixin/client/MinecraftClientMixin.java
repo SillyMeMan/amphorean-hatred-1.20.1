@@ -12,6 +12,7 @@ import net.vinh.hatred.internal.ability.state.CombatStates;
 import net.vinh.hatred.client.animation.AnimationManager;
 import net.vinh.hatred.client.camera.ScreenshakeController;
 import net.vinh.hatred.internal.util.ClientCrashHandler;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
-    @WrapOperation(method = "handleInputEvents", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerInventory;selectedSlot:I"))
+    @WrapOperation(method = "handleInputEvents", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerInventory;selectedSlot:I", opcode = Opcodes.PUTFIELD))
     private void hatred$freezeInventory(PlayerInventory instance, int value, Operation<Void> original) {
         if(instance.player.hasStatusEffect(CombatStates.INVENTORY_FREEZE)) return;
         original.call(instance, value);

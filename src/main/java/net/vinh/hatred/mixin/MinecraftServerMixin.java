@@ -6,7 +6,6 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.vinh.hatred.api.client.screen.HudTextManager;
-import net.vinh.hatred.client.camera.ScreenshakeController;
 import net.vinh.hatred.internal.data.DataContainer;
 import net.vinh.hatred.internal.data.DataHolderInternal;
 import net.vinh.hatred.internal.data.HatredServerState;

@@ -2,17 +2,18 @@ package net.vinh.hatred.internal.ability;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
+import net.vinh.hatred.api.misc.Args;
 
 public abstract class AbstractAbility {
     /**
      * Anything inside this void method instantly runs upon ability usage
      */
-    public abstract void preCast(LivingEntity caster);
+    public abstract Args preCast(LivingEntity caster);
 
     /**
      * Anything inside this void method runs when the countdown/pre-cast state ends.
      */
-    public abstract void cast(LivingEntity caster);
+    public abstract void cast(LivingEntity caster, Args arguments);
 
     /**
      *    Can be used to specify a cooldown group.

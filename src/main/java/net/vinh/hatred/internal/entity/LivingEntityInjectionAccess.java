@@ -7,6 +7,7 @@ import net.minecraft.util.Identifier;
 import net.vinh.hatred.api.ability.Ability;
 import net.vinh.hatred.api.ability.AbilityResult;
 import net.vinh.hatred.api.ability.Cooldowns;
+import net.vinh.hatred.api.misc.Args;
 import net.vinh.hatred.internal.ability.state.CombatStates;
 import net.vinh.hatred.api.damage.DamageContext;
 import net.vinh.hatred.api.damage.DamageDistributors;
@@ -17,6 +18,7 @@ import net.vinh.hatred.internal.HatredInternalAttachments;
 import net.vinh.hatred.internal.ability.AbstractAbility;
 
 import java.util.Map;
+import java.util.Objects;
 
 public interface LivingEntityInjectionAccess {
     default boolean damage(double percentage, DamageContext ctx) {
@@ -69,7 +71,7 @@ public interface LivingEntityInjectionAccess {
         for(AbstractAbility.PreCastInstance instance : map.values()) {
             instance.cancelled = true;
             if(triggerOnCancelled) {
-                HatredRegistries.ABILITY.get(instance.abilityId).onCancelled(entity);
+                Objects.requireNonNull(HatredRegistries.ABILITY.get(instance.abilityId)).onCancelled(entity);
             }
         }
 
@@ -93,7 +95,7 @@ public interface LivingEntityInjectionAccess {
             return ref.finalResult;
         }
 
-        ability.preCast(entity);
+        Args args = ability.preCast(entity);
         Data.API.set(entity, HatredInternalAttachments.IS_USING_ABILITY, true);
 
         assert entity.getServer() != null;
@@ -110,7 +112,7 @@ public interface LivingEntityInjectionAccess {
 
         entity.schedule(ability.preCastTime(), () -> {
             if (!instance.cancelled || ServerAbilityEvents.PRE_CAST.invoker().preCast(entity, ability) != AbilityResult.CANCELLED) {
-                ability.cast(entity);
+                ability.cast(entity, args.toImmutable());
                 ref.finalResult = AbilityResult.SUCCESS;
                 Cooldowns.setCooldown(entity, id, ability.cooldown());
 

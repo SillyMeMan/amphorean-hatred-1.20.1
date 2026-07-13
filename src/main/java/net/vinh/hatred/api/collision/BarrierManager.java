@@ -3,9 +3,7 @@ package net.vinh.hatred.api.collision;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public final class BarrierManager {

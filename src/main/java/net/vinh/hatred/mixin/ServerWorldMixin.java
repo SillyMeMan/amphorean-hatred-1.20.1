@@ -2,12 +2,10 @@ package net.vinh.hatred.mixin;
 
 import net.minecraft.server.world.ServerWorld;
 import net.vinh.hatred.api.data.Data;
-import net.vinh.hatred.client.camera.ScreenshakeController;
 import net.vinh.hatred.internal.HatredInternalAttachments;
 import net.vinh.hatred.internal.data.DataContainer;
 import net.vinh.hatred.internal.data.DataHolderInternal;
 import net.vinh.hatred.internal.data.HatredWorldState;
-import net.vinh.hatred.internal.scheduler.Schedulers;
 import net.vinh.hatred.internal.scheduler.WorldScheduler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

@@ -13,7 +13,6 @@ import net.vinh.hatred.api.geometry.Hitbox;
 import net.vinh.hatred.api.math.RayMarchAction;
 import net.vinh.hatred.api.math.RaycastAction;
 import net.vinh.hatred.api.math.RaycastMath;
-import net.vinh.hatred.internal.scheduler.EntityScheduler;
 import net.vinh.hatred.internal.scheduler.ScheduledTask;
 import net.vinh.hatred.internal.scheduler.Schedulers;
 

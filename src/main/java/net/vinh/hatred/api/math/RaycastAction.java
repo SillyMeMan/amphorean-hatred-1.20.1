@@ -4,5 +4,5 @@ import net.minecraft.util.hit.HitResult;
 
 @FunctionalInterface
 public interface RaycastAction {
-    boolean run(HitResult result);
+    void run(HitResult result);
 }

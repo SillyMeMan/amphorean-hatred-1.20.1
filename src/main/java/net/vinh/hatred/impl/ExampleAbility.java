@@ -4,6 +4,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.World;
 import net.vinh.hatred.AmphoreanHatred;
 import net.vinh.hatred.api.ability.Ability;
+import net.vinh.hatred.api.misc.Args;
 
 public class ExampleAbility extends Ability {
     public ExampleAbility() {
@@ -11,16 +12,18 @@ public class ExampleAbility extends Ability {
     }
 
     @Override
-    public void preCast(LivingEntity caster) {
+    public Args preCast(LivingEntity caster) {
         if(!caster.getWorld().isClient()) {
             AmphoreanHatred.LOGGER.info("Precast");
 
             caster.getWorld().createExplosion(null, caster.getX(), caster.getY(), caster.getZ(), 10f, World.ExplosionSourceType.TNT);
         }
+
+        return Args.of();
     }
 
     @Override
-    public void cast(LivingEntity caster) {
+    public void cast(LivingEntity caster, Args arguments) {
         if(!caster.getWorld().isClient()) {
             AmphoreanHatred.LOGGER.info("Cast");
         }

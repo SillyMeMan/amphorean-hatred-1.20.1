@@ -35,6 +35,7 @@ public class CameraMixin {
     private static float randomizeOffset(float strength, int offset) {
         float min = -strength * 2;
         float max = strength * 2;
+        assert MinecraftClient.getInstance().world != null;
         float sampled = (float) sampler.sample((MinecraftClient.getInstance().world.getTime() % 24000L + MinecraftClient.getInstance().getTickDelta())/strength, offset, 0) * 1.5f;
         return min >= max ? min : sampled * max;
     }
