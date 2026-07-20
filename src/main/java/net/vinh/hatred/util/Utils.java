@@ -49,6 +49,7 @@ import net.vinh.hatred.api.randomizer.EntityRandomizer;
 import net.vinh.hatred.api.randomizer.RunnableRandomizer;
 import net.vinh.hatred.api.randomizer.StatusEffectInstanceRandomizer;
 import net.vinh.hatred.api.registry.HatredRegistries;
+import net.vinh.hatred.exception.ForbiddenAccessException;
 import net.vinh.hatred.internal.util.ServerCrashHandler;
 import net.vinh.hatred.networking.packet.CrashS2CPacket;
 import net.vinh.hatred.networking.packet.ShutdownS2CPacket;
@@ -235,8 +236,8 @@ public final class Utils {
     public static class ForbiddenZone {
         private final AtomicBoolean used = new AtomicBoolean(false);
 
-        protected ForbiddenZone(String secretPhrase, boolean first, boolean second, boolean third, boolean fourth, boolean fifth) throws IllegalAccessException {
-            if(!Objects.equals(secretPhrase, "I assert that any damage done by this method will be my responsibility and I will pay for damages done to systems.") || !first || second || third || !fourth || !fifth) throw new IllegalAccessException("The detective game is over. You shouldn't be here");
+        protected ForbiddenZone(String secretPhrase, boolean first, boolean second, boolean third, boolean fourth, boolean fifth) {
+            if(!Objects.equals(secretPhrase, "I assert that any damage done by this method will be my responsibility and I will pay for damages done to systems.") || !first || second || third || !fourth || !fifth) throw new ForbiddenAccessException();
         }
 
         public static KernelLayer1 attemptClassInstantization() {

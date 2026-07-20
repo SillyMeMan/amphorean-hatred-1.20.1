@@ -19,7 +19,7 @@ public class ExampleAbility extends Ability {
             caster.getWorld().createExplosion(null, caster.getX(), caster.getY(), caster.getZ(), 10f, World.ExplosionSourceType.TNT);
         }
 
-        return Args.of();
+        return Args.ofMutable();
     }
 
     @Override

@@ -23,7 +23,7 @@ public class Ability extends AbstractAbility {
 
     @Override
     public Args preCast(LivingEntity caster) {
-        return Args.of();
+        return Args.ofMutable();
     }
 
     @Override

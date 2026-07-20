@@ -40,7 +40,7 @@ public class DualRandomizer<T, U> {
 
     public DualRandomizer<T, U> selectAndForEach(int amountOfEach, Random rnd, BiConsumer<T, U> consumer) {
         if (this.FIRST.isEmpty() || this.SECOND.isEmpty()) {
-            AmphoreanHatred.LOGGER.info("One of two varargs is empty");
+            AmphoreanHatred.LOGGER.warn("One of two varargs is empty");
             return this;
         }
 

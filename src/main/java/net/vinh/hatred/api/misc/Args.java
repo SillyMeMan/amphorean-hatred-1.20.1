@@ -1,22 +1,32 @@
 package net.vinh.hatred.api.misc;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * An argument storer that is intended to be used for storing arguments used by {@link net.vinh.hatred.api.ability.Ability}.
  * <p>
- * Can be used by other libraries for various features.
+ * Can be adapted by other libraries for various features.
  */
-public class Args {
-    protected final ArrayList<Object> storedArgs;
+public class Args implements Iterable<Object> {
+    protected final List<Object> storedArgs;
 
-    protected Args(ArrayList<Object> args) {
+    protected Args(List<Object> args) {
         this.storedArgs = args;
     }
 
-    public static Args of(Object... args) {
+    @Contract("_ -> new")
+    public static @NotNull MutableArgs ofMutable(Object... args) {
         return new MutableArgs(new ArrayList<>(List.of(args)));
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull Args ofImmutable(Object... args) {
+        return new Args(List.of(args));
     }
 
     public Args toImmutable() {
@@ -41,5 +51,10 @@ public class Args {
      */
     public int size() {
         return storedArgs.size();
+    }
+
+    @Override
+    public @NotNull Iterator<Object> iterator() {
+        return storedArgs.listIterator();
     }
 }

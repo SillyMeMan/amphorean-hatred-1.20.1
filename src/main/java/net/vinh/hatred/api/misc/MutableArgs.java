@@ -13,7 +13,7 @@ public class MutableArgs extends Args {
 
     @Override
     public Args toImmutable() {
-        return new Args(this.storedArgs);
+        return new Args(List.copyOf(this.storedArgs));
     }
 
     public MutableArgs add(Object arg) {

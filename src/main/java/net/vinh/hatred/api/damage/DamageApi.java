@@ -13,7 +13,9 @@ import net.vinh.hatred.mixin.accessor.LivingEntityAccessor;
 /**
  * The main implementation of the damage system. Injected into {@link Entity} via Loom. Any mixins should target the methods in this class.
  */
-public class DamageApi {
+public final class DamageApi {
+    private DamageApi() {}
+
     public static boolean damage(Entity target, float totalDamage, DamageDistributor distributor, DamageContext ctx) {
         RegistryEntry<DamageType> finalType = ctx.type() != null ? ctx.type() : target.getDamageSources().generic().getTypeRegistryEntry();
 
