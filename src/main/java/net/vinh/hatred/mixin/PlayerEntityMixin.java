@@ -3,6 +3,7 @@ package net.vinh.hatred.mixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.vinh.hatred.api.damage.DamageDistributors;
 import net.vinh.hatred.internal.ability.state.CombatStates;
 import net.vinh.hatred.api.builders.DamageContextBuilder;
 import net.vinh.hatred.api.item.IConfigurableDamageSource;
@@ -49,6 +50,10 @@ public abstract class PlayerEntityMixin implements PlayerEntityInjectionAccess {
                 contextBuilder.trueDamage();
             }
 
+            if(iChangeableDamageSource.armorEffectivenessMultiplier() != 1.0f) {
+                contextBuilder.armorEffectivenessMultiplier(iChangeableDamageSource.armorEffectivenessMultiplier());
+            }
+
             if(iChangeableDamageSource.bypassArmor()) {
                 contextBuilder.bypassesArmor();
             }
@@ -89,7 +94,7 @@ public abstract class PlayerEntityMixin implements PlayerEntityInjectionAccess {
                 contextBuilder.knockback(iChangeableDamageSource.knockback());
             }
 
-            return instance.damage(amount, totalDamage -> totalDamage, contextBuilder.build());
+            return instance.damage(amount, contextBuilder.build());
         }
 
         return instance.damage(source, amount);

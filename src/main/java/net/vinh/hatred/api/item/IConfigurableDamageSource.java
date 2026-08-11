@@ -15,6 +15,7 @@ public interface IConfigurableDamageSource {
     boolean trueDamage();
     boolean nonFatal();
 
+    float armorEffectivenessMultiplier();
     boolean bypassArmor();
     boolean bypassResistance();
     boolean bypassEnchantments();

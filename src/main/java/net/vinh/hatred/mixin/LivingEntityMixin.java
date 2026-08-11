@@ -1,7 +1,10 @@
 package net.vinh.hatred.mixin;
 
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.DamageUtil;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
@@ -11,6 +14,7 @@ import net.vinh.hatred.internal.ability.state.CombatStates;
 import net.vinh.hatred.api.damage.ContextAwareDamageSource;
 import net.vinh.hatred.internal.entity.LivingEntityInjectionAccess;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -19,6 +23,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin implements LivingEntityInjectionAccess {
+    @Shadow public abstract int getArmor();
+
+    @Shadow public abstract double getAttributeValue(EntityAttribute attribute);
+
+    @Shadow public abstract void damageArmor(DamageSource source, float amount);
+
     @Inject(method = "tryUseTotem", at = @At("HEAD"), cancellable = true)
     private void hatred$bypassesTotems(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
         if (source instanceof ContextAwareDamageSource ctx && ctx.context().bypassesTotems()) {
@@ -27,9 +37,21 @@ public abstract class LivingEntityMixin implements LivingEntityInjectionAccess {
     }
 
     @Inject(method = "applyArmorToDamage", at = @At("HEAD"), cancellable = true)
-    private void hatred$bypassesArmor(DamageSource source, float amount, CallbackInfoReturnable<Float> cir) {
-        if(source instanceof ContextAwareDamageSource ctx && ctx.context().bypassesArmor()) {
-            cir.setReturnValue(amount);
+    private void hatred$applyArmorRelatedOptions(DamageSource source, float amount, CallbackInfoReturnable<Float> cir) {
+        if(source instanceof ContextAwareDamageSource ctx) {
+            if(ctx.context().bypassesArmor()) {
+                cir.setReturnValue(amount);
+                return;
+            }
+
+            damageArmor(source, amount);
+
+            float multiplier = ctx.context().armorEffectivenessMultiplier();
+
+            float totalArmor = getArmor() * multiplier;
+            double armorToughness = getAttributeValue(EntityAttributes.GENERIC_ARMOR_TOUGHNESS);
+
+            cir.setReturnValue(DamageUtil.getDamageLeft(amount, totalArmor, (float) armorToughness));
         }
     }
 

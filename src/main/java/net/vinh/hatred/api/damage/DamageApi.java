@@ -11,7 +11,7 @@ import net.minecraft.util.math.Vec3d;
 import net.vinh.hatred.mixin.accessor.LivingEntityAccessor;
 
 /**
- * The main implementation of the damage system. Injected into {@link Entity} via Loom. Any mixins should target the methods in this class.
+ * The main implementation of the damage system. Injected into {@link Entity} via Loom's Interface Injection. Any mixins should target the methods in this class.
  */
 public final class DamageApi {
     private DamageApi() {}
