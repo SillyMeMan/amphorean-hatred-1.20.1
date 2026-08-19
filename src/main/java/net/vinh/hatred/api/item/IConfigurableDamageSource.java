@@ -17,6 +17,8 @@ public interface IConfigurableDamageSource {
 
     float armorEffectivenessMultiplier();
     boolean bypassArmor();
+    boolean bypassAbsorption();
+    boolean bypassShield();
     boolean bypassResistance();
     boolean bypassEnchantments();
     boolean bypassInvulnerability();

@@ -24,7 +24,7 @@ public class ContextAwareDamageSource extends DamageSource {
     public Text getDeathMessage(LivingEntity killed) {
         if(context.deathMessage() != null) {
             if(context.addKilledDisplayNameToMsg()) {
-                return Text.literal(killed.getDisplayName().getString() + " " + context.deathMessage().getString());
+                return Text.literal(killed.getDisplayName().getString() + context.deathMessage().getString());
             } else {
                 return context.deathMessage();
             }
@@ -38,6 +38,7 @@ public class ContextAwareDamageSource extends DamageSource {
         if(tag == DamageTypeTags.BYPASSES_INVULNERABILITY && context.bypassesInvulnerability()) return true;
         if(tag == DamageTypeTags.ALWAYS_HURTS_ENDER_DRAGONS && context.alwaysDamageEnderDragons()) return true;
         if(tag == DamageTypeTags.BYPASSES_COOLDOWN && context.bypassesCooldown()) return true;
+        if(tag == DamageTypeTags.BYPASSES_SHIELD && context.bypassesShield()) return true;
 
         return super.isIn(tag);
     }

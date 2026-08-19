@@ -1,5 +1,7 @@
 package net.vinh.hatred.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,8 +28,8 @@ public abstract class PlayerEntityMixin implements PlayerEntityInjectionAccess {
         }
     }
 
-    @Redirect(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"))
-    private boolean hatred$attack(Entity instance, DamageSource source, float amount) {
+    @WrapOperation(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"))
+    private boolean hatred$attack(Entity instance, DamageSource source, float amount, Operation<Boolean> original) {
         PlayerEntity player = (PlayerEntity)(Object)this;
 
         if (player.getMainHandStack().getItem() instanceof IConfigurableDamageSource iChangeableDamageSource) {
@@ -56,6 +58,14 @@ public abstract class PlayerEntityMixin implements PlayerEntityInjectionAccess {
 
             if(iChangeableDamageSource.bypassArmor()) {
                 contextBuilder.bypassesArmor();
+            }
+
+            if(iChangeableDamageSource.bypassAbsorption()) {
+                contextBuilder.bypassesAbsorption();
+            }
+
+            if(iChangeableDamageSource.bypassShield()) {
+                contextBuilder.bypassesShield();
             }
 
             if(iChangeableDamageSource.bypassResistance()) {
@@ -97,6 +107,6 @@ public abstract class PlayerEntityMixin implements PlayerEntityInjectionAccess {
             return instance.damage(amount, contextBuilder.build());
         }
 
-        return instance.damage(source, amount);
+        return original.call(instance, source, amount);
     }
 }

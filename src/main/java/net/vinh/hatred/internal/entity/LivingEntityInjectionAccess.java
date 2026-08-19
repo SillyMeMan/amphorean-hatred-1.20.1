@@ -33,6 +33,8 @@ public interface LivingEntityInjectionAccess {
         builder.type(type);
 
         builder.bypassesTotems();
+        builder.bypassesAbsorption();
+        builder.bypassesShield();
         builder.bypassesResistance();
         builder.bypassesInvulnerability();
         builder.bypassesEnchantments();

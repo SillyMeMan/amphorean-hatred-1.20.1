@@ -26,6 +26,7 @@ import net.vinh.hatred.internal.AutoRegistry;
 import net.vinh.hatred.internal.data.DataContainer;
 import net.vinh.hatred.internal.data.DataHolderInternal;
 import net.vinh.hatred.internal.data.accessor.EntityMixinAccessor;
+import net.vinh.hatred.util.C2SPacketHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,8 @@ public class AmphoreanHatred implements ModInitializer {
         AbilityArgumentType.init();
 
 		CommandRegistrationCallback.EVENT.register(AbilityCommand::register);
+
+		C2SPacketHelper.initializeServer();
 
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
 			if (world.isClient()) return;

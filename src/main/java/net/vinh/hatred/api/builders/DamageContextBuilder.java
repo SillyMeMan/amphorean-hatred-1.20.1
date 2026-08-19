@@ -21,6 +21,8 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
     @Nullable private Entity directSource;
     private float armorEffectivenessMultiplier = 1.0f;
     private boolean bypassesArmor = false;
+    private boolean bypassesAbsoption = false;
+    private boolean bypassesShield = false;
     private boolean bypassesResistance = false;
     private boolean bypassesEnchantments = false;
     private boolean bypassesInvulnerability = false;
@@ -79,6 +81,28 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
      */
     public DamageContextBuilder bypassesArmor() {
         this.bypassesArmor = true;
+        return this;
+    }
+
+    /**
+     * Causes this damage to completely bypass the target's absorption.
+     * <p>
+     * When absorption is bypassed, this damage immediately goes to HP, completely ignoring absorption.
+     *
+     * @return This instance of the builder for convenience in chaining options
+     */
+    public DamageContextBuilder bypassesAbsorption() {
+        this.bypassesAbsoption = true;
+        return this;
+    }
+
+    /**
+     * Causes this damage to completely bypass the target's shield.
+     *
+     * @return This instance of the builder for convenience in chaining options
+     */
+    public DamageContextBuilder bypassesShield() {
+        this.bypassesShield = true;
         return this;
     }
 
@@ -179,6 +203,6 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
 
     @Override
     public DamageContext build() {
-        return new DamageContext(type, deathMessage, attacker, directSource, armorEffectivenessMultiplier, bypassesArmor, bypassesResistance, bypassesEnchantments, bypassesInvulnerability, bypassesTotems, bypassesCooldown, alwaysDamageEnderDragons, nonFatal, trueDamage, addKilledDisplayNameToMsg, hitEffects, knockback);
+        return new DamageContext(type, deathMessage, attacker, directSource, armorEffectivenessMultiplier, bypassesArmor, bypassesAbsoption, bypassesShield, bypassesResistance, bypassesEnchantments, bypassesInvulnerability, bypassesTotems, bypassesCooldown, alwaysDamageEnderDragons, nonFatal, trueDamage, addKilledDisplayNameToMsg, hitEffects, knockback);
     }
 }

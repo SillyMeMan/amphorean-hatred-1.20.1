@@ -1,5 +1,7 @@
 package net.vinh.hatred.api.randomizer;
 
+import net.minecraft.util.Pair;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.random.Random;
 import net.vinh.hatred.AmphoreanHatred;
 
@@ -48,11 +50,18 @@ public class DualRandomizer<T, U> {
             Collections.shuffle(this.FIRST);
             Collections.shuffle(this.SECOND);
 
-            T first = this.FIRST.get(rnd.nextInt(this.FIRST.size()));
-            U second = this.SECOND.get(rnd.nextInt(this.SECOND.size()));
+            T first = Util.getRandom(FIRST, rnd);
+            U second = Util.getRandom(SECOND, rnd);
             consumer.accept(first, second);
         }
 
         return this;
+    }
+
+    public Pair<T, U> select(Random rnd) {
+        Collections.shuffle(this.FIRST);
+        Collections.shuffle(this.SECOND);
+
+        return new Pair<>(Util.getRandom(FIRST, rnd), Util.getRandom(SECOND, rnd));
     }
 }

@@ -1,5 +1,7 @@
 package net.vinh.hatred.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.DamageUtil;
 import net.minecraft.entity.LivingEntity;
@@ -17,6 +19,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -77,15 +80,19 @@ public abstract class LivingEntityMixin implements LivingEntityInjectionAccess {
     private void hatred$nonFatal(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         LivingEntity self = (LivingEntity)(Object)this;
 
-        if (!(source instanceof ContextAwareDamageSource ctx))
-            return;
+        if(source instanceof ContextAwareDamageSource ctx && ctx.context().nonFatal()) {
+            self.setHealth(1f);
+            cir.setReturnValue(true);
+        }
+    }
 
-        if (!ctx.context().nonFatal())
-            return;
+    @ModifyExpressionValue(method = "applyDamage", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F"))
+    private float hatred$bypassesAbsorption(float original, DamageSource source, float amount) {
+        if(source instanceof ContextAwareDamageSource ctx && ctx.context().bypassesAbsorption()) {
+            return amount;
+        }
 
-        self.setHealth(1.0F);
-
-        cir.setReturnValue(true);
+        return original;
     }
 
     @Inject(method = "isUsingItem", at = @At("HEAD"), cancellable = true)
