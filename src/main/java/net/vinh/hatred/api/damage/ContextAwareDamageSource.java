@@ -36,9 +36,15 @@ public class ContextAwareDamageSource extends DamageSource {
     @Override
     public boolean isIn(TagKey<DamageType> tag) {
         if(tag == DamageTypeTags.BYPASSES_INVULNERABILITY && context.bypassesInvulnerability()) return true;
-        if(tag == DamageTypeTags.ALWAYS_HURTS_ENDER_DRAGONS && context.alwaysDamageEnderDragons()) return true;
         if(tag == DamageTypeTags.BYPASSES_COOLDOWN && context.bypassesCooldown()) return true;
         if(tag == DamageTypeTags.BYPASSES_SHIELD && context.bypassesShield()) return true;
+
+        if(context.neverDamageEnderDragons() && context.alwaysDamageEnderDragons()) {
+            return super.isIn(tag);
+        } else {
+            if(tag == DamageTypeTags.ALWAYS_HURTS_ENDER_DRAGONS && context.alwaysDamageEnderDragons()) return true;
+            if(tag == DamageTypeTags.ALWAYS_HURTS_ENDER_DRAGONS && context.neverDamageEnderDragons()) return false;
+        }
 
         return super.isIn(tag);
     }

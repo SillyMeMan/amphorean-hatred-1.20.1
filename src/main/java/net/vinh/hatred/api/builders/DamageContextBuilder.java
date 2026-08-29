@@ -1,7 +1,6 @@
 package net.vinh.hatred.api.builders;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -21,7 +20,7 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
     @Nullable private Entity directSource;
     private float armorEffectivenessMultiplier = 1.0f;
     private boolean bypassesArmor = false;
-    private boolean bypassesAbsoption = false;
+    private boolean bypassesAbsorption = false;
     private boolean bypassesShield = false;
     private boolean bypassesResistance = false;
     private boolean bypassesEnchantments = false;
@@ -29,6 +28,7 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
     private boolean bypassesTotems = false;
     private boolean bypassesCooldown = false;
     private boolean alwaysDamageEnderDragons = false;
+    private boolean neverDamageEnderDragons = false;
     private boolean nonFatal = false;
     private boolean trueDamage = false;
     private boolean addKilledDisplayNameToMsg = false;
@@ -92,7 +92,7 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
      * @return This instance of the builder for convenience in chaining options
      */
     public DamageContextBuilder bypassesAbsorption() {
-        this.bypassesAbsoption = true;
+        this.bypassesAbsorption = true;
         return this;
     }
 
@@ -167,6 +167,16 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
     }
 
     /**
+     * Causes this damage to never take effect on {@link net.minecraft.entity.boss.dragon.EnderDragonEntity}.
+     *
+     * @return This instance of the builder for convenience in chaining options
+     */
+    public DamageContextBuilder neverDamageEnderDragons() {
+        this.neverDamageEnderDragons = true;
+        return this;
+    }
+
+    /**
      * Causes this damage to be non-fatal. If under normal circumstances this damage is fatal and the target has no Totems of Undying or {@link #bypassesTotems()} is in effect, the target will only take enough damage to have 1 health, any remaining damage is ignored
      *
      * @return This instance of the builder for convenience in chaining options
@@ -203,6 +213,6 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
 
     @Override
     public DamageContext build() {
-        return new DamageContext(type, deathMessage, attacker, directSource, armorEffectivenessMultiplier, bypassesArmor, bypassesAbsoption, bypassesShield, bypassesResistance, bypassesEnchantments, bypassesInvulnerability, bypassesTotems, bypassesCooldown, alwaysDamageEnderDragons, nonFatal, trueDamage, addKilledDisplayNameToMsg, hitEffects, knockback);
+        return new DamageContext(type, deathMessage, attacker, directSource, armorEffectivenessMultiplier, bypassesArmor, bypassesAbsorption, bypassesShield, bypassesResistance, bypassesEnchantments, bypassesInvulnerability, bypassesTotems, bypassesCooldown, alwaysDamageEnderDragons, neverDamageEnderDragons, nonFatal, trueDamage, addKilledDisplayNameToMsg, hitEffects, knockback);
     }
 }

@@ -21,11 +21,17 @@ public class Ability extends AbstractAbility {
         this.interruptCooldown = interruptCooldown;
     }
 
+    /**
+     * Anything inside this void method instantly runs upon ability usage
+     */
     @Override
     public Args preCast(LivingEntity caster) {
         return Args.ofMutable();
     }
 
+    /**
+     * Anything inside this void method runs when the countdown/pre-cast state ends.
+     */
     @Override
     public void cast(LivingEntity caster, Args arguments) {
         // what the fuck

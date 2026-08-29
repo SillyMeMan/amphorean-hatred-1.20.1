@@ -5,18 +5,12 @@ import net.minecraft.util.Identifier;
 import net.vinh.hatred.api.misc.Args;
 
 public abstract class AbstractAbility {
-    /**
-     * Anything inside this void method instantly runs upon ability usage
-     */
     public abstract Args preCast(LivingEntity caster);
 
-    /**
-     * Anything inside this void method runs when the countdown/pre-cast state ends.
-     */
     public abstract void cast(LivingEntity caster, Args arguments);
 
     /**
-     *    Can be used to specify a cooldown group.
+     * Can be used to specify a cooldown group.
      * <p>
      * Any ability in the same cooldown group goes on cooldown if
      * any one of the ability in the cooldown group gets put on cooldown

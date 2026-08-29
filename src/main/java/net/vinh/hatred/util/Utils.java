@@ -15,6 +15,7 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.network.PacketByteBuf;
@@ -93,6 +94,10 @@ public final class Utils {
 
         public static <T extends BlockEntity> BlockEntityType<T> blockEntity(Identifier id, FabricBlockEntityTypeBuilder.Factory<T> factory, Block... blocks) {
             return Registry.register(Registries.BLOCK_ENTITY_TYPE, id, FabricBlockEntityTypeBuilder.create(factory, blocks).build());
+        }
+
+        public static <T extends Fluid> T fluid(Identifier id, T fluid) {
+            return Registry.register(Registries.FLUID, id, fluid);
         }
 
         public static <T extends Entity> EntityType<T> entity(Identifier id, FabricEntityTypeBuilder<T> builder) {

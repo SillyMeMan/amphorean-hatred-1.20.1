@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * An argument storer that is intended to be used for storing arguments used by {@link net.vinh.hatred.api.ability.Ability}.
@@ -20,12 +21,12 @@ public class Args implements Iterable<Object> {
     }
 
     @Contract("_ -> new")
-    public static @NotNull MutableArgs ofMutable(Object... args) {
+    public static @NotNull MutableArgs ofMutable(@NotNull Object... args) {
         return new MutableArgs(new ArrayList<>(List.of(args)));
     }
 
     @Contract("_ -> new")
-    public static @NotNull Args ofImmutable(Object... args) {
+    public static @NotNull Args ofImmutable(@NotNull Object... args) {
         return new Args(List.of(args));
     }
 
@@ -34,15 +35,37 @@ public class Args implements Iterable<Object> {
     }
 
     /**
-     * Get the argument currently stored at the specified index. The index is zero-based.
+     * Get the argument currently stored at the specified index. If the result this not an instance of the expected type, it will throw an {@link IllegalStateException}. The index is zero-based.
      * @param index The index.
+     * @param expectedType The class of the expected time
      * @return The argument currently stored at specified index.
      * @param <T> A type variable specifying the wanted return type.
-     * @throws ClassCastException If the fetched argument is not the same as the type variable.
-     * @throws IndexOutOfBoundsException If the index is out of the argument list range
+     * @throws IllegalStateException if the return value is not the same as the expectedType
      */
-    public <T> T get(int index) {
-        return (T) storedArgs.get(index);
+    public <T> T getOrThrow(int index, Class<T> expectedType) {
+        return getOptional(index, expectedType).orElseThrow(() -> new IllegalStateException("The return value is not the same as the expectedType"));
+    }
+
+    /**
+     * Get the argument currently stored at the specified index. If the result this not equal to the expected type, it will return an empty {@link Optional}. The index is zero-based.
+     * @param index The index.
+     * @param expectedType The class of the expected time
+     * @return The argument currently stored at specified index.
+     * @param <T> A type variable specifying the wanted return type.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> Optional<T> getOptional(int index, Class<T> expectedType) {
+        try {
+            Object stored = storedArgs.get(index);
+
+            if(!expectedType.isInstance(stored)) {
+                return Optional.empty();
+            } else {
+                return Optional.of((T) stored);
+            }
+        } catch (IndexOutOfBoundsException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
