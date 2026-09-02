@@ -1,10 +1,10 @@
 package net.vinh.hatred.internal.entity;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import net.vinh.hatred.api.ability.Ability;
 import net.vinh.hatred.api.ability.AbilityResult;
@@ -19,18 +19,17 @@ import net.vinh.hatred.api.event.ServerAbilityEvents;
 import net.vinh.hatred.api.registry.HatredRegistries;
 import net.vinh.hatred.internal.HatredInternalAttachments;
 import net.vinh.hatred.internal.ability.AbstractAbility;
-import net.vinh.hatred.util.Utils;
 
 import java.util.Map;
 import java.util.Objects;
 
 public interface LivingEntityInjectionAccess {
-    default void kill(RegistryEntry<DamageType> type) {
+    /**
+     * A more configurable version of the {@link Entity#kill()} method.
+     * @param builder Primarily used to specify a damage type and/or a custom death message. If the damage type is not specified, it will default to using {@link DamageTypes#GENERIC} and its death message if none is added.
+     */
+    default void kill(DamageContextBuilder builder) {
         LivingEntity target = (LivingEntity) this;
-
-        DamageContextBuilder builder = Utils.Builders.contextBuilder();
-
-        builder.type(type);
 
         builder.bypassesTotems();
         builder.bypassesAbsorption();

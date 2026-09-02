@@ -1,37 +1,38 @@
 package net.vinh.hatred.api.math;
 
 public final class TickMath {
-    private final int currentTicks;
+    private int currentTicks;
 
     public TickMath() {
-        this(0);
-    }
-
-    private TickMath(int newTicks) {
-        this.currentTicks = newTicks;
+        this.currentTicks = 0;
     }
 
     public TickMath milliseconds(int milliseconds) {
-        return new TickMath(currentTicks + milliseconds * 20 / 1000);
+        this.currentTicks += milliseconds / 50;
+        return this;
     }
 
     public TickMath seconds(int seconds) {
-        return new TickMath(currentTicks + seconds * 20);
+        this.currentTicks += seconds * 20;
+        return this;
     }
 
     public TickMath minutes(int minutes) {
-        return new TickMath(currentTicks + minutes * 20 * 60);
+        this.currentTicks += minutes * 20 * 60;
+        return this;
     }
 
     public TickMath hours(int hours) {
-        return new TickMath(currentTicks + hours * 20 * 60 * 60);
+        this.currentTicks += hours * 20 * 60 * 60;
+        return this;
     }
 
     public TickMath reset() {
-        return new TickMath();
+        this.currentTicks = 0;
+        return this;
     }
 
-    public int build() {
+    public long build() {
         return currentTicks;
     }
 

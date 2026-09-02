@@ -158,6 +158,7 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
 
     /**
      * Causes this damage to always take effect on {@link net.minecraft.entity.boss.dragon.EnderDragonEntity}.
+     * If both this and {@link #neverDamageEnderDragons()} is enabled, it will default to if the damage type has the {@link net.minecraft.registry.tag.DamageTypeTags#ALWAYS_HURTS_ENDER_DRAGONS} tag or not
      *
      * @return This instance of the builder for convenience in chaining options
      */
@@ -168,6 +169,7 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
 
     /**
      * Causes this damage to never take effect on {@link net.minecraft.entity.boss.dragon.EnderDragonEntity}.
+     * If both this and {@link #alwaysDamageEnderDragons()} is enabled, it will default to if the damage type has the {@link net.minecraft.registry.tag.DamageTypeTags#ALWAYS_HURTS_ENDER_DRAGONS} tag or not
      *
      * @return This instance of the builder for convenience in chaining options
      */
