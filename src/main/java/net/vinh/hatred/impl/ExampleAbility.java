@@ -4,7 +4,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.World;
 import net.vinh.hatred.AmphoreanHatred;
 import net.vinh.hatred.api.ability.Ability;
-import net.vinh.hatred.api.misc.Args;
+import net.vinh.hatred.api.util.Args;
 
 public class ExampleAbility extends Ability {
     public ExampleAbility() {

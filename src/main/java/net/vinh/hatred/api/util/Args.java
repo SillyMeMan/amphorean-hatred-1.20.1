@@ -1,4 +1,4 @@
-package net.vinh.hatred.api.misc;
+package net.vinh.hatred.api.util;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -35,36 +35,40 @@ public class Args implements Iterable<Object> {
     }
 
     /**
-     * Get the argument currently stored at the specified index. If the result this not an instance of the expected type, it will throw an {@link IllegalStateException}. The index is zero-based.
+     * Get the argument currently stored at the specified index. If the result this not an instance of the type, it will throw an {@link IllegalStateException}. The index is zero-based.
      * @param index The index.
-     * @param expectedType The class of the expected time
+     * @param type The {@link ArgType} of the expected type
      * @return The argument currently stored at specified index.
      * @param <T> A type variable specifying the wanted return type.
-     * @throws IllegalStateException if the return value is not the same as the expectedType
+     * @throws IllegalStateException if the return value is not the same as the type
      */
-    public <T> T getOrThrow(int index, Class<T> expectedType) {
-        return getOptional(index, expectedType).orElseThrow(() -> new IllegalStateException("The return value is not the same as the expectedType"));
+    public <T> T getOrThrow(int index, ArgType<T> type) {
+        return getOptional(index, type).orElseThrow(() -> new IllegalStateException(
+                "Argument at index " + index +
+                        " does not match expected type " + type
+        ));
     }
 
     /**
      * Get the argument currently stored at the specified index. If the result this not equal to the expected type, it will return an empty {@link Optional}. The index is zero-based.
      * @param index The index.
-     * @param expectedType The class of the expected time
+     * @param type The {@link ArgType} of the expected type
      * @return The argument currently stored at specified index.
      * @param <T> A type variable specifying the wanted return type.
      */
-    @SuppressWarnings("unchecked")
-    public <T> Optional<T> getOptional(int index, Class<T> expectedType) {
-        try {
-            Object stored = storedArgs.get(index);
+    public <T> Optional<T> getOptional(int index, ArgType<T> type) {
+        if (index < 0 || index >= storedArgs.size()) {
+            throw new IndexOutOfBoundsException(
+                    "Argument index " + index +
+                            " is out of bounds. Argument count: " +
+                            storedArgs.size()
+            );
+        }
 
-            if(!expectedType.isInstance(stored)) {
-                return Optional.empty();
-            } else {
-                return Optional.of((T) stored);
-            }
-        } catch (IndexOutOfBoundsException e) {
-            throw new RuntimeException(e);
+        try {
+            return Optional.of(type.cast(storedArgs.get(index)));
+        } catch (ClassCastException ignored) {
+            return Optional.empty();
         }
     }
 

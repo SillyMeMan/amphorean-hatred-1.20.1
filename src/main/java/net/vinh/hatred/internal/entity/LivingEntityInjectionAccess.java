@@ -10,7 +10,7 @@ import net.vinh.hatred.api.ability.Ability;
 import net.vinh.hatred.api.ability.AbilityResult;
 import net.vinh.hatred.api.ability.Cooldowns;
 import net.vinh.hatred.api.builders.DamageContextBuilder;
-import net.vinh.hatred.api.misc.Args;
+import net.vinh.hatred.api.util.Args;
 import net.vinh.hatred.internal.ability.state.CombatStates;
 import net.vinh.hatred.api.damage.DamageContext;
 import net.vinh.hatred.api.damage.DamageDistributors;

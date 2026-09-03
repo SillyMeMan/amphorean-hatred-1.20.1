@@ -8,6 +8,7 @@ import net.minecraft.util.WinNativeModuleUtil;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
+import net.vinh.hatred.exception.ManuallyThrownCrashException;
 import net.vinh.hatred.internal.ability.state.CombatStates;
 import net.vinh.hatred.client.animation.AnimationManager;
 import net.vinh.hatred.client.camera.ScreenshakeController;
@@ -32,7 +33,7 @@ public class MinecraftClientMixin {
         ScreenshakeController.tick();
 
         if(ClientCrashHandler.shouldCrash) {
-            CrashReport crashReport = new CrashReport(ClientCrashHandler.reason, new Throwable(ClientCrashHandler.reason));
+            CrashReport crashReport = new CrashReport(ClientCrashHandler.reason, new ManuallyThrownCrashException(ClientCrashHandler.reason));
             CrashReportSection crashReportSection = crashReport.addElement("Crash details");
             WinNativeModuleUtil.addDetailTo(crashReportSection);
             throw new CrashException(crashReport);

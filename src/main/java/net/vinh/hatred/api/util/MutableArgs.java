@@ -1,4 +1,4 @@
-package net.vinh.hatred.api.misc;
+package net.vinh.hatred.api.util;
 
 import java.util.ArrayList;
 import java.util.List;

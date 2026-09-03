@@ -2,7 +2,7 @@ package net.vinh.hatred.internal.ability;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
-import net.vinh.hatred.api.misc.Args;
+import net.vinh.hatred.api.util.Args;
 
 public abstract class AbstractAbility {
     public abstract Args preCast(LivingEntity caster);

@@ -6,6 +6,7 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.vinh.hatred.api.client.screen.HudTextManager;
+import net.vinh.hatred.exception.ManuallyThrownCrashException;
 import net.vinh.hatred.internal.data.DataContainer;
 import net.vinh.hatred.internal.data.DataHolderInternal;
 import net.vinh.hatred.internal.data.HatredServerState;
@@ -47,7 +48,7 @@ public abstract class MinecraftServerMixin implements DataHolderInternal {
         HudTextManager.tick(server);
 
         if(ServerCrashHandler.shouldCrash) {
-            CrashReport crashReport = new CrashReport(ServerCrashHandler.reason, new Throwable(ServerCrashHandler.reason));
+            CrashReport crashReport = new CrashReport(ServerCrashHandler.reason, new ManuallyThrownCrashException(ServerCrashHandler.reason));
             CrashReportSection crashReportSection = crashReport.addElement("Crash details");
             WinNativeModuleUtil.addDetailTo(crashReportSection);
             throw new CrashException(crashReport);

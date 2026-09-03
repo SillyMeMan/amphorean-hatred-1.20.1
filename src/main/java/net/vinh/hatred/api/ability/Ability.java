@@ -3,7 +3,7 @@ package net.vinh.hatred.api.ability;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
-import net.vinh.hatred.api.misc.Args;
+import net.vinh.hatred.api.util.Args;
 import net.vinh.hatred.api.registry.HatredRegistries;
 import net.vinh.hatred.internal.ability.AbstractAbility;
 import org.jetbrains.annotations.Nullable;

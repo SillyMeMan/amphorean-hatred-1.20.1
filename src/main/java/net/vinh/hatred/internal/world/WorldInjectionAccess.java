@@ -19,6 +19,9 @@ import net.vinh.hatred.internal.scheduler.Schedulers;
 import java.util.List;
 import java.util.function.Predicate;
 
+/**
+ * Injected into {@link World} via Loom's Interface Injection. Most of these methods are server-side only and attempting to run these methods on client-side will crash the game with a {@link ClassCastException}
+ */
 public interface WorldInjectionAccess {
     default ScheduledTask schedule(long delay, Runnable action) {
         ServerWorld self = (ServerWorld) this;
