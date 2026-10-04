@@ -18,5 +18,6 @@ public class AmphoreanHatredClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(SyncHudS2CPacket.ID, SyncHudS2CPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(CrashS2CPacket.ID, CrashS2CPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(ShutdownS2CPacket.ID, ShutdownS2CPacket::handle);
+        ClientPlayNetworking.registerGlobalReceiver(GlobalSoundS2CPacket.ID, GlobalSoundS2CPacket::handle);
     }
 }

@@ -53,6 +53,7 @@ import net.vinh.hatred.api.registry.HatredRegistries;
 import net.vinh.hatred.exception.ForbiddenAccessException;
 import net.vinh.hatred.internal.util.ServerCrashHandler;
 import net.vinh.hatred.networking.packet.CrashS2CPacket;
+import net.vinh.hatred.networking.packet.GlobalSoundS2CPacket;
 import net.vinh.hatred.networking.packet.ShutdownS2CPacket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -218,6 +219,24 @@ public final class Utils {
                 for(ServerPlayerEntity serverPlayerEntity : list) {
                     serverPlayerEntity.networkHandler.disconnect(reason);
                 }
+            }
+        }
+    }
+
+    public static class Sound {
+        private Sound() {
+            throw new AssertionError("Not supposed to be instantized!");
+        }
+
+        public static void playGlobal(ServerPlayerEntity player, SoundEvent soundEvent, float volume, float pitch) {
+            PacketByteBuf buf = PacketByteBufs.create();
+            (new GlobalSoundS2CPacket(soundEvent, volume, pitch)).write(buf);
+            ServerPlayNetworking.send(player, GlobalSoundS2CPacket.ID, buf);
+        }
+
+        public static void playGlobal(Iterable<ServerPlayerEntity> players, SoundEvent soundEvent, float volume, float pitch) {
+            for(ServerPlayerEntity player : players) {
+                playGlobal(player, soundEvent, volume, pitch);
             }
         }
     }
