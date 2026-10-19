@@ -25,6 +25,7 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
     private boolean bypassesResistance = false;
     private boolean bypassesEnchantments = false;
     private boolean bypassesInvulnerability = false;
+    private boolean bypassesPureInvulnerability = false;
     private boolean bypassesTotems = false;
     private boolean bypassesCooldown = false;
     private boolean alwaysDamageEnderDragons = false;
@@ -137,6 +138,16 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
     }
 
     /**
+     * Causes this damage to completely bypass pure invulnerability. This includes the invulnerability gained from Creative mode.
+     *
+     * @return This instance of the builder for convenience in chaining options
+     */
+    public DamageContextBuilder bypassesPureInvulnerability() {
+        this.bypassesPureInvulnerability = true;
+        return this;
+    }
+
+    /**
      * Causes this damage to completely bypass the effects of Totems of Undying and any death protection items hooked into tryUseTotem() through Mixins.
      *
      * @return This instance of the builder for convenience in chaining options
@@ -215,6 +226,6 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
 
     @Override
     public DamageContext build() {
-        return new DamageContext(type, deathMessage, attacker, directSource, armorEffectivenessMultiplier, bypassesArmor, bypassesAbsorption, bypassesShield, bypassesResistance, bypassesEnchantments, bypassesInvulnerability, bypassesTotems, bypassesCooldown, alwaysDamageEnderDragons, neverDamageEnderDragons, nonFatal, trueDamage, addKilledDisplayNameToMsg, hitEffects, knockback);
+        return new DamageContext(type, deathMessage, attacker, directSource, armorEffectivenessMultiplier, bypassesArmor, bypassesAbsorption, bypassesShield, bypassesResistance, bypassesEnchantments, bypassesInvulnerability, bypassesPureInvulnerability, bypassesTotems, bypassesCooldown, alwaysDamageEnderDragons, neverDamageEnderDragons, nonFatal, trueDamage, addKilledDisplayNameToMsg, hitEffects, knockback);
     }
 }

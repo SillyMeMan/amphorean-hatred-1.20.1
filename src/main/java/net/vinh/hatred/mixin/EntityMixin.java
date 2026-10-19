@@ -10,6 +10,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -68,20 +69,21 @@ public abstract class EntityMixin implements DataHolderInternal, EntityMixinAcce
     private void hatred$invulnerability(DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
         Entity self = (Entity) (Object) this;
 
+        if (!(damageSource instanceof ContextAwareDamageSource ctx)) {
+            if(self instanceof LivingEntity living && (living.hasStatusEffect(CombatStates.PURE_INVULNERABILITY) || (living.hasStatusEffect(CombatStates.INVULNERABILITY) && !damageSource.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)))) cir.setReturnValue(true);
+            return;
+        }
+
+        var context = ctx.context();
+
         if (self instanceof LivingEntity living
-                && living.hasStatusEffect(CombatStates.PURE_INVULNERABILITY)) {
+                && living.hasStatusEffect(CombatStates.PURE_INVULNERABILITY)
+                && !context.bypassesPureInvulnerability()) {
             cir.setReturnValue(true);
             return;
         }
 
-        if (!(damageSource instanceof ContextAwareDamageSource ctx)) {
-            return;
-        }
-
-        boolean bypassesInvulnerability =
-                ctx.context().bypassesInvulnerability();
-
-        if (bypassesInvulnerability) {
+        if (context.bypassesInvulnerability()) {
             cir.setReturnValue(false);
         }
     }

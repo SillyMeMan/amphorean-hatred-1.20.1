@@ -15,5 +15,5 @@ public class CombatStates {
     public static final StatusEffect ROTATION_LOCK = Utils.RegistryHelper.statusEffect(AmphoreanHatred.id("rotation_lock"), new EmptyStatusEffect(StatusEffectCategory.HARMFUL, ColorHelper.Argb.getArgb(1, 255, 0, 0)));
 
     public static final StatusEffect INVULNERABILITY = Utils.RegistryHelper.statusEffect(AmphoreanHatred.id("invulnerability"), new EmptyStatusEffect(StatusEffectCategory.BENEFICIAL, ColorHelper.Argb.getArgb(1, 255, 0, 0)));
-    public static final StatusEffect PURE_INVULNERABILITY = Utils.RegistryHelper.statusEffect(AmphoreanHatred.id("invulnerability"), new EmptyStatusEffect(StatusEffectCategory.BENEFICIAL, ColorHelper.Argb.getArgb(1, 255, 0, 0)));
+    public static final StatusEffect PURE_INVULNERABILITY = Utils.RegistryHelper.statusEffect(AmphoreanHatred.id("pure_invulnerability"), new EmptyStatusEffect(StatusEffectCategory.BENEFICIAL, ColorHelper.Argb.getArgb(1, 255, 0, 0)));
 }
