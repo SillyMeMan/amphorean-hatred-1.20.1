@@ -34,6 +34,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.*;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -228,15 +229,27 @@ public final class Utils {
             throw new AssertionError("Not supposed to be instantized!");
         }
 
-        public static void playGlobal(ServerPlayerEntity player, SoundEvent soundEvent, float volume, float pitch) {
+        public static void playGlobal(ServerPlayerEntity player, SoundEvent soundEvent, float volume, float pitch, SoundCategory category) {
             PacketByteBuf buf = PacketByteBufs.create();
-            (new GlobalSoundS2CPacket(soundEvent, volume, pitch)).write(buf);
+            (new GlobalSoundS2CPacket(soundEvent, volume, pitch, category, false)).write(buf);
             ServerPlayNetworking.send(player, GlobalSoundS2CPacket.ID, buf);
         }
 
-        public static void playGlobal(Iterable<ServerPlayerEntity> players, SoundEvent soundEvent, float volume, float pitch) {
+        public static void playGlobal(Iterable<ServerPlayerEntity> players, SoundEvent soundEvent, float volume, float pitch, SoundCategory category) {
             for(ServerPlayerEntity player : players) {
-                playGlobal(player, soundEvent, volume, pitch);
+                playGlobal(player, soundEvent, volume, pitch, category);
+            }
+        }
+
+        public static void stopGlobal(ServerPlayerEntity player, SoundEvent soundEvent, SoundCategory category) {
+            PacketByteBuf buf = PacketByteBufs.create();
+            (new GlobalSoundS2CPacket(soundEvent, 0, 0, category, true)).write(buf);
+            ServerPlayNetworking.send(player, GlobalSoundS2CPacket.ID, buf);
+        }
+
+        public static void stopGlobal(Iterable<ServerPlayerEntity> players, SoundEvent soundEvent, SoundCategory category) {
+            for(ServerPlayerEntity player : players) {
+                stopGlobal(player, soundEvent, category);
             }
         }
     }
@@ -304,7 +317,7 @@ public final class Utils {
         }
 
         private void consume() {
-            if(!used.compareAndSet(false, true)) {
+            if(used.compareAndSet(true, true)) {
                 throw new IllegalStateException("This instantiation has already been used");
             }
         }

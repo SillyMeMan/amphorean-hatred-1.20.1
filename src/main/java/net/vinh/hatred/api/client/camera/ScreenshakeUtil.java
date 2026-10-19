@@ -8,6 +8,7 @@ import net.minecraft.util.math.Vec3d;
 import net.vinh.hatred.networking.packet.ScreenshakeS2CPacket;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 import java.util.List;
 
 public final class ScreenshakeUtil {
@@ -23,7 +24,7 @@ public final class ScreenshakeUtil {
         shake(List.of(player), origin, radius, intensity, duration);
     }
 
-    public static void shake(List<ServerPlayerEntity> players, @Nullable Vec3d origin, float radius, float intensity, int duration) {
+    public static void shake(Iterable<ServerPlayerEntity> players, @Nullable Vec3d origin, float radius, float intensity, int duration) {
         ScreenshakeS2CPacket packet = new ScreenshakeS2CPacket(intensity, duration, origin, radius);
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 

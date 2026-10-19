@@ -192,6 +192,28 @@ public interface LivingEntityInjectionAccess {
         self.removeStatusEffect(CombatStates.ROTATION_LOCK);
     }
 
+    default void setInvulnerability(boolean isInvulnerable) {
+        LivingEntity self = (LivingEntity) this;
+
+        if(isInvulnerable) {
+            StatusEffectInstance instance = new StatusEffectInstance(CombatStates.INVULNERABILITY, -1, 0, false, false);
+            self.addStatusEffect(instance);
+        } else {
+            self.removeStatusEffect(CombatStates.INVULNERABILITY);
+        }
+    }
+
+    default void setPureInvulnerability(boolean isPureInvulnerable) {
+        LivingEntity self = (LivingEntity) this;
+
+        if(isPureInvulnerable) {
+            StatusEffectInstance instance = new StatusEffectInstance(CombatStates.PURE_INVULNERABILITY, -1, 0, false, false);
+            self.addStatusEffect(instance);
+        } else {
+            self.removeStatusEffect(CombatStates.PURE_INVULNERABILITY);
+        }
+    }
+
     default void completeFreeze() {
         LivingEntity self = (LivingEntity) this;
 
@@ -199,7 +221,6 @@ public interface LivingEntityInjectionAccess {
         self.lockRotation();
 
         if(self instanceof PlayerEntity player) player.inventoryFreeze();
-
     }
 
     default void completeUnfreeze() {
