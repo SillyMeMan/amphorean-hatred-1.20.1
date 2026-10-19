@@ -68,18 +68,18 @@ public abstract class EntityMixin implements DataHolderInternal, EntityMixinAcce
     private void hatred$invulnerability(DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
         Entity self = (Entity) (Object) this;
 
+        if (self instanceof LivingEntity living
+                && living.hasStatusEffect(CombatStates.PURE_INVULNERABILITY)) {
+            cir.setReturnValue(true);
+            return;
+        }
+
         if (!(damageSource instanceof ContextAwareDamageSource ctx)) {
             return;
         }
 
         boolean bypassesInvulnerability =
                 ctx.context().bypassesInvulnerability();
-
-        if (self instanceof LivingEntity living
-                && living.hasStatusEffect(CombatStates.PURE_INVULNERABILITY)) {
-            cir.setReturnValue(true);
-            return;
-        }
 
         if (bypassesInvulnerability) {
             cir.setReturnValue(false);
