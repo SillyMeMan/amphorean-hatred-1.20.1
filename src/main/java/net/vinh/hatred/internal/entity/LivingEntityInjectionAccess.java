@@ -3,25 +3,23 @@ package net.vinh.hatred.internal.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
+import net.vinh.hatred.AmphoreanHatred;
 import net.vinh.hatred.api.ability.Ability;
 import net.vinh.hatred.api.ability.AbilityResult;
 import net.vinh.hatred.api.ability.Cooldowns;
 import net.vinh.hatred.api.builders.DamageContextBuilder;
 import net.vinh.hatred.api.util.Args;
-import net.vinh.hatred.internal.ability.state.CombatStates;
+import net.vinh.hatred.cca.ModComponents;
+import net.vinh.hatred.internal.ability.AbilityExecution;
+import net.vinh.hatred.internal.ability.AbilityManager;
 import net.vinh.hatred.api.damage.DamageContext;
 import net.vinh.hatred.api.damage.DamageDistributors;
-import net.vinh.hatred.api.data.Data;
-import net.vinh.hatred.api.event.ServerAbilityEvents;
 import net.vinh.hatred.api.registry.HatredRegistries;
-import net.vinh.hatred.internal.HatredInternalAttachments;
-import net.vinh.hatred.internal.ability.AbstractAbility;
-
-import java.util.Map;
-import java.util.Objects;
+import net.vinh.hatred.internal.scheduler.EntityScheduler;
+import net.vinh.hatred.internal.scheduler.ScheduledTask;
 
 public interface LivingEntityInjectionAccess {
     /**
@@ -58,9 +56,9 @@ public interface LivingEntityInjectionAccess {
         Cooldowns.resetAllCooldown(entity);
     }
 
-    default void resetCooldown(Ability ability) {
+    default void resetCooldown(Ability ability, boolean includeCooldownGroup) {
         LivingEntity entity = (LivingEntity) this;
-        Cooldowns.resetCooldown(entity, HatredRegistries.ABILITY.getId(ability));
+        Cooldowns.resetCooldown(entity, HatredRegistries.ABILITY.getId(ability), includeCooldownGroup);
     }
 
     default void setCooldown(Ability ability, long cooldown) {
@@ -71,135 +69,121 @@ public interface LivingEntityInjectionAccess {
     default void cancelAbility(Ability ability, boolean triggerOnCancelled) {
         LivingEntity entity = (LivingEntity) this;
 
-        Map<Identifier, AbstractAbility.PreCastInstance> map =
-                Data.API.get(entity, HatredInternalAttachments.PRECASTS);
+        Identifier id = HatredRegistries.ABILITY.getId(ability);
+        MinecraftServer server = entity.getServer();
 
-        for (AbstractAbility.PreCastInstance instance : map.values()) {
-            if(instance.abilityId == HatredRegistries.ABILITY.getId(ability)) {
-                instance.cancelled = true;
-                if(triggerOnCancelled) ability.onCancelled(entity);
-
-                Data.API.set(entity, HatredInternalAttachments.IS_USING_ABILITY, false);
-            }
+        if (server == null || id == null) {
+            return;
         }
 
-        map.clear();
+        AbilityManager manager = AbilityManager.get(server);
+        manager.cancel(entity, id, triggerOnCancelled);
+
+        ModComponents.LIVING_ENTITY.get(entity).isUsingAbility = manager.hasActiveExecution(entity);
+        ModComponents.LIVING_ENTITY.sync(entity);
     }
 
     default void cancelAll(boolean triggerOnCancelled) {
         LivingEntity entity = (LivingEntity) this;
+        MinecraftServer server = entity.getServer();
 
-        Map<Identifier, AbstractAbility.PreCastInstance> map =
-                Data.API.get(entity, HatredInternalAttachments.PRECASTS);
-
-        for(AbstractAbility.PreCastInstance instance : map.values()) {
-            instance.cancelled = true;
-            if(triggerOnCancelled) {
-                Objects.requireNonNull(HatredRegistries.ABILITY.get(instance.abilityId)).onCancelled(entity);
-            }
+        if (server == null) {
+            return;
         }
 
-        Data.API.set(entity, HatredInternalAttachments.IS_USING_ABILITY, false);
+        AbilityManager manager = AbilityManager.get(server);
+        manager.cancelAll(entity, triggerOnCancelled);
+
+        ModComponents.LIVING_ENTITY.get(entity).isUsingAbility = false;
+        ModComponents.LIVING_ENTITY.sync(entity);
     }
 
     default AbilityResult attemptAbility(Ability ability) {
-        var ref = new Object() {
-            AbilityResult finalResult = AbilityResult.PASS;
-        };
-
         LivingEntity entity = (LivingEntity) this;
 
         Identifier id = HatredRegistries.ABILITY.getId(ability);
 
-        Map<Identifier, AbstractAbility.PreCastInstance> map =
-                Data.API.get(entity, HatredInternalAttachments.PRECASTS);
-
-        if (!Cooldowns.isReady(entity, id) || ServerAbilityEvents.PRE_CAST.invoker().preCast(entity, ability) == AbilityResult.FAIL) {
-            ref.finalResult = AbilityResult.FAIL;
-            return ref.finalResult;
+        if (id == null || !Cooldowns.isReady(entity, id)) {
+            return AbilityResult.FAIL;
         }
 
-        Args args = ability.preCast(entity);
-        Data.API.set(entity, HatredInternalAttachments.IS_USING_ABILITY, true);
+        MinecraftServer server = entity.getServer();
 
-        assert entity.getServer() != null;
-        long now = entity.getServer().getTicks();
+        if (server == null) {
+            return AbilityResult.FAIL;
+        }
 
-        long castTick = now + ability.preCastTime();
+        Args args = ability.preCast(entity).toImmutable();
 
-        AbstractAbility.PreCastInstance instance =
-                new AbstractAbility.PreCastInstance(id, now, castTick);
+        AbilityManager manager = AbilityManager.get(server);
 
-        map.put(id, instance);
+        if (manager.hasExecution(entity, id)) {
+            return AbilityResult.FAIL;
+        }
 
-        Data.API.set(entity, HatredInternalAttachments.PRECASTS, map);
+        AbilityExecution execution = new AbilityExecution(
+                entity,
+                ability,
+                id,
+                args
+        );
 
-        entity.schedule(ability.preCastTime(), () -> {
-            if (!instance.cancelled || ServerAbilityEvents.PRE_CAST.invoker().preCast(entity, ability) != AbilityResult.CANCELLED) {
-                ability.cast(entity, args.toImmutable());
-                ref.finalResult = AbilityResult.SUCCESS;
-                Cooldowns.setCooldown(entity, id, ability.cooldown());
+        try {
+            execution.initialize();
+            manager.start(execution);
+        } catch (RuntimeException exception) {
+            execution.cancel(false);
+            throw exception;
+        }
 
-                Map<Identifier, AbstractAbility.PreCastInstance> precasts =
-                        Data.API.get(entity, HatredInternalAttachments.PRECASTS);
+        ModComponents.LIVING_ENTITY.get(entity).isUsingAbility = true;
+        ModComponents.LIVING_ENTITY.sync(entity);
 
-                precasts.remove(id);
-
-                Data.API.set(entity, HatredInternalAttachments.PRECASTS, precasts);
-            } else {
-                ref.finalResult = AbilityResult.CANCELLED;
-                Cooldowns.setCooldown(entity, id, ability.interruptCooldown());
-
-                Map<Identifier, AbstractAbility.PreCastInstance> precasts =
-                        Data.API.get(entity, HatredInternalAttachments.PRECASTS);
-
-                precasts.remove(id);
-
-                Data.API.set(entity, HatredInternalAttachments.PRECASTS, precasts);
-            }
-
-            Data.API.set(entity, HatredInternalAttachments.IS_USING_ABILITY, false);
-        });
-
-        return ref.finalResult;
+        return AbilityResult.SUCCESS;
     }
 
     default void movementFreeze() {
         LivingEntity self = (LivingEntity) this;
 
-        StatusEffectInstance instance = new StatusEffectInstance(CombatStates.MOVEMENT_FREEZE, -1, 0, false, false);
-
-        self.addStatusEffect(instance);
+        ModComponents.LIVING_ENTITY.get(self).movementFrozen = true;
+        ModComponents.LIVING_ENTITY.sync(self);
     }
 
     default void movementUnfreeze() {
         LivingEntity self = (LivingEntity) this;
 
-        self.removeStatusEffect(CombatStates.MOVEMENT_FREEZE);
+        ModComponents.LIVING_ENTITY.get(self).movementFrozen = false;
+        ModComponents.LIVING_ENTITY.sync(self);
     }
 
     default void lockRotation() {
         LivingEntity self = (LivingEntity) this;
 
-        StatusEffectInstance instance = new StatusEffectInstance(CombatStates.ROTATION_LOCK, -1, 0, false, false);
-
-        self.addStatusEffect(instance);
+        ModComponents.LIVING_ENTITY.get(self).rotationLocked = true;
+        ModComponents.LIVING_ENTITY.sync(self);
     }
 
     default void unlockRotation() {
         LivingEntity self = (LivingEntity) this;
 
-        self.removeStatusEffect(CombatStates.ROTATION_LOCK);
+        ModComponents.LIVING_ENTITY.get(self).rotationLocked = false;
+        ModComponents.LIVING_ENTITY.sync(self);
     }
 
     default void setInvulnerability(boolean isInvulnerable) {
         LivingEntity self = (LivingEntity) this;
 
         if(isInvulnerable) {
-            StatusEffectInstance instance = new StatusEffectInstance(CombatStates.INVULNERABILITY, -1, 0, false, false);
-            self.addStatusEffect(instance);
+            if(ModComponents.LIVING_ENTITY.get(self).isPureInvulnerable) {
+                AmphoreanHatred.LOGGER.warn("{} already has Pure Invulnerability. Remove Pure Invulnerability before applying", self.getEntityName());
+                return;
+            }
+
+            ModComponents.LIVING_ENTITY.get(self).isInvulnerable = true;
+            ModComponents.LIVING_ENTITY.sync(self);
         } else {
-            self.removeStatusEffect(CombatStates.INVULNERABILITY);
+            ModComponents.LIVING_ENTITY.get(self).isInvulnerable = false;
+            ModComponents.LIVING_ENTITY.sync(self);
         }
     }
 
@@ -207,10 +191,12 @@ public interface LivingEntityInjectionAccess {
         LivingEntity self = (LivingEntity) this;
 
         if(isPureInvulnerable) {
-            StatusEffectInstance instance = new StatusEffectInstance(CombatStates.PURE_INVULNERABILITY, -1, 0, false, false);
-            self.addStatusEffect(instance);
+            ModComponents.LIVING_ENTITY.get(self).isInvulnerable = false;
+            ModComponents.LIVING_ENTITY.get(self).isPureInvulnerable = true;
+            ModComponents.LIVING_ENTITY.sync(self);
         } else {
-            self.removeStatusEffect(CombatStates.PURE_INVULNERABILITY);
+            ModComponents.LIVING_ENTITY.get(self).isPureInvulnerable = false;
+            ModComponents.LIVING_ENTITY.sync(self);
         }
     }
 
@@ -230,5 +216,15 @@ public interface LivingEntityInjectionAccess {
         self.unlockRotation();
 
         if(self instanceof PlayerEntity player) player.inventoryUnfreeze();
+    }
+
+    default ScheduledTask schedule(long delay, Runnable action) {
+        LivingEntity self = (LivingEntity) this;
+        return EntityScheduler.schedule(self, delay, action);
+    }
+
+    default ScheduledTask scheduleRepeating(long interval, Runnable action) {
+        LivingEntity self = (LivingEntity) this;
+        return EntityScheduler.scheduleRepeating(self, interval, action);
     }
 }

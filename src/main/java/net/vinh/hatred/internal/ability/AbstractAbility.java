@@ -7,7 +7,7 @@ import net.vinh.hatred.api.util.Args;
 public abstract class AbstractAbility {
     public abstract Args preCast(LivingEntity caster);
 
-    public abstract void cast(LivingEntity caster, Args arguments);
+    public abstract void cast(AbilityTimeline timeline, LivingEntity caster, Args args);
 
     /**
      * Can be used to specify a cooldown group.
@@ -20,28 +20,15 @@ public abstract class AbstractAbility {
         return null;
     }
 
-    public void onCancelled(LivingEntity user) {
+    public void onCancelled(LivingEntity caster) {
 
     }
 
-    public abstract int preCastTime();
+    public void onFinished(LivingEntity caster) {
+
+    }
 
     public abstract int cooldown();
-
     public abstract int interruptCooldown();
-
-    public static class PreCastInstance {
-        public final Identifier abilityId;
-
-        public final long startTick;
-        public final long castTick;
-
-        public boolean cancelled;
-
-        public PreCastInstance(Identifier abilityId, long startTick, long castTick) {
-            this.abilityId = abilityId;
-            this.startTick = startTick;
-            this.castTick = castTick;
-        }
-    }
+    public abstract long duration();
 }

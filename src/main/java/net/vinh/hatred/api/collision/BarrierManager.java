@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class BarrierManager {
-private static final Map<RegistryKey<World>, Barrier> barriers = new HashMap<>(); // TODO: make this system resistant to world rejoins/server restarts
+    private static final Map<RegistryKey<World>, Barrier> barriers = new HashMap<>();
 
     public static void addBarrier(World dimension, Barrier barrier) {
         barriers.put(dimension.getRegistryKey(), barrier);

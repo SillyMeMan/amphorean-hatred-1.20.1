@@ -5,8 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
-import net.vinh.hatred.api.damage.DamageDistributors;
-import net.vinh.hatred.internal.ability.state.CombatStates;
+import net.vinh.hatred.cca.ModComponents;
 import net.vinh.hatred.api.builders.DamageContextBuilder;
 import net.vinh.hatred.api.item.IConfigurableDamageSource;
 import net.vinh.hatred.internal.entity.PlayerEntityInjectionAccess;
@@ -14,16 +13,15 @@ import net.vinh.hatred.util.Utils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin implements PlayerEntityInjectionAccess {
     @Inject(method = "attack", at = @At("HEAD"), cancellable = true)
     private void hatred$freezeAttack(Entity target, CallbackInfo ci) {
-        PlayerEntity player = (PlayerEntity) (Object) this;
+        PlayerEntity player = (PlayerEntity)(Object) this;
 
-        if (player.hasStatusEffect(CombatStates.MOVEMENT_FREEZE)) {
+        if (ModComponents.LIVING_ENTITY.get(player).movementFrozen) {
             ci.cancel();
         }
     }

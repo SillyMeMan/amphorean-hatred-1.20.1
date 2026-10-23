@@ -1,12 +1,12 @@
 package net.vinh.hatred.internal.scheduler;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.vinh.hatred.api.data.Data;
+import net.vinh.hatred.cca.ModComponents;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import static net.vinh.hatred.internal.HatredInternalAttachments.*;
 
 public final class EntityScheduler {
 
@@ -33,14 +33,12 @@ public final class EntityScheduler {
     }
 
     @Nullable
-    public static ScheduledTask schedule(Entity entity, long delay, Runnable action) {
+    public static ScheduledTask schedule(LivingEntity entity, long delay, Runnable action) {
         if (!(entity.getWorld() instanceof ServerWorld world)) return null;
 
-        EntityScheduler scheduler =
-                Data.API.get(entity, ENTITY_SCHEDULER);
+        EntityScheduler scheduler = ModComponents.LIVING_ENTITY.get(entity).getScheduler();
 
-        WorldScheduler worldScheduler =
-                Data.API.get(world, WORLD_SCHEDULER);
+        WorldScheduler worldScheduler = ModComponents.WORLD.get(world).getScheduler();
 
         if (scheduler.isEmpty()) {
             worldScheduler.registerEntityScheduler(scheduler);
@@ -53,11 +51,9 @@ public final class EntityScheduler {
     public static ScheduledTask scheduleRepeating(Entity entity, long interval, Runnable action) {
         if (!(entity.getWorld() instanceof ServerWorld world)) return null;
 
-        EntityScheduler scheduler =
-                Data.API.get(entity, ENTITY_SCHEDULER);
+        EntityScheduler scheduler = ModComponents.LIVING_ENTITY.get(entity).getScheduler();
 
-        WorldScheduler worldScheduler =
-                Data.API.get(world, WORLD_SCHEDULER);
+        WorldScheduler worldScheduler = ModComponents.WORLD.get(world).getScheduler();
 
         if (scheduler.isEmpty()) {
             worldScheduler.registerEntityScheduler(scheduler);

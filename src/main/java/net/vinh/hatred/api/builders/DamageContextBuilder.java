@@ -138,7 +138,7 @@ public class DamageContextBuilder extends AbstractBuilder<DamageContext> {
     }
 
     /**
-     * Causes this damage to completely bypass pure invulnerability. This includes the invulnerability gained from Creative mode.
+     * Causes this damage to completely bypass pure invulnerability. This includes all normal Invulnerability and the Pure Invulnerability effect.
      *
      * @return This instance of the builder for convenience in chaining options
      */

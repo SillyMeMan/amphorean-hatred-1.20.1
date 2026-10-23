@@ -2,7 +2,7 @@ package net.vinh.hatred.mixin;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.vinh.hatred.internal.ability.state.CombatStates;
+import net.vinh.hatred.cca.ModComponents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,7 +14,7 @@ public class ServerPlayerEntityMixin {
     private void hatred$freezeInteractItem(ItemStack stack, CallbackInfo ci) {
         ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
 
-        if (player.hasStatusEffect(CombatStates.MOVEMENT_FREEZE)) {
+        if (ModComponents.LIVING_ENTITY.get(player).movementFrozen) {
             ci.cancel();
         }
     }

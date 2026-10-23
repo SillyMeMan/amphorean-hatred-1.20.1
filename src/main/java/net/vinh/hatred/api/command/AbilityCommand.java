@@ -16,7 +16,7 @@ import net.vinh.hatred.api.brigadier.arguments.AbilityArgumentType;
 public class AbilityCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment environment) {
         dispatcher.register(CommandManager.literal("ability")
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(source -> source.hasPermissionLevel(3))
                 .then(CommandManager.argument("targets", EntityArgumentType.entities())
                         .then(CommandManager.literal("reset-ability-cooldown")
                                 .then(CommandManager.argument("ability", AbilityArgumentType.ability())
@@ -33,7 +33,7 @@ public class AbilityCommand {
 
         for(Entity entity : EntityArgumentType.getEntities(context, "targets")) {
             if(entity instanceof LivingEntity living) {
-                living.resetCooldown(AbilityArgumentType.getAbility(context, "ability"));
+                living.resetCooldown(AbilityArgumentType.getAbility(context, "ability"), false);
                 i++;
             }
         }

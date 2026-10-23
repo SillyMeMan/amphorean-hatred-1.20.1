@@ -1,7 +1,6 @@
 package net.vinh.hatred.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.DamageUtil;
 import net.minecraft.entity.LivingEntity;
@@ -12,15 +11,12 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
-import net.vinh.hatred.internal.ability.state.CombatStates;
+import net.vinh.hatred.cca.ModComponents;
 import net.vinh.hatred.api.damage.ContextAwareDamageSource;
 import net.vinh.hatred.internal.entity.LivingEntityInjectionAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -99,7 +95,7 @@ public abstract class LivingEntityMixin implements LivingEntityInjectionAccess {
     private void hatred$freezeItemUse(CallbackInfoReturnable<Boolean> cir) {
         LivingEntity self = (LivingEntity) (Object) this;
 
-        if (self.hasStatusEffect(CombatStates.MOVEMENT_FREEZE)) {
+        if (ModComponents.LIVING_ENTITY.get(self).movementFrozen) {
             cir.setReturnValue(false);
         }
     }
@@ -108,7 +104,7 @@ public abstract class LivingEntityMixin implements LivingEntityInjectionAccess {
     private void hatred$frozen(Vec3d movementInput, CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
 
-        if(self.hasStatusEffect(CombatStates.MOVEMENT_FREEZE)) {
+        if(ModComponents.LIVING_ENTITY.get(self).movementFrozen) {
             self.setVelocity(Vec3d.ZERO);
             self.velocityModified = true;
             ci.cancel();

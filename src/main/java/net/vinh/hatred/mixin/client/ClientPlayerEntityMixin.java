@@ -3,7 +3,7 @@ package net.vinh.hatred.mixin.client;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
-import net.vinh.hatred.internal.ability.state.CombatStates;
+import net.vinh.hatred.cca.ModComponents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,7 +16,7 @@ public class ClientPlayerEntityMixin {
     private void hatred$freezeDrop(boolean entireStack, CallbackInfoReturnable<Boolean> cir) {
         PlayerEntity player = (PlayerEntity)(Object)this;
 
-        if (player.hasStatusEffect(CombatStates.INVENTORY_FREEZE)) {
+        if (ModComponents.PLAYER.get(player).inventoryFrozen) {
             cir.setReturnValue(false);
         }
     }
@@ -25,7 +25,7 @@ public class ClientPlayerEntityMixin {
     private void hatred$freezeDrop(Hand hand, CallbackInfo ci) {
         PlayerEntity player = (PlayerEntity)(Object)this;
 
-        if (player.hasStatusEffect(CombatStates.INVENTORY_FREEZE)) {
+        if (ModComponents.PLAYER.get(player).inventoryFrozen) {
             ci.cancel();
         }
     }

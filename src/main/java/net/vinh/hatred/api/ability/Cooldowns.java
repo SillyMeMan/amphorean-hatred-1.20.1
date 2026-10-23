@@ -2,111 +2,110 @@ package net.vinh.hatred.api.ability;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
-import net.vinh.hatred.api.data.Data;
 import net.vinh.hatred.api.registry.HatredRegistries;
-import net.vinh.hatred.internal.HatredInternalAttachments;
-import net.vinh.hatred.internal.ability.AbstractAbility;
-import org.jetbrains.annotations.Nullable;
+import net.vinh.hatred.cca.HatredLivingEntityComponent;
+import net.vinh.hatred.cca.ModComponents;
 
 import java.util.Map;
 import java.util.Objects;
 
 public final class Cooldowns {
-    public static void resetCooldown(LivingEntity entity, Identifier ability) {
-        Map<Identifier, CooldownEntry> map =
-                Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
-        Map<Identifier, AbstractAbility.PreCastInstance> shit =
-                Data.API.get(entity, HatredInternalAttachments.PRECASTS);
+    public static void resetCooldown(LivingEntity entity, Identifier ability, boolean includeCooldownGroup) {
+        Map<Identifier, CooldownEntry> cooldowns =
+                ModComponents.LIVING_ENTITY.get(entity).getCooldowns();
 
-        map.remove(ability);
-        shit.remove(ability);
+        if (!includeCooldownGroup) {
+            cooldowns.remove(ability);
+        } else {
+            Ability target = Objects.requireNonNull(
+                    HatredRegistries.ABILITY.get(ability),
+                    "Unknown ability: " + ability
+            );
 
-        Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
-        Data.API.set(entity, HatredInternalAttachments.PRECASTS, shit);
+            Identifier group = target.cooldownGroup();
+
+            if (group == null) {
+                cooldowns.remove(ability);
+            } else {
+                for (Identifier id : HatredRegistries.ABILITY.getIds()) {
+                    Ability candidate = HatredRegistries.ABILITY.get(id);
+
+                    if (candidate != null
+                            && group.equals(candidate.cooldownGroup())) {
+                        cooldowns.remove(id);
+                    }
+                }
+            }
+        }
+
+        ModComponents.LIVING_ENTITY.sync(entity);
     }
 
     public static void resetAllCooldown(LivingEntity entity) {
-        Map<Identifier, CooldownEntry> map =
-                Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
-        Map<Identifier, AbstractAbility.PreCastInstance> shit =
-                Data.API.get(entity, HatredInternalAttachments.PRECASTS);
-
-        map.clear();
-        shit.clear();
-
-        Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
-        Data.API.set(entity, HatredInternalAttachments.PRECASTS, shit);
+        ModComponents.LIVING_ENTITY.get(entity)
+                .getCooldowns()
+                .clear();
+        ModComponents.LIVING_ENTITY.sync(entity);
     }
 
     public static boolean isReady(LivingEntity entity, Identifier ability) {
         assert entity.getServer() != null;
 
-        Map<Identifier, CooldownEntry> map =
-                Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
-        Map<Identifier, AbstractAbility.PreCastInstance> shit =
-                Data.API.get(entity, HatredInternalAttachments.PRECASTS);
+        HatredLivingEntityComponent component = ModComponents.LIVING_ENTITY.get(entity);
 
-        CooldownEntry entry = map.get(ability);
+        Map<Identifier, CooldownEntry> cooldowns = component.getCooldowns();
 
-        if(shit.containsKey(ability)) {
+        if (component.isUsingAbility && !component.noStun) {
             return false;
         }
 
-        if(Data.API.get(entity, HatredInternalAttachments.IS_USING_ABILITY) && !Data.API.get(entity, HatredInternalAttachments.NO_STUN)) {
-            return false;
-        }
+        CooldownEntry entry = cooldowns.get(ability);
 
-        if(entry != null) {
-            return entry.readyTick <= entity.getServer().getTicks();
-        }
-
-        return true;
+        return entry == null || entry.readyTick <= entity.getServer().getTicks();
     }
 
     public static void setCooldown(LivingEntity entity, Identifier ability, long cooldown) {
         assert entity.getServer() != null;
-        @Nullable Identifier cooldownGroup = HatredRegistries.ABILITY.get(ability).cooldownGroup();
 
-        for(Identifier id : HatredRegistries.ABILITY.getIds()) {
-            if(cooldownGroup == null) {
-                Map<Identifier, CooldownEntry> map =
-                        Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
+        Ability target = Objects.requireNonNull(
+                HatredRegistries.ABILITY.get(ability),
+                "Unknown ability: " + ability
+        );
 
-                CooldownEntry entry = map.get(ability);
+        Identifier group = target.cooldownGroup();
 
-                if (entry == null) {
-                    entry = new CooldownEntry(
-                            entity.getServer().getTicks() + cooldown
-                    );
+        Map<Identifier, CooldownEntry> cooldowns = ModComponents.LIVING_ENTITY.get(entity).getCooldowns();
 
-                    map.put(ability, entry);
-                }
+        long readyTick = entity.getServer().getTicks() + cooldown;
 
-                entry.readyTick = entity.getServer().getTicks() + cooldown;
+        if (group == null) {
+            setCooldownEntry(cooldowns, ability, readyTick);
+            ModComponents.LIVING_ENTITY.sync(entity);
+            return;
+        }
 
-                Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
+        for (Identifier id : HatredRegistries.ABILITY.getIds()) {
+            Ability candidate = HatredRegistries.ABILITY.get(id);
 
-                return;
+            if (candidate != null && group.equals(candidate.cooldownGroup())) {
+                setCooldownEntry(cooldowns, id, readyTick);
             }
+        }
 
-            if(cooldownGroup.equals(Objects.requireNonNull(HatredRegistries.ABILITY.get(id)).cooldownGroup())) {
-                Map<Identifier, CooldownEntry> map =
-                        Data.API.get(entity, HatredInternalAttachments.ABILITY_COOLDOWNS);
+        ModComponents.LIVING_ENTITY.sync(entity);
+    }
 
-                CooldownEntry entry = map.get(id);
+    private static void setCooldownEntry(
+            Map<Identifier, CooldownEntry> cooldowns,
+            Identifier ability,
+            long readyTick
+    ) {
+        CooldownEntry entry = cooldowns.get(ability);
 
-                if (entry == null) {
-                    entry = new CooldownEntry(
-                            entity.getServer().getTicks() + cooldown
-                    );
-
-                    map.put(id, entry);
-                }
-
-                entry.readyTick = entity.getServer().getTicks() + cooldown;
-
-                Data.API.set(entity, HatredInternalAttachments.ABILITY_COOLDOWNS, map);
-            }
+        if (entry == null) {
+            cooldowns.put(ability, new CooldownEntry(readyTick));
+        } else {
+            entry.readyTick = readyTick;
         }
     }
 }

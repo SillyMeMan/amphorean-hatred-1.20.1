@@ -14,7 +14,7 @@ public final class DamageDistributors {
         if(chance > 1 || chance < 0) throw new IllegalArgumentException("Chance must be smaller or equal to 1 and non-negative");
 
         return totalDamage -> {
-            Random random = Random.createLocal();
+            Random random = Random.create();
 
             if(random.nextDouble() < chance) {
                 return totalDamage * bonusMultiplier;

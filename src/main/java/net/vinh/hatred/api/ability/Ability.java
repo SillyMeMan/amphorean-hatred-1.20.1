@@ -5,51 +5,48 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.vinh.hatred.api.util.Args;
 import net.vinh.hatred.api.registry.HatredRegistries;
+import net.vinh.hatred.internal.ability.AbilityTimeline;
 import net.vinh.hatred.internal.ability.AbstractAbility;
 import org.jetbrains.annotations.Nullable;
 
 public class Ability extends AbstractAbility {
-    private final int preCastTime;
     private final int cooldown;
     private final int interruptCooldown;
+    private final long duration;
 
     private @Nullable String translationKey;
 
-    public Ability(int preCastTime, int cooldown, int interruptCooldown) {
-        this.preCastTime = preCastTime;
+    public Ability(int cooldown, int interruptCooldown, long duration) {
+        if(cooldown < 0 || interruptCooldown < 0 || duration < 0) throw new IllegalArgumentException("No constructor arguments can be negative");
+
         this.cooldown = cooldown;
         this.interruptCooldown = interruptCooldown;
+        this.duration = duration;
     }
 
-    /**
-     * Anything inside this void method instantly runs upon ability usage
-     */
     @Override
     public Args preCast(LivingEntity caster) {
-        return Args.ofMutable();
-    }
-
-    /**
-     * Anything inside this void method runs when the countdown/pre-cast state ends.
-     */
-    @Override
-    public void cast(LivingEntity caster, Args arguments) {
-        // what the fuck
+        return Args.ofImmutable();
     }
 
     @Override
-    public int preCastTime() {
-        return preCastTime;
+    public void cast(AbilityTimeline timeline, LivingEntity caster, Args args) {
+
     }
 
     @Override
-    public int cooldown() {
+    public final int cooldown() {
         return cooldown;
     }
 
     @Override
-    public int interruptCooldown() {
+    public final int interruptCooldown() {
         return interruptCooldown;
+    }
+
+    @Override
+    public final long duration() {
+        return duration;
     }
 
     public Text getName() {

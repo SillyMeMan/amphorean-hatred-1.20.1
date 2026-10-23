@@ -4,10 +4,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.event.GameEvent;
 import net.vinh.hatred.mixin.accessor.LivingEntityAccessor;
 
 /**
@@ -21,9 +21,9 @@ public final class DamageApi {
 
         ContextAwareDamageSource source = new ContextAwareDamageSource(finalType, ctx);
 
-        if(ctx.trueDamage() && target instanceof LivingEntity living) return applyTrueDamage(living, distributor.distribute(totalDamage), ctx, source);
+        float distributedDamage = distributor.distribute(totalDamage);
 
-        boolean damageApplied = target.damage(source, distributor.distribute(totalDamage));
+        boolean damageApplied = ctx.trueDamage() && target instanceof LivingEntity living ? applyTrueDamage(living, distributedDamage, ctx, source) : target.damage(source, distributedDamage);
 
         if(damageApplied) {
             if(ctx.hitEffects() != null && target instanceof LivingEntity living) ctx.hitEffects().forEach(statusEffectInstance -> living.addStatusEffect(statusEffectInstance, ctx.attacker()));
@@ -40,38 +40,82 @@ public final class DamageApi {
         return damageApplied;
     }
 
-    private static boolean applyTrueDamage(LivingEntity target, float damage, DamageContext ctx, ContextAwareDamageSource source) {
-        if (target.isInvulnerableTo(source) || (target instanceof PlayerEntity player && player.getAbilities().invulnerable && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY))) {
+    private static boolean applyTrueDamage(
+            LivingEntity target,
+            float damage,
+            DamageContext ctx,
+            ContextAwareDamageSource source
+    ) {
+        if (target.getWorld().isClient || target.isDead() || damage <= 0.0F) {
             return false;
-        } else if (target.getWorld().isClient) {
+        }
+
+        if (target.isInvulnerableTo(source)) {
             return false;
-        } else if (target.isDead()) {
+        }
+
+        if (source.isIn(DamageTypeTags.IS_FIRE) && target.hasStatusEffect(StatusEffects.FIRE_RESISTANCE)) {
             return false;
-        } else if (source.isIn(DamageTypeTags.IS_FIRE) && target.hasStatusEffect(StatusEffects.FIRE_RESISTANCE)) {
-            return false;
-        } else {
-            float health = target.getHealth();
-            float newHealth = ctx.nonFatal() ? Math.max(1f, health - damage) : Math.max(0f, health - damage);
-            RegistryEntry<DamageType> finalType = ctx.type() != null ? ctx.type() : target.getDamageSources().generic().getTypeRegistryEntry();
+        }
 
-            target.getDamageTracker().onDamage(
-                    new ContextAwareDamageSource(finalType, ctx),
-                    damage
-            );
+        if (target.isSleeping()) {
+            target.wakeUp();
+        }
 
-            target.setHealth(newHealth);
+        target.setDespawnCounter(0);
 
-            ((LivingEntityAccessor) target).hatred$invokePlayHurtSound(new ContextAwareDamageSource(finalType, ctx));
+        LivingEntityAccessor accessor = (LivingEntityAccessor) target;
 
-            target.timeUntilRegen = 20;
-            target.hurtTime = 10;
-            target.maxHurtTime = 10;
+        boolean inCooldown = !ctx.bypassesCooldown()
+                && target.timeUntilRegen > 10;
 
-            if (newHealth <= 0) {
-                target.onDeath(new ContextAwareDamageSource(finalType, ctx));
+        float effectiveDamage = damage;
+
+        if (inCooldown) {
+            float lastDamage = accessor.hatred$accessLastDamageTaken();
+
+            if (damage <= lastDamage) {
+                return false;
             }
 
-            return true;
+            effectiveDamage = damage - lastDamage;
+        } else {
+            target.timeUntilRegen = 20;
+            target.maxHurtTime = 10;
+            target.hurtTime = target.maxHurtTime;
         }
+
+        accessor.hatred$setLastDamageTaken(damage);
+
+        float healthDamage = effectiveDamage;
+
+        if (!ctx.bypassesAbsorption()) {
+            float absorption = target.getAbsorptionAmount();
+            float absorbedDamage = Math.min(absorption, healthDamage);
+
+            target.setAbsorptionAmount(absorption - absorbedDamage);
+            healthDamage -= absorbedDamage;
+        }
+
+        float oldHealth = target.getHealth();
+        float newHealth = ctx.nonFatal()
+                ? Math.max(1.0F, oldHealth - healthDamage)
+                : Math.max(0.0F, oldHealth - healthDamage);
+
+        if (healthDamage > 0.0F) {
+            target.getDamageTracker().onDamage(source, healthDamage);
+            target.setHealth(newHealth);
+            target.emitGameEvent(GameEvent.ENTITY_DAMAGE);
+        }
+
+        accessor.hatred$invokePlayHurtSound(source);
+
+        if (newHealth <= 0.0F && oldHealth > 0.0F) {
+            if(!accessor.hatred$invokeTryUseTotem(source)) {
+                target.onDeath(source);
+            }
+        }
+
+        return true;
     }
 }

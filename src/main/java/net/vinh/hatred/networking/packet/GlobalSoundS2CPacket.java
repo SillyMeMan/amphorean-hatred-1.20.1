@@ -12,7 +12,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.random.Random;
 import net.vinh.hatred.AmphoreanHatred;
 
 public record GlobalSoundS2CPacket(SoundEvent event, float volume, float pitch, SoundCategory soundCategory, boolean stop) implements Packet<ClientPlayPacketListener> {

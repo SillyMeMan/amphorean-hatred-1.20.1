@@ -8,8 +8,8 @@ import net.minecraft.util.WinNativeModuleUtil;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
+import net.vinh.hatred.cca.ModComponents;
 import net.vinh.hatred.exception.ManuallyThrownCrashException;
-import net.vinh.hatred.internal.ability.state.CombatStates;
 import net.vinh.hatred.client.animation.AnimationManager;
 import net.vinh.hatred.client.camera.ScreenshakeController;
 import net.vinh.hatred.internal.util.ClientCrashHandler;
@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MinecraftClientMixin {
     @WrapOperation(method = "handleInputEvents", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerInventory;selectedSlot:I", opcode = Opcodes.PUTFIELD))
     private void hatred$freezeInventory(PlayerInventory instance, int value, Operation<Void> original) {
-        if(instance.player.hasStatusEffect(CombatStates.INVENTORY_FREEZE)) return;
+        if(ModComponents.PLAYER.get(instance.player).inventoryFrozen) return;
         original.call(instance, value);
     }
 

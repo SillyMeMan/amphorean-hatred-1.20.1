@@ -8,7 +8,6 @@ import net.minecraft.util.math.Vec3d;
 import net.vinh.hatred.networking.packet.ScreenshakeS2CPacket;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
 import java.util.List;
 
 public final class ScreenshakeUtil {

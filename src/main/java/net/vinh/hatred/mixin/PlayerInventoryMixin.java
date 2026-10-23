@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.vinh.hatred.internal.ability.state.CombatStates;
+import net.vinh.hatred.cca.ModComponents;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -15,7 +15,7 @@ public class PlayerInventoryMixin {
 
     @WrapMethod(method = "scrollInHotbar")
     private void hatred$freezeInventory(double scrollAmount, Operation<Void> original) {
-        if(player.hasStatusEffect(CombatStates.MOVEMENT_FREEZE)) return;
+        if(ModComponents.LIVING_ENTITY.get(player).movementFrozen) return;
 
         original.call(scrollAmount);
     }

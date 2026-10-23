@@ -2,7 +2,7 @@ package net.vinh.hatred.mixin;
 
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.util.math.Vec3d;
-import net.vinh.hatred.internal.ability.state.CombatStates;
+import net.vinh.hatred.cca.ModComponents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,7 +14,7 @@ public abstract class WitherEntityMixin {
     private void hatred$freeze(CallbackInfo ci) {
         WitherEntity self = (WitherEntity) (Object) this;
 
-        if(self.hasStatusEffect(CombatStates.MOVEMENT_FREEZE)) {
+        if(ModComponents.LIVING_ENTITY.get(self).movementFrozen) {
             self.setVelocity(Vec3d.ZERO);
             self.velocityModified = true;
             ci.cancel();

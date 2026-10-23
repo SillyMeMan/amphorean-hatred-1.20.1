@@ -3,7 +3,7 @@ package net.vinh.hatred.mixin;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.HitResult;
-import net.vinh.hatred.internal.ability.state.CombatStates;
+import net.vinh.hatred.cca.ModComponents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,7 +15,7 @@ public abstract class EnderPearlEntityMixin {
     private void hatred$blockEnderPearlTeleport(HitResult hitResult, CallbackInfo ci) {
         EnderPearlEntity self = (EnderPearlEntity)(Object) this;
 
-        if(self.getOwner() instanceof ServerPlayerEntity serverPlayer && serverPlayer.hasStatusEffect(CombatStates.MOVEMENT_FREEZE)) {
+        if(self.getOwner() instanceof ServerPlayerEntity serverPlayer && ModComponents.LIVING_ENTITY.get(serverPlayer).movementFrozen) {
             self.discard();
             ci.cancel();
         }
