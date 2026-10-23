@@ -36,6 +36,7 @@ public final class AbilityManager {
         );
     }
 
+    @Deprecated
     public boolean hasExecution(LivingEntity caster, Identifier abilityId) {
         return executions.stream().anyMatch(execution ->
                 execution.caster() == caster

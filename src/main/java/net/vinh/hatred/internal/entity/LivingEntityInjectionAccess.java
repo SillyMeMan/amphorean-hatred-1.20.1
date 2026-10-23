@@ -12,6 +12,7 @@ import net.vinh.hatred.api.ability.AbilityResult;
 import net.vinh.hatred.api.ability.Cooldowns;
 import net.vinh.hatred.api.builders.DamageContextBuilder;
 import net.vinh.hatred.api.util.Args;
+import net.vinh.hatred.cca.HatredLivingEntityComponent;
 import net.vinh.hatred.cca.ModComponents;
 import net.vinh.hatred.internal.ability.AbilityExecution;
 import net.vinh.hatred.internal.ability.AbilityManager;
@@ -117,7 +118,7 @@ public interface LivingEntityInjectionAccess {
 
         AbilityManager manager = AbilityManager.get(server);
 
-        if (manager.hasExecution(entity, id)) {
+        if (manager.hasActiveExecution(entity) && !ModComponents.LIVING_ENTITY.get(entity).noStun) {
             return AbilityResult.FAIL;
         }
 
