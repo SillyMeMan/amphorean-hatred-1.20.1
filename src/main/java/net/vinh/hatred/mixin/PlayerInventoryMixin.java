@@ -15,7 +15,7 @@ public class PlayerInventoryMixin {
 
     @WrapMethod(method = "scrollInHotbar")
     private void hatred$freezeInventory(double scrollAmount, Operation<Void> original) {
-        if(ModComponents.LIVING_ENTITY.get(player).movementFrozen) return;
+        if(ModComponents.PLAYER.get(player).inventoryFrozen) return;
 
         original.call(scrollAmount);
     }
