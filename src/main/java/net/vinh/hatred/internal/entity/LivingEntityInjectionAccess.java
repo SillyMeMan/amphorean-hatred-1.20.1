@@ -35,6 +35,7 @@ public interface LivingEntityInjectionAccess {
         builder.bypassesShield();
         builder.bypassesResistance();
         builder.bypassesInvulnerability();
+        builder.bypassesPureInvulnerability();
         builder.bypassesEnchantments();
         builder.bypassesCooldown();
         builder.bypassesArmor();

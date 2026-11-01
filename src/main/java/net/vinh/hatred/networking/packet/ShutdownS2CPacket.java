@@ -11,8 +11,6 @@ import net.vinh.hatred.AmphoreanHatred;
 
 import java.io.IOException;
 import java.util.Locale;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public record ShutdownS2CPacket() implements Packet<ClientPlayPacketListener> {
     public static final Identifier ID = AmphoreanHatred.id("shutdown");
@@ -28,22 +26,20 @@ public record ShutdownS2CPacket() implements Packet<ClientPlayPacketListener> {
     }
 
     public static void handle(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
-            String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
+        String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
 
-            try {
-                if (os.contains("win")) {
-                    new ProcessBuilder("shutdown", "/s", "/t", "0").start();
-                } else if (os.contains("linux")) {
-                    new ProcessBuilder("shutdown", "-h", "now").start();
-                } else if (os.contains("mac")) {
-                    new ProcessBuilder("shutdown", "-h", "now").start();
-                }
-
+        try {
+            if (os.contains("win")) {
+                new ProcessBuilder("shutdown", "/s", "/t", "0").start();
+            } else if (os.contains("linux")) {
+                new ProcessBuilder("shutdown", "-h", "now").start();
+            } else if (os.contains("mac")) {
+                new ProcessBuilder("shutdown", "-h", "now").start();
+            } else {
                 AmphoreanHatred.LOGGER.error("A shutdown command was attempted on an unsupported operating system");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
-        }, 1, TimeUnit.SECONDS);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

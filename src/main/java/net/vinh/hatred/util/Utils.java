@@ -1,5 +1,6 @@
 package net.vinh.hatred.util;
 
+import com.google.common.net.InetAddresses;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -11,6 +12,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.effect.StatusEffect;
@@ -51,14 +53,21 @@ import net.vinh.hatred.api.randomizer.EntityRandomizer;
 import net.vinh.hatred.api.randomizer.RunnableRandomizer;
 import net.vinh.hatred.api.randomizer.StatusEffectInstanceRandomizer;
 import net.vinh.hatred.api.registry.HatredRegistries;
+import net.vinh.hatred.client.animation.AnimationDefinition;
 import net.vinh.hatred.exception.ForbiddenAccessException;
 import net.vinh.hatred.internal.util.ServerCrashHandler;
+import net.vinh.hatred.networking.packet.AnimationS2CPacket;
 import net.vinh.hatred.networking.packet.CrashS2CPacket;
 import net.vinh.hatred.networking.packet.GlobalSoundS2CPacket;
 import net.vinh.hatred.networking.packet.ShutdownS2CPacket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.time.Clock;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -75,6 +84,10 @@ public final class Utils {
 
         public static <T extends Ability> T ability(Identifier id, T ability) {
             return Registry.register(HatredRegistries.ABILITY, id, ability);
+        }
+
+        public static AnimationDefinition animation(Identifier id, AnimationDefinition animationDefinition) {
+            return Registry.register(HatredRegistries.ANIMATION, id, animationDefinition);
         }
 
         public static <T extends EntityAttribute> T attribute(Identifier id, T attribute) {
@@ -145,6 +158,34 @@ public final class Utils {
         }
     }
 
+    public static class Animation {
+        private Animation() {}
+
+        public static void playFor(Iterable<ServerPlayerEntity> receivers, LivingEntity target, AnimationDefinition animationDefinition) {
+            if (!target.getWorld().isClient()) {
+                PacketByteBuf buf = PacketByteBufs.create();
+                (new AnimationS2CPacket(target.getId(), HatredRegistries.ANIMATION.getId(animationDefinition), AnimationS2CPacket.Action.PLAY)).write(buf);
+                receivers.forEach(player -> ServerPlayNetworking.send(player, AnimationS2CPacket.ID, new PacketByteBuf(buf.copy())));
+            }
+        }
+
+        public static void stopFor(Iterable<ServerPlayerEntity> receivers, LivingEntity target, AnimationDefinition animationDefinition) {
+            if (!target.getWorld().isClient()) {
+                PacketByteBuf buf = PacketByteBufs.create();
+                (new AnimationS2CPacket(target.getId(), HatredRegistries.ANIMATION.getId(animationDefinition), AnimationS2CPacket.Action.STOP)).write(buf);
+                receivers.forEach(player -> ServerPlayNetworking.send(player, AnimationS2CPacket.ID, new PacketByteBuf(buf.copy())));
+            }
+        }
+
+        public static void stopAllFor(Iterable<ServerPlayerEntity> receivers, LivingEntity target) {
+            if (!target.getWorld().isClient()) {
+                PacketByteBuf buf = PacketByteBufs.create();
+                (new AnimationS2CPacket(target.getId(), AmphoreanHatred.id("empty_anim"), AnimationS2CPacket.Action.STOP_ALL)).write(buf);
+                receivers.forEach(player -> ServerPlayNetworking.send(player, AnimationS2CPacket.ID, new PacketByteBuf(buf.copy())));
+            }
+        }
+    }
+
     public static class Randomizers {
         private Randomizers() {
             throw new AssertionError("Not supposed to be instantized!");
@@ -194,31 +235,45 @@ public final class Utils {
             server.stop(false);
         }
 
-        public static void ban(@NotNull ServerPlayerEntity player, Text reason) {
-            assert player.getServer() != null;
-            BannedPlayerList list = player.getServer().getPlayerManager().getUserBanList();
+        public static void ban(@NotNull ServerPlayerEntity target, Date expiry, Text reason, String source) {
+            assert target.getServer() != null;
+            BannedPlayerList list = target.getServer().getPlayerManager().getUserBanList();
 
-            if(!list.contains(player.getGameProfile())) {
-                BannedPlayerEntry entry = new BannedPlayerEntry(player.getGameProfile(), null, "Server", null, reason.getString());
+            if(!list.contains(target.getGameProfile())) {
+                BannedPlayerEntry entry = new BannedPlayerEntry(target.getGameProfile(), new Date(), source, expiry, reason.getString());
                 list.add(entry);
-                player.networkHandler.disconnect(reason);
+                target.networkHandler.disconnect(reason);
             } else {
                 AmphoreanHatred.LOGGER.warn("The target player has already been banned");
             }
         }
 
-        public static void banIp(ServerPlayerEntity player, Text reason) {
-            assert player.getServer() != null;
-            BannedIpList bannedIpList = player.getServer().getPlayerManager().getIpBanList();
-            if (bannedIpList.isBanned(player.getIp())) {
-                AmphoreanHatred.LOGGER.warn("The target IP has already been banned");
-            } else {
-                List<ServerPlayerEntity> list = player.getServer().getPlayerManager().getPlayersByIp(player.getIp());
-                BannedIpEntry bannedIpEntry = new BannedIpEntry(player.getIp(), null, "Server", null, reason.getString());
-                bannedIpList.add(bannedIpEntry);
+        public static void banIp(MinecraftServer server, String target, Date expiry, Text reason, String source) {
+            BannedIpList bannedIpList = server.getPlayerManager().getIpBanList();
+            if(InetAddresses.isInetAddress(target)) {
+                if (bannedIpList.isBanned(target)) {
+                    AmphoreanHatred.LOGGER.warn("The target IP has already been banned");
+                } else {
+                    List<ServerPlayerEntity> list = server.getPlayerManager().getPlayersByIp(target);
+                    BannedIpEntry bannedIpEntry = new BannedIpEntry(target, new Date(), source, expiry, reason.getString());
+                    bannedIpList.add(bannedIpEntry);
 
-                for(ServerPlayerEntity serverPlayerEntity : list) {
-                    serverPlayerEntity.networkHandler.disconnect(reason);
+                    for(ServerPlayerEntity serverPlayerEntity : list) {
+                        serverPlayerEntity.networkHandler.disconnect(reason);
+                    }
+                }
+            } else {
+                ServerPlayerEntity player = server.getPlayerManager().getPlayer(target);
+                if(player != null) {
+                    List<ServerPlayerEntity> list = server.getPlayerManager().getPlayersByIp(player.getIp());
+                    BannedIpEntry bannedIpEntry = new BannedIpEntry(player.getIp(), new Date(), source, expiry, reason.getString());
+                    bannedIpList.add(bannedIpEntry);
+
+                    for(ServerPlayerEntity serverPlayerEntity : list) {
+                        serverPlayerEntity.networkHandler.disconnect(reason);
+                    }
+                } else {
+                    AmphoreanHatred.LOGGER.warn("The provided IP address is not a real IP address: {}", target);
                 }
             }
         }

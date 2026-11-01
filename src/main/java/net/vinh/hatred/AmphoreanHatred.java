@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.LivingEntity;
@@ -23,6 +24,7 @@ import net.vinh.hatred.impl.TestItem;
 import net.vinh.hatred.internal.AutoRegistry;
 import net.vinh.hatred.internal.scheduler.Schedulers;
 import net.vinh.hatred.util.C2SPacketHelper;
+import net.vinh.hatred.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +57,8 @@ public class AmphoreanHatred implements ModInitializer {
 				player.setCooldown(HatredRegistries.ABILITY.get(abilityId), HatredRegistries.ABILITY.get(abilityId).cooldown());
 			}
 
+			Utils.Animation.stopAllFor(PlayerLookup.tracking(player), player);
+
 			HatredLivingEntityComponent component = ModComponents.LIVING_ENTITY.get(player);
 
 			component.movementFrozen = false;
@@ -68,6 +72,7 @@ public class AmphoreanHatred implements ModInitializer {
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> Schedulers.entity(entity).clear());
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> entity.cancelAll(true));
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> Utils.Animation.stopAllFor(PlayerLookup.tracking(entity), entity));
 
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> handler.getPlayer().cancelAll(true));
 

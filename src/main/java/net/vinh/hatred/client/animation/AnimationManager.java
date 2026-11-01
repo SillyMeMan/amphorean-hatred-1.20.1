@@ -7,16 +7,38 @@ import java.util.Map;
 import java.util.UUID;
 
 public final class AnimationManager {
+    private static final Map<UUID, AnimationController> CONTROLLERS =
+            new HashMap<>();
 
-    private static final Map<UUID, AnimationController> CONTROLLERS = new HashMap<>();
+    private AnimationManager() {}
 
     public static AnimationController get(LivingEntity entity) {
         return CONTROLLERS.computeIfAbsent(
                 entity.getUuid(),
-                id -> new AnimationController());
+                uuid -> new AnimationController()
+        );
     }
 
     public static void tick() {
-        CONTROLLERS.values().forEach(AnimationController::tick);
+        CONTROLLERS.values().removeIf(controller -> {
+            controller.tick();
+            return !controller.isPlaying();
+        });
+    }
+
+    public static void remove(LivingEntity entity) {
+        CONTROLLERS.remove(entity.getUuid());
+    }
+
+    public static void clear() {
+        CONTROLLERS.clear();
+    }
+
+    public static int controllerCount() {
+        return CONTROLLERS.size();
+    }
+
+    public static AnimationController getIfPresent(LivingEntity entity) {
+        return CONTROLLERS.get(entity.getUuid());
     }
 }

@@ -9,32 +9,69 @@ public record BodyTransform(
         double z,
         float scale
 ) {
+    public static final BodyTransform IDENTITY = new BodyTransform(
+            0.0f, 0.0f, 0.0f,
+            0.0, 0.0, 0.0,
+            1.0f
+    );
 
-    public static BodyTransform identity() {
-        return new BodyTransform(0,0,0,0,0,0,1f);
-    }
-
+    /**
+     * Linearly interpolates between two transforms.
+     *
+     * @param from starting transform
+     * @param to target transform
+     * @param delta interpolation progress, normally between 0 and 1
+     */
     public static BodyTransform interpolate(
-            BodyTransform a,
-            BodyTransform b,
-            float t
+            BodyTransform from,
+            BodyTransform to,
+            float delta
     ) {
         return new BodyTransform(
-                lerp(a.pitch, b.pitch, t),
-                lerp(a.yaw,   b.yaw,   t),
-                lerp(a.roll,  b.roll,  t),
-                lerp(a.x,     b.x,     t),
-                lerp(a.y,     b.y,     t),
-                lerp(a.z,     b.z,     t),
-                lerp(a.scale, b.scale, t)
+                lerp(from.pitch, to.pitch, delta),
+                lerp(from.yaw, to.yaw, delta),
+                lerp(from.roll, to.roll, delta),
+                lerp(from.x, to.x, delta),
+                lerp(from.y, to.y, delta),
+                lerp(from.z, to.z, delta),
+                lerp(from.scale, to.scale, delta)
         );
     }
 
-    private static float lerp(float a, float b, float t) {
-        return a + (b - a) * t;
+    /**
+     * Adds another transform to this transform.
+     * Scale is composed multiplicatively.
+     */
+    public BodyTransform add(BodyTransform other) {
+        return new BodyTransform(
+                pitch + other.pitch,
+                yaw + other.yaw,
+                roll + other.roll,
+                x + other.x,
+                y + other.y,
+                z + other.z,
+                scale * other.scale
+        );
     }
 
-    private static double lerp(double a, double b, float t) {
-        return a + (b - a) * t;
+    /**
+     * Returns this transform with its translation multiplied by a factor.
+     */
+    public BodyTransform multiplyTranslation(double factor) {
+        return new BodyTransform(
+                pitch, yaw, roll,
+                x * factor,
+                y * factor,
+                z * factor,
+                scale
+        );
+    }
+
+    private static float lerp(float from, float to, float delta) {
+        return from + (to - from) * delta;
+    }
+
+    private static double lerp(double from, double to, float delta) {
+        return from + (to - from) * delta;
     }
 }

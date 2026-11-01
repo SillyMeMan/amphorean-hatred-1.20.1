@@ -1,43 +1,61 @@
 package net.vinh.hatred.client.animation;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
-public class KeyframeTrack {
-    private final List<Keyframe> keyframes;
+public record KeyframeTrack(List<Keyframe> keyframes) {
+    public KeyframeTrack {
+        if (keyframes == null || keyframes.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "A keyframe track must contain at least one keyframe"
+            );
+        }
 
-    public KeyframeTrack(List<Keyframe> keyframes) {
-        this.keyframes = keyframes;
+        keyframes = new ArrayList<>(keyframes);
+        keyframes.sort(Comparator.comparingDouble(Keyframe::time));
+        keyframes = List.copyOf(keyframes);
     }
 
     public BodyTransform sample(float progress) {
-        if (keyframes.isEmpty())
-            return BodyTransform.identity();
-
-        if (keyframes.size() == 1)
-            return keyframes.get(0).transform();
-
-        Keyframe previous = keyframes.get(0);
-        Keyframe next = keyframes.get(keyframes.size() - 1);
-
-        for (Keyframe k : keyframes) {
-            if (k.time() >= progress) {
-                next = k;
-                break;
-            }
-            previous = k;
+        if (!Float.isFinite(progress)) {
+            throw new IllegalArgumentException(
+                    "Animation progress must be finite"
+            );
         }
 
-        float timeDiff = next.time() - previous.time();
+        if (keyframes.size() == 1) {
+            return keyframes.get(0).transform();
+        }
 
-        if (timeDiff == 0f)
+        Keyframe previous = keyframes.get(0);
+
+        if (progress <= previous.time()) {
             return previous.transform();
+        }
 
-        float delta = (progress - previous.time()) / timeDiff;
+        for (int i = 1; i < keyframes.size(); i++) {
+            Keyframe next = keyframes.get(i);
 
-        return BodyTransform.interpolate(
-                previous.transform(),
-                next.transform(),
-                delta
-        );
+            if (progress <= next.time()) {
+                float duration = next.time() - previous.time();
+
+                if (duration <= 0.0f) {
+                    return next.transform();
+                }
+
+                float delta = (progress - previous.time()) / duration;
+
+                return BodyTransform.interpolate(
+                        previous.transform(),
+                        next.transform(),
+                        delta
+                );
+            }
+
+            previous = next;
+        }
+
+        return previous.transform();
     }
 }
